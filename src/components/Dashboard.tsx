@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 
 interface DashboardProps {
   onStartWebsite: () => void;
-  onOpenStudio: () => void;
+  onOpenStudio: (toolId?: string) => void;
   projectContext?: {
     name?: string;
     hasWebsite?: boolean;
@@ -204,7 +204,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projectContext }: DashboardPr
       return { 
         title: "Criar seu primeiro site", 
         description: "Comece agora mesmo a construir sua presença online",
-        action: onStartWebsite,
+        action: () => onStartWebsite(),
         buttonText: "Criar Site",
         icon: Globe
       };
@@ -213,7 +213,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projectContext }: DashboardPr
       return { 
         title: "Definir sua marca", 
         description: "Estabeleça identidade e posicionamento únicos",
-        action: onOpenStudio,
+        action: () => onOpenStudio("branding"),
         buttonText: "Abrir Branding",
         icon: Palette
       };
@@ -221,7 +221,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projectContext }: DashboardPr
     return { 
       title: "Continuar construindo", 
       description: "Explore as ferramentas de IA do Studio",
-      action: onOpenStudio,
+      action: () => onOpenStudio(),
       buttonText: "Abrir Studio",
       icon: Sparkles
     };
@@ -342,7 +342,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projectContext }: DashboardPr
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={onOpenStudio}
+              onClick={() => onOpenStudio()}
               className="text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 gap-1"
             >
               Ver todas
@@ -357,7 +357,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projectContext }: DashboardPr
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 + index * 0.03 }}
-                onClick={tool.isMain ? onStartWebsite : onOpenStudio}
+                onClick={() => tool.isMain ? onStartWebsite() : onOpenStudio(tool.id)}
                 onMouseEnter={() => setHoveredTool(tool.id)}
                 onMouseLeave={() => setHoveredTool(null)}
                 className={`group relative p-5 rounded-2xl text-left transition-all duration-300 hover:scale-[1.02] ${

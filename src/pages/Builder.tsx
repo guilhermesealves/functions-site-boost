@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft, LayoutGrid, Home } from "lucide-react";
+import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CodiaStudio from "@/components/CodiaStudio";
 import Dashboard from "@/components/Dashboard";
+import AISidebar from "@/components/AISidebar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Prism from "prismjs";
@@ -43,6 +44,7 @@ const Builder = () => {
   const [generationStep, setGenerationStep] = useState("");
   const [showChat, setShowChat] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
+  const [selectedAITool, setSelectedAITool] = useState("website");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -315,21 +317,36 @@ const Builder = () => {
     return (
       <Dashboard 
         onStartWebsite={() => setViewMode("builder")}
-        onOpenStudio={() => setViewMode("studio")}
+        onOpenStudio={(toolId) => {
+          if (toolId) setSelectedAITool(toolId);
+          setViewMode("studio");
+        }}
         projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
       />
     );
   }
 
-  // Show CODIA Studio
+  // Show CODIA Studio (now accessed via sidebar)
   if (viewMode === "studio") {
     return (
       <CodiaStudio 
-        onBack={() => setViewMode("dashboard")} 
+        onBack={() => {
+          setViewMode("builder");
+          setSelectedAITool("website");
+        }} 
         projectContext={currentProject ? { name: currentProject.name, prompt: currentProject.prompt } : undefined}
+        initialToolId={selectedAITool !== "website" ? selectedAITool : undefined}
       />
     );
   }
+
+  // Handle AI tool selection - go to studio for non-website tools
+  const handleAIToolSelect = (toolId: string) => {
+    setSelectedAITool(toolId);
+    if (toolId !== "website") {
+      setViewMode("studio");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[hsl(0,0%,4%)] flex flex-col">
@@ -377,17 +394,6 @@ const Builder = () => {
                     {projects.length}
                   </span>
                 )}
-              </Button>
-              
-              {/* CODIA Studio Button */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setViewMode("studio")}
-                className="h-8 gap-1.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 text-xs border border-orange-500/20"
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                Studio
               </Button>
             </div>
           </div>
@@ -472,17 +478,11 @@ const Builder = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex">
-        {/* Toggle Chat Button */}
-        <button
-          onClick={() => setShowChat(!showChat)}
-          className="absolute left-2 top-[60px] z-50 w-8 h-8 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 flex items-center justify-center transition-colors"
-        >
-          {showChat ? (
-            <PanelLeftClose className="w-4 h-4 text-orange-400" />
-          ) : (
-            <PanelLeft className="w-4 h-4 text-orange-400" />
-          )}
-        </button>
+        {/* AI Sidebar */}
+        <AISidebar 
+          selectedTool={selectedAITool} 
+          onSelectTool={handleAIToolSelect} 
+        />
 
         {/* Chat Panel - Collapsible */}
         <AnimatePresence>
