@@ -57,6 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        orange: {
+          50: "hsl(35, 100%, 95%)",
+          100: "hsl(35, 100%, 90%)",
+          200: "hsl(32, 100%, 80%)",
+          300: "hsl(28, 100%, 70%)",
+          400: "hsl(26, 100%, 60%)",
+          500: "hsl(24, 100%, 50%)",
+          600: "hsl(22, 100%, 45%)",
+          700: "hsl(20, 100%, 40%)",
+          800: "hsl(18, 100%, 35%)",
+          900: "hsl(15, 100%, 25%)",
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        display: ['Space Grotesk', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
