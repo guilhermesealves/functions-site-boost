@@ -43,7 +43,7 @@ const HeroSection = () => {
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
               className="w-20 h-20 rounded-2xl bg-gradient-orange flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/40"
             >
-              <span className="text-primary-foreground font-display font-bold text-4xl">F</span>
+              <span className="text-primary-foreground font-display font-bold text-4xl">C</span>
             </motion.div>
 
             <motion.h2
@@ -163,7 +163,7 @@ const HeroSection = () => {
               >
                 Diga o que precisa.{" "}
                 <br />
-                <span className="text-gradient-orange">A Functions cria.</span>
+                <span className="text-gradient-orange">A Codia cria.</span>
               </motion.h1>
 
               {/* Subheadline */}

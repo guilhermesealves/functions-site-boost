@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Send, Sparkles, Paperclip, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ChatInputProps {
   onSubmit?: (message: string) => void;
@@ -23,7 +24,15 @@ const ChatInput = ({ onSubmit, placeholder }: ChatInputProps) => {
   const [typingText, setTypingText] = useState("");
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+  }, []);
 
   useEffect(() => {
     if (message) return; // Don't animate if user is typing
@@ -68,8 +77,13 @@ const ChatInput = ({ onSubmit, placeholder }: ChatInputProps) => {
       if (onSubmit) {
         onSubmit(message);
       }
-      // Navigate to auth/builder with the message
-      navigate("/auth", { state: { prompt: message } });
+      // If logged in, go directly to builder with prompt
+      if (isLoggedIn) {
+        navigate("/builder", { state: { prompt: message } });
+      } else {
+        // Navigate to auth with the message
+        navigate("/auth", { state: { prompt: message } });
+      }
     }
   };
 

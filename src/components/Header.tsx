@@ -35,13 +35,13 @@ const Header = () => {
           >
             <div className="relative">
               <div className="w-10 h-10 rounded-xl bg-gradient-orange flex items-center justify-center shadow-lg shadow-primary/30">
-                <span className="text-primary-foreground font-display font-bold text-xl">F</span>
+                <span className="text-primary-foreground font-display font-bold text-xl">C</span>
               </div>
               <motion.div
                 className="absolute inset-0 rounded-xl bg-gradient-orange opacity-0 blur-lg group-hover:opacity-60 transition-opacity duration-300"
               />
             </div>
-            <span className="font-display font-bold text-xl text-foreground">Functions</span>
+            <span className="font-display font-bold text-xl text-foreground">Codia</span>
           </motion.a>
 
           {/* Desktop Navigation */}
