@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Send, Sparkles, LogOut, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
@@ -40,6 +40,8 @@ const Builder = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialPromptProcessed = useRef(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -61,6 +63,24 @@ const Builder = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Handle initial prompt from home page
+  useEffect(() => {
+    const state = location.state as { prompt?: string } | null;
+    if (state?.prompt && !initialPromptProcessed.current && user) {
+      initialPromptProcessed.current = true;
+      setInput(state.prompt);
+      // Auto-submit the prompt
+      setTimeout(() => {
+        const form = document.querySelector('form');
+        if (form) {
+          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        }
+      }, 500);
+      // Clear the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -293,8 +313,9 @@ const Builder = () => {
           <div className="flex items-center gap-3">
             <a href="/" className="flex items-center gap-2 group">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-sm">F</span>
+                <span className="text-white font-bold text-sm">C</span>
               </div>
+              <span className="text-white font-bold text-sm">Codia</span>
             </a>
 
             <div className="h-5 w-px bg-white/10" />
@@ -412,7 +433,7 @@ const Builder = () => {
                   Olá, {userName}!
                 </h2>
                 <p className="text-white/50 text-xs max-w-[200px] leading-relaxed">
-                  Descreva o site dos seus sonhos e eu vou criá-lo para você.
+                  Descreva o site dos seus sonhos e a Codia vai criá-lo para você.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-4 justify-center max-w-[280px]">
                   {["Landing page moderna", "Portfolio criativo", "Loja virtual"].map((suggestion) => (
