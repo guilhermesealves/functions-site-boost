@@ -78,6 +78,7 @@
   .text-gradient-orange {
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-orange);
+    background-size: 200% 200%;
   }
 
   .bg-gradient-orange {
@@ -100,5 +101,41 @@
     border: 1px solid transparent;
     background: linear-gradient(var(--background), var(--background)) padding-box,
                 var(--gradient-orange) border-box;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(0 0% 8%);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(0 0% 20%);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(24, 100%, 50%);
+  }
+
+  /* Focus styles */
+  *:focus-visible {
+    outline: 2px solid hsl(24, 100%, 50%);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: hsl(24, 100%, 50% / 0.3);
+    color: inherit;
   }
 }
