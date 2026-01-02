@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
 import StudioLayout from "@/components/StudioLayout";
+import AppHeader from "@/components/AppHeader";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -44,7 +44,6 @@ const Builder = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Handle initial prompt from home page
   useEffect(() => {
     const state = location.state as { prompt?: string; tool?: string } | null;
     if (state?.prompt && !initialPromptProcessed.current) {
@@ -66,8 +65,18 @@ const Builder = () => {
     }
   };
 
+  const handleSelectProject = (project: Project) => {
+    setCurrentProject(project);
+    toast.success(`Projeto "${project.name}" carregado`);
+  };
+
+  const handleNewProject = () => {
+    setCurrentProject(null);
+    setInitialTool("business");
+    setViewMode("studio");
+  };
+
   const handleSendMessage = async (message: string, toolId: string): Promise<string> => {
-    // For website tool, use the generate-site function
     if (toolId === "website") {
       try {
         const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-site`, {
@@ -129,24 +138,29 @@ const Builder = () => {
       }
     }
 
-    // For other tools, return a placeholder message
-    return `[Em desenvolvimento] Esta funcionalidade está sendo implementada. Em breve você poderá usar a IA para ${toolId}.`;
+    return `Esta funcionalidade está sendo desenvolvida. Em breve você poderá usar a IA de ${toolId} para criar conteúdo incrível.`;
   };
 
   // Show Dashboard
   if (viewMode === "dashboard") {
     return (
-      <Dashboard 
-        onStartWebsite={() => {
-          setInitialTool("website");
-          setViewMode("studio");
-        }}
-        onOpenStudio={(toolId) => {
-          if (toolId) setInitialTool(toolId);
-          setViewMode("studio");
-        }}
-        projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
-      />
+      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,3%)]">
+        <AppHeader 
+          user={user} 
+          onNewProject={handleNewProject}
+        />
+        <Dashboard 
+          onStartWebsite={() => {
+            setInitialTool("website");
+            setViewMode("studio");
+          }}
+          onOpenStudio={(toolId) => {
+            if (toolId) setInitialTool(toolId);
+            setViewMode("studio");
+          }}
+          projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+        />
+      </div>
     );
   }
 
@@ -156,6 +170,11 @@ const Builder = () => {
       onGoHome={() => setViewMode("dashboard")}
       initialTool={initialTool}
       onSendMessage={handleSendMessage}
+      user={user}
+      projects={projects}
+      onSelectProject={handleSelectProject}
+      currentProjectId={currentProject?.id}
+      onNewProject={handleNewProject}
     />
   );
 };
