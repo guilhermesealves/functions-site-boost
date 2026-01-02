@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import CodiaStudio from "@/components/CodiaStudio";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Prism from "prismjs";
@@ -38,6 +39,7 @@ const Builder = () => {
   const [generationProgress, setGenerationProgress] = useState(0);
   const [generationStep, setGenerationStep] = useState("");
   const [showChat, setShowChat] = useState(true);
+  const [showStudio, setShowStudio] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -304,6 +306,16 @@ const Builder = () => {
   const generatedCode = lastAssistantMessage ? extractCode(lastAssistantMessage.content) : null;
   const userName = user?.email?.split("@")[0] || "você";
 
+  // Show CODIA Studio
+  if (showStudio) {
+    return (
+      <CodiaStudio 
+        onBack={() => setShowStudio(false)} 
+        projectContext={currentProject ? { name: currentProject.name, prompt: currentProject.prompt } : undefined}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[hsl(0,0%,4%)] flex flex-col">
       {/* Header */}
@@ -340,6 +352,17 @@ const Builder = () => {
                     {projects.length}
                   </span>
                 )}
+              </Button>
+              
+              {/* CODIA Studio Button */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowStudio(true)}
+                className="h-8 gap-1.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 text-xs border border-orange-500/20"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                Studio
               </Button>
             </div>
           </div>
