@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft, LayoutGrid } from "lucide-react";
+import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft, LayoutGrid, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CodiaStudio from "@/components/CodiaStudio";
+import Dashboard from "@/components/Dashboard";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Prism from "prismjs";
@@ -25,6 +26,8 @@ interface Project {
   created_at: string;
 }
 
+type ViewMode = "dashboard" | "builder" | "studio";
+
 const Builder = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -39,7 +42,7 @@ const Builder = () => {
   const [generationProgress, setGenerationProgress] = useState(0);
   const [generationStep, setGenerationStep] = useState("");
   const [showChat, setShowChat] = useState(true);
-  const [showStudio, setShowStudio] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -70,6 +73,7 @@ const Builder = () => {
     if (state?.prompt && !initialPromptProcessed.current) {
       initialPromptProcessed.current = true;
       setInput(state.prompt);
+      setViewMode("builder"); // Switch to builder when coming with a prompt
       // Auto-submit the prompt
       setTimeout(() => {
         const form = document.querySelector('form');
@@ -306,11 +310,22 @@ const Builder = () => {
   const generatedCode = lastAssistantMessage ? extractCode(lastAssistantMessage.content) : null;
   const userName = user?.email?.split("@")[0] || "você";
 
+  // Show Dashboard
+  if (viewMode === "dashboard") {
+    return (
+      <Dashboard 
+        onStartWebsite={() => setViewMode("builder")}
+        onOpenStudio={() => setViewMode("studio")}
+        projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+      />
+    );
+  }
+
   // Show CODIA Studio
-  if (showStudio) {
+  if (viewMode === "studio") {
     return (
       <CodiaStudio 
-        onBack={() => setShowStudio(false)} 
+        onBack={() => setViewMode("dashboard")} 
         projectContext={currentProject ? { name: currentProject.name, prompt: currentProject.prompt } : undefined}
       />
     );
@@ -322,14 +337,24 @@ const Builder = () => {
       <header className="border-b border-white/5 bg-[hsl(0,0%,4%)] sticky top-0 z-50">
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center group">
+            <button onClick={() => setViewMode("dashboard")} className="flex items-center group">
               <span className="font-bold text-lg text-orange-500">Codia</span>
               <span className="font-bold text-lg text-orange-500 ml-1">∞</span>
-            </a>
+            </button>
 
             <div className="h-5 w-px bg-white/10" />
 
             <div className="flex items-center gap-1">
+              {/* Dashboard Button */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setViewMode("dashboard")}
+                className="h-8 gap-1.5 text-white/60 hover:text-white hover:bg-white/5 text-xs"
+              >
+                <Home className="w-3.5 h-3.5" />
+                Dashboard
+              </Button>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -358,7 +383,7 @@ const Builder = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => setShowStudio(true)}
+                onClick={() => setViewMode("studio")}
                 className="h-8 gap-1.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 text-xs border border-orange-500/20"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
