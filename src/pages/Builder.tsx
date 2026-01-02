@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles, LogOut, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X } from "lucide-react";
+import { Send, Sparkles, LogOut, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -28,7 +28,7 @@ const Builder = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showCode, setShowCode] = useState(true);
+  const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -91,9 +91,9 @@ const Builder = () => {
     return codeMatch ? codeMatch[1].trim() : null;
   };
 
-  const formatMessage = (content: string): string => {
-    // Remove code blocks for display in chat
-    return content.replace(/```(?:html|jsx|tsx|css|javascript|js)?\n?[\s\S]*?```/g, "[Código gerado - veja no painel →]");
+  const getCleanMessage = (content: string): string => {
+    // Remove code blocks and return only the text explanation
+    return content.replace(/```(?:html|jsx|tsx|css|javascript|js)?\n?[\s\S]*?```/g, "").trim();
   };
 
   const copyCode = () => {
@@ -259,42 +259,42 @@ const Builder = () => {
 
   const lastAssistantMessage = messages.filter(m => m.role === "assistant").pop();
   const generatedCode = lastAssistantMessage ? extractCode(lastAssistantMessage.content) : null;
+  const userName = user?.email?.split("@")[0] || "você";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[hsl(0,0%,4%)] flex flex-col">
       {/* Header */}
-      <header className="border-b border-border/30 bg-[hsl(0,0%,3%)] sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <a href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg bg-gradient-orange flex items-center justify-center shadow-lg shadow-primary/20">
-                <span className="text-primary-foreground font-display font-bold text-lg">F</span>
+      <header className="border-b border-white/5 bg-[hsl(0,0%,4%)] sticky top-0 z-50">
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <div className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm">F</span>
               </div>
-              <span className="font-display font-bold text-lg hidden sm:block">Functions</span>
             </a>
 
-            <div className="h-6 w-px bg-border/50 hidden sm:block" />
+            <div className="h-5 w-px bg-white/10" />
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={newProject}
-                className="gap-2 text-muted-foreground hover:text-foreground"
+                className="h-8 gap-1.5 text-white/60 hover:text-white hover:bg-white/5 text-xs"
               >
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Novo</span>
+                <Plus className="w-3.5 h-3.5" />
+                Novo
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setShowProjects(!showProjects)}
-                className="gap-2 text-muted-foreground hover:text-foreground"
+                className="h-8 gap-1.5 text-white/60 hover:text-white hover:bg-white/5 text-xs"
               >
-                <FolderOpen className="w-4 h-4" />
-                <span className="hidden sm:inline">Projetos</span>
+                <FolderOpen className="w-3.5 h-3.5" />
+                Projetos
                 {projects.length > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center">
+                  <span className="w-4 h-4 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center">
                     {projects.length}
                   </span>
                 )}
@@ -302,20 +302,25 @@ const Builder = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {generatedCode && (
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 size="sm" 
                 onClick={saveProject}
-                className="gap-2 border-primary/30 text-primary hover:bg-primary/10"
+                className="h-8 gap-1.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 text-xs"
               >
-                <Save className="w-4 h-4" />
-                <span className="hidden sm:inline">Salvar</span>
+                <Save className="w-3.5 h-3.5" />
+                Salvar
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2 text-muted-foreground">
-              <LogOut className="w-4 h-4" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout} 
+              className="h-8 w-8 p-0 text-white/40 hover:text-white hover:bg-white/5"
+            >
+              <LogOut className="w-3.5 h-3.5" />
             </Button>
           </div>
         </div>
@@ -325,36 +330,36 @@ const Builder = () => {
       <AnimatePresence>
         {showProjects && (
           <motion.div
-            initial={{ x: -300, opacity: 0 }}
+            initial={{ x: -280, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            className="fixed left-0 top-[57px] bottom-0 w-72 bg-[hsl(0,0%,3%)] border-r border-border/30 z-40 overflow-y-auto"
+            exit={{ x: -280, opacity: 0 }}
+            className="fixed left-0 top-[49px] bottom-0 w-64 bg-[hsl(0,0%,6%)] border-r border-white/5 z-40 overflow-y-auto"
           >
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Seus Projetos</h3>
-                <Button variant="ghost" size="sm" onClick={() => setShowProjects(false)}>
-                  <X className="w-4 h-4" />
+            <div className="p-3">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-medium text-sm text-white/90">Seus Projetos</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowProjects(false)} className="h-7 w-7 p-0 text-white/40">
+                  <X className="w-3.5 h-3.5" />
                 </Button>
               </div>
               {projects.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Nenhum projeto salvo ainda
+                <p className="text-xs text-white/40 text-center py-6">
+                  Nenhum projeto salvo
                 </p>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {projects.map((project) => (
                     <button
                       key={project.id}
                       onClick={() => loadProject(project)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                      className={`w-full text-left p-2.5 rounded-lg transition-colors ${
                         currentProject?.id === project.id
-                          ? "bg-primary/10 border-primary/30"
-                          : "bg-secondary/30 border-border/30 hover:bg-secondary/50"
+                          ? "bg-orange-500/10 border border-orange-500/20"
+                          : "bg-white/[0.02] border border-transparent hover:bg-white/[0.04]"
                       }`}
                     >
-                      <p className="font-medium text-sm truncate">{project.name}</p>
-                      <p className="text-xs text-muted-foreground truncate mt-1">{project.prompt}</p>
+                      <p className="font-medium text-xs text-white/80 truncate">{project.name}</p>
+                      <p className="text-[10px] text-white/40 truncate mt-0.5">{project.prompt}</p>
                     </button>
                   ))}
                 </div>
@@ -364,33 +369,33 @@ const Builder = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
+      {/* Main Content - Chat 35% / Preview 65% */}
       <div className="flex-1 flex">
-        {/* Chat Panel */}
-        <div className="w-full lg:w-1/2 flex flex-col border-r border-border/30">
+        {/* Chat Panel - Compact */}
+        <div className="w-full lg:w-[35%] flex flex-col border-r border-white/5 bg-[hsl(0,0%,4%)]">
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-3 space-y-3">
             {messages.length === 0 && (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8">
+              <div className="h-full flex flex-col items-center justify-center text-center px-4">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-16 h-16 rounded-2xl bg-gradient-orange flex items-center justify-center mb-6 shadow-xl shadow-primary/30"
+                  initial={{ scale: 0, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center mb-4 shadow-xl shadow-orange-500/20"
                 >
-                  <Sparkles className="w-8 h-8 text-primary-foreground" />
+                  <Sparkles className="w-6 h-6 text-white" />
                 </motion.div>
-                <h2 className="font-display text-xl font-bold mb-2">
-                  Descreva seu site
+                <h2 className="text-lg font-semibold text-white mb-1">
+                  Olá, {userName}!
                 </h2>
-                <p className="text-muted-foreground text-sm max-w-sm">
-                  Diga o que você precisa e a IA vai gerar o código. Seja específico!
+                <p className="text-white/50 text-xs max-w-[200px] leading-relaxed">
+                  Descreva o site dos seus sonhos e eu vou criá-lo para você.
                 </p>
-                <div className="flex flex-wrap gap-2 mt-6 justify-center">
-                  {["Landing page moderna", "Portfolio criativo", "Blog minimalista"].map((suggestion) => (
+                <div className="flex flex-wrap gap-1.5 mt-4 justify-center max-w-[280px]">
+                  {["Landing page moderna", "Portfolio criativo", "Loja virtual"].map((suggestion) => (
                     <button
                       key={suggestion}
                       onClick={() => setInput(suggestion)}
-                      className="px-3 py-1.5 text-xs bg-secondary/50 hover:bg-secondary rounded-full border border-border transition-colors"
+                      className="px-2.5 py-1 text-[10px] bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-white/60 hover:text-white transition-colors"
                     >
                       {suggestion}
                     </button>
@@ -400,37 +405,46 @@ const Builder = () => {
             )}
 
             <AnimatePresence>
-              {messages.map((message, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[90%] rounded-2xl px-4 py-3 ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary/30 border border-border/50"
-                    }`}
+              {messages.map((message, index) => {
+                const cleanMsg = message.role === "assistant" ? getCleanMessage(message.content) : message.content;
+                if (!cleanMsg) return null; // Skip if no text content
+                
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                      {message.role === "assistant" ? formatMessage(message.content) : message.content}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+                    <div
+                      className={`max-w-[85%] rounded-xl px-3 py-2 ${
+                        message.role === "user"
+                          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white"
+                          : "bg-white/5 border border-white/10 text-white/80"
+                      }`}
+                    >
+                      <p className="text-xs leading-relaxed whitespace-pre-wrap">
+                        {cleanMsg}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
 
-            {isLoading && messages[messages.length - 1]?.role === "user" && (
+            {isLoading && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex justify-start"
               >
-                <div className="bg-secondary/30 border border-border/50 rounded-2xl px-4 py-3 flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">Gerando código...</span>
+                <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                  <span className="text-xs text-white/50">Criando magia...</span>
                 </div>
               </motion.div>
             )}
@@ -438,79 +452,94 @@ const Builder = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-4 border-t border-border/30 bg-[hsl(0,0%,3%)]">
-            <form onSubmit={handleSubmit} className="flex gap-2">
+          {/* Input - Compact Lovable style */}
+          <div className="p-3 bg-[hsl(0,0%,4%)]">
+            <form onSubmit={handleSubmit} className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Descreva o site que você quer criar..."
-                className="flex-1 px-4 py-3 bg-secondary/30 border border-border/50 rounded-xl focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                placeholder="Descreva seu site..."
+                className="w-full px-4 py-3 pr-12 bg-[hsl(0,0%,8%)] border border-white/10 rounded-xl focus:outline-none focus:border-orange-500/50 transition-colors text-sm text-white placeholder:text-white/30"
                 disabled={isLoading}
               />
-              <Button type="submit" variant="hero" disabled={isLoading || !input.trim()} className="px-4">
-                <Send className="w-5 h-5" />
-              </Button>
+              <button 
+                type="submit" 
+                disabled={isLoading || !input.trim()}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-white/10 hover:bg-orange-500 disabled:opacity-30 disabled:hover:bg-white/10 flex items-center justify-center transition-colors"
+              >
+                <ArrowUp className="w-4 h-4 text-white" />
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Preview Panel */}
-        <div className="hidden lg:flex flex-1 flex-col bg-[hsl(0,0%,2%)]">
+        {/* Preview Panel - Larger */}
+        <div className="hidden lg:flex flex-1 flex-col bg-gradient-to-br from-[hsl(0,0%,6%)] via-[hsl(0,0%,4%)] to-[hsl(280,50%,8%)]">
           {/* Preview Header */}
-          <div className="flex items-center justify-between p-3 border-b border-border/30 bg-[hsl(0,0%,3%)]">
-            <div className="flex items-center gap-1 bg-secondary/30 rounded-lg p-1">
-              <button
-                onClick={() => setShowCode(true)}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  showCode ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Code className="w-4 h-4 inline mr-1.5" />
-                Código
-              </button>
+          <div className="flex items-center justify-between px-4 py-2 border-b border-white/5">
+            <div className="flex items-center gap-1 bg-white/5 rounded-lg p-0.5">
               <button
                 onClick={() => setShowCode(false)}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  !showCode ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`px-3 py-1.5 text-xs rounded-md transition-colors flex items-center gap-1.5 ${
+                  !showCode ? "bg-white/10 text-white" : "text-white/50 hover:text-white/70"
                 }`}
               >
-                <Eye className="w-4 h-4 inline mr-1.5" />
+                <Eye className="w-3.5 h-3.5" />
                 Preview
+              </button>
+              <button
+                onClick={() => setShowCode(true)}
+                className={`px-3 py-1.5 text-xs rounded-md transition-colors flex items-center gap-1.5 ${
+                  showCode ? "bg-white/10 text-white" : "text-white/50 hover:text-white/70"
+                }`}
+              >
+                <Code className="w-3.5 h-3.5" />
+                Código
               </button>
             </div>
 
             {generatedCode && (
-              <Button variant="ghost" size="sm" onClick={copyCode} className="gap-2 text-muted-foreground">
-                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={copyCode} 
+                className="h-7 gap-1.5 text-white/50 hover:text-white text-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? "Copiado!" : "Copiar"}
               </Button>
             )}
           </div>
 
           {/* Preview Content */}
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto p-4">
             {!generatedCode ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                <div className="w-14 h-14 rounded-xl bg-secondary/30 flex items-center justify-center mb-4">
-                  <Code className="w-7 h-7 text-muted-foreground" />
+              <div className="h-full flex flex-col items-center justify-center text-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-pink-500/20 blur-3xl rounded-full" />
+                  <div className="relative w-20 h-20 rounded-2xl bg-white/5 backdrop-blur border border-white/10 flex items-center justify-center mb-6">
+                    <Eye className="w-8 h-8 text-white/30" />
+                  </div>
                 </div>
-                <p className="text-muted-foreground text-sm">
-                  O código gerado aparecerá aqui
+                <p className="text-white/40 text-sm font-medium">
+                  Seu site aparecerá aqui
+                </p>
+                <p className="text-white/20 text-xs mt-1">
+                  Descreva o que você quer criar
                 </p>
               </div>
             ) : showCode ? (
-              <div className="p-4">
-                <pre className="text-sm font-mono rounded-xl overflow-auto bg-[hsl(0,0%,6%)] border border-border/30">
-                  <code ref={codeRef} className="language-markup block p-4">
+              <div className="h-full">
+                <pre className="text-xs font-mono rounded-xl overflow-auto bg-[hsl(0,0%,8%)] border border-white/5 h-full">
+                  <code ref={codeRef} className="language-markup block p-4 text-white/80">
                     {generatedCode}
                   </code>
                 </pre>
               </div>
             ) : (
-              <div className="h-full p-4">
-                <div className="bg-white rounded-xl overflow-hidden h-full shadow-2xl">
+              <div className="h-full">
+                <div className="bg-white rounded-xl overflow-hidden h-full shadow-2xl shadow-black/50">
                   <iframe
                     srcDoc={generatedCode}
                     className="w-full h-full border-0"
