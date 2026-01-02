@@ -10,7 +10,6 @@ import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
-import codiaLogo from "@/assets/codia-logo.png";
 
 interface Message {
   role: "user" | "assistant";
@@ -311,8 +310,9 @@ const Builder = () => {
       <header className="border-b border-white/5 bg-[hsl(0,0%,4%)] sticky top-0 z-50">
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-2 group">
-              <img src={codiaLogo} alt="Codia" className="h-6 object-contain" />
+            <a href="/" className="flex items-center group">
+              <span className="font-bold text-lg text-orange-500">Codia</span>
+              <span className="font-bold text-lg text-orange-500 ml-1">∞</span>
             </a>
 
             <div className="h-5 w-px bg-white/10" />
