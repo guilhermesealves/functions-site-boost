@@ -35,6 +35,8 @@ const Builder = () => {
   const [showProjects, setShowProjects] = useState(false);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [projectName, setProjectName] = useState("");
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationStep, setGenerationStep] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -174,6 +176,17 @@ const Builder = () => {
     setInput("");
   };
 
+  const generationSteps = [
+    "Analisando sua ideia...",
+    "Pesquisando referências de design...",
+    "Escolhendo paleta de cores...",
+    "Criando estrutura visual...",
+    "Desenvolvendo animações...",
+    "Aplicando efeitos especiais...",
+    "Otimizando experiência...",
+    "Finalizando detalhes..."
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -182,6 +195,16 @@ const Builder = () => {
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+    setGenerationProgress(0);
+    setGenerationStep(generationSteps[0]);
+
+    // Progress animation
+    let stepIndex = 0;
+    const progressInterval = setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, generationSteps.length - 1);
+      setGenerationStep(generationSteps[stepIndex]);
+      setGenerationProgress(prev => Math.min(prev + 12, 95));
+    }, 2000);
 
     let assistantContent = "";
 
@@ -229,15 +252,7 @@ const Builder = () => {
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantContent += content;
-              setMessages(prev => {
-                const last = prev[prev.length - 1];
-                if (last?.role === "assistant") {
-                  return prev.map((m, i) => 
-                    i === prev.length - 1 ? { ...m, content: assistantContent } : m
-                  );
-                }
-                return [...prev, { role: "assistant", content: assistantContent }];
-              });
+              // Don't update messages during generation - only at the end
             }
           } catch {
             buffer = line + "\n" + buffer;
@@ -245,6 +260,13 @@ const Builder = () => {
           }
         }
       }
+      
+      // Only add the final message after generation is complete
+      if (assistantContent) {
+        setMessages(prev => [...prev, { role: "assistant", content: assistantContent }]);
+      }
+      setGenerationProgress(100);
+      
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(error.message || "Erro ao gerar site");
@@ -253,7 +275,9 @@ const Builder = () => {
         { role: "assistant", content: "Desculpe, ocorreu um erro. Tente novamente." }
       ]);
     } finally {
+      clearInterval(progressInterval);
       setIsLoading(false);
+      setGenerationProgress(0);
     }
   };
 
@@ -369,10 +393,10 @@ const Builder = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content - Chat 35% / Preview 65% */}
+      {/* Main Content - Chat 30% / Preview 70% */}
       <div className="flex-1 flex">
         {/* Chat Panel - Compact */}
-        <div className="w-full lg:w-[35%] flex flex-col border-r border-white/5 bg-[hsl(0,0%,4%)]">
+        <div className="w-full lg:w-[30%] min-w-[300px] max-w-[400px] flex flex-col border-r border-white/5 bg-[hsl(0,0%,4%)]">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-3 space-y-3">
             {messages.length === 0 && (
@@ -434,17 +458,23 @@ const Builder = () => {
 
             {isLoading && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 className="flex justify-start"
               >
-                <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border border-orange-500/20 rounded-xl px-4 py-3 w-full max-w-[280px]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Loader2 className="w-4 h-4 text-orange-400 animate-spin" />
+                    <span className="text-xs font-medium text-white/80">{generationStep}</span>
                   </div>
-                  <span className="text-xs text-white/50">Criando magia...</span>
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full bg-gradient-to-r from-orange-500 to-pink-500 rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${generationProgress}%` }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
                 </div>
               </motion.div>
             )}
