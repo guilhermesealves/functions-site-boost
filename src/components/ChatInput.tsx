@@ -1,22 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Send, Sparkles, Paperclip, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface ChatInputProps {
   onSubmit?: (message: string) => void;
   placeholder?: string;
 }
 
-const ChatInput = ({ onSubmit, placeholder = "Descreva o site que você quer criar..." }: ChatInputProps) => {
+const placeholderTexts = [
+  "Landing page para minha startup de tecnologia...",
+  "E-commerce moderno para loja de roupas...",
+  "Portfolio profissional para designer...",
+  "Blog minimalista sobre viagens...",
+  "Site institucional para escritório de advocacia...",
+];
+
+const ChatInput = ({ onSubmit, placeholder }: ChatInputProps) => {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [typingText, setTypingText] = useState("");
+  const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (message) return; // Don't animate if user is typing
+
+    const currentText = placeholderTexts[currentPlaceholderIndex];
+    let charIndex = 0;
+    let isDeleting = false;
+    let timeout: NodeJS.Timeout;
+
+    const type = () => {
+      if (!isDeleting) {
+        if (charIndex <= currentText.length) {
+          setTypingText(currentText.slice(0, charIndex));
+          charIndex++;
+          timeout = setTimeout(type, 50 + Math.random() * 30);
+        } else {
+          timeout = setTimeout(() => {
+            isDeleting = true;
+            type();
+          }, 2000);
+        }
+      } else {
+        if (charIndex > 0) {
+          charIndex--;
+          setTypingText(currentText.slice(0, charIndex));
+          timeout = setTimeout(type, 30);
+        } else {
+          isDeleting = false;
+          setCurrentPlaceholderIndex((prev) => (prev + 1) % placeholderTexts.length);
+        }
+      }
+    };
+
+    type();
+
+    return () => clearTimeout(timeout);
+  }, [currentPlaceholderIndex, message]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && onSubmit) {
-      onSubmit(message);
-      setMessage("");
+    if (message.trim()) {
+      if (onSubmit) {
+        onSubmit(message);
+      }
+      // Navigate to auth/builder with the message
+      navigate("/auth", { state: { prompt: message } });
     }
   };
 
@@ -32,7 +85,7 @@ const ChatInput = ({ onSubmit, placeholder = "Descreva o site que você quer cri
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
-      className="w-full max-w-3xl mx-auto"
+      className="w-full"
     >
       <form onSubmit={handleSubmit}>
         <motion.div
@@ -53,15 +106,27 @@ const ChatInput = ({ onSubmit, placeholder = "Descreva o site que você quer cri
             >
               <Sparkles className="w-5 h-5 text-primary" />
             </motion.div>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              placeholder={placeholder}
-              rows={3}
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground resize-none outline-none text-lg"
-            />
+            <div className="flex-1 relative">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                placeholder=""
+                rows={3}
+                className="w-full bg-transparent text-foreground resize-none outline-none text-lg relative z-10"
+              />
+              {!message && (
+                <div className="absolute top-0 left-0 text-muted-foreground text-lg pointer-events-none">
+                  {typingText}
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className="inline-block w-0.5 h-5 bg-primary ml-0.5 align-middle"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Actions bar */}
@@ -93,7 +158,7 @@ const ChatInput = ({ onSubmit, placeholder = "Descreva o site que você quer cri
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="flex flex-wrap items-center justify-center gap-2 mt-4"
+        className="flex flex-wrap items-center gap-2 mt-4"
       >
         <span className="text-sm text-muted-foreground">Tente:</span>
         {suggestions.map((suggestion, index) => (
@@ -105,6 +170,7 @@ const ChatInput = ({ onSubmit, placeholder = "Descreva o site que você quer cri
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setMessage(suggestion)}
+            type="button"
             className="px-3 py-1.5 text-sm bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground rounded-full border border-border transition-colors"
           >
             {suggestion}
