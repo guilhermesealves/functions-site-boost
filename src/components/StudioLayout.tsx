@@ -54,9 +54,10 @@ const StudioLayout = ({
           projects={projects}
           onSelectProject={onSelectProject}
           currentProjectId={currentProjectId}
+          userName={userName}
         />
 
-        {/* Main Content - Chat */}
+        {/* Main Content - Chat + Preview */}
         <UnifiedChat 
           selectedTool={selectedTool}
           onSendMessage={onSendMessage}

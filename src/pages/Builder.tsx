@@ -141,6 +141,8 @@ const Builder = () => {
     return `Esta funcionalidade está sendo desenvolvida. Em breve você poderá usar a IA de ${toolId} para criar conteúdo incrível.`;
   };
 
+  const userName = user?.email?.split("@")[0] || "você";
+
   // Show Dashboard
   if (viewMode === "dashboard") {
     return (
@@ -159,6 +161,8 @@ const Builder = () => {
             setViewMode("studio");
           }}
           projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+          projects={projects}
+          userName={userName}
         />
       </div>
     );
