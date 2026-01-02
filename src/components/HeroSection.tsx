@@ -30,12 +30,12 @@ const HeroSection = () => {
           {/* Vertical gradient line divider */}
           <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/60 to-transparent" />
           
-          {/* Content */}
+          {/* Content - Moved up */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-center max-w-xs"
+            className="text-center max-w-xs -mt-20"
           >
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
