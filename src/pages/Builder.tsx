@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles, LogOut, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Sparkles, Code, Eye, Loader2, Copy, Check, Save, FolderOpen, Plus, X, ArrowUp, PanelLeftClose, PanelLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
+import codiaLogo from "@/assets/codia-logo.png";
 
 interface Message {
   role: "user" | "assistant";
@@ -46,29 +47,26 @@ const Builder = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        navigate("/auth");
-      } else {
-        setUser(session.user);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => loadProjects(), 0);
       }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate("/auth");
-      } else {
-        setUser(session.user);
+      setUser(session?.user ?? null);
+      if (session?.user) {
         setTimeout(() => loadProjects(), 0);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   // Handle initial prompt from home page
   useEffect(() => {
     const state = location.state as { prompt?: string } | null;
-    if (state?.prompt && !initialPromptProcessed.current && user) {
+    if (state?.prompt && !initialPromptProcessed.current) {
       initialPromptProcessed.current = true;
       setInput(state.prompt);
       // Auto-submit the prompt
@@ -81,7 +79,7 @@ const Builder = () => {
       // Clear the state
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, user]);
+  }, [location.state]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,7 +104,8 @@ const Builder = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/");
+    setUser(null);
+    toast.success("Deslogado com sucesso!");
   };
 
   const extractCode = (content: string): string | null => {
@@ -313,10 +312,7 @@ const Builder = () => {
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
             <a href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <span className="text-white font-bold text-sm">Codia</span>
+              <img src={codiaLogo} alt="Codia" className="h-6 object-contain" />
             </a>
 
             <div className="h-5 w-px bg-white/10" />
@@ -349,7 +345,7 @@ const Builder = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            {generatedCode && (
+            {generatedCode && user && (
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -360,14 +356,25 @@ const Builder = () => {
                 Salvar
               </Button>
             )}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleLogout} 
-              className="h-8 w-8 p-0 text-white/40 hover:text-white hover:bg-white/5"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </Button>
+            {user ? (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLogout} 
+                className="h-8 gap-1.5 text-white/40 hover:text-white hover:bg-white/5 text-xs"
+              >
+                Sair
+              </Button>
+            ) : (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate("/auth")} 
+                className="h-8 gap-1.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 text-xs"
+              >
+                Entrar
+              </Button>
+            )}
           </div>
         </div>
       </header>

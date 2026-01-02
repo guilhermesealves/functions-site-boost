@@ -3,6 +3,7 @@ import { Sparkles, Zap, Globe, Code2 } from "lucide-react";
 import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import codiaLogo from "@/assets/codia-logo.png";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -41,9 +42,9 @@ const HeroSection = () => {
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              className="w-20 h-20 rounded-2xl bg-gradient-orange flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/40"
+              className="mb-6"
             >
-              <span className="text-primary-foreground font-display font-bold text-4xl">C</span>
+              <img src={codiaLogo} alt="Codia" className="h-12 mx-auto object-contain" />
             </motion.div>
 
             <motion.h2
