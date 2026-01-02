@@ -4,9 +4,9 @@ import ChatInput from "./ChatInput";
 
 const HeroSection = () => {
   const features = [
-    { icon: Zap, text: "Criação instantânea" },
+    { icon: Zap, text: "Empresas completas" },
     { icon: Globe, text: "100% em português" },
-    { icon: Code2, text: "Código limpo" },
+    { icon: Code2, text: "IAs especializadas" },
   ];
 
   return (
@@ -62,7 +62,7 @@ const HeroSection = () => {
               >
                 <Sparkles className="w-4 h-4 text-primary" />
               </motion.div>
-              <span className="text-sm text-primary font-medium">IA Brasileira para criar sites</span>
+              <span className="text-sm text-primary font-medium">Plataforma completa para criar empresas</span>
             </motion.div>
 
             {/* Headline */}
@@ -72,9 +72,9 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6"
             >
-              Diga o que precisa.{" "}
+              Crie sua empresa{" "}
               <br />
-              <span className="text-gradient-orange">A Codia cria.</span>
+              <span className="text-gradient-orange">do zero ao sucesso.</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -84,8 +84,8 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg sm:text-xl text-muted-foreground mb-10"
             >
-              Transforme suas ideias em sites profissionais usando apenas texto. 
-              Sem código, sem complicação.
+              Site, marca, logo, marketing e vendas. Tudo com IAs especializadas 
+              em uma única plataforma.
             </motion.p>
 
             {/* Chat Input */}
@@ -122,8 +122,8 @@ const HeroSection = () => {
               className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border/30 max-w-md mx-auto"
             >
               {[
-                { value: "10k+", label: "Usuários" },
-                { value: "50k+", label: "Sites" },
+                { value: "10k+", label: "Empresas" },
+                { value: "50k+", label: "Projetos" },
                 { value: "99%", label: "Satisfação" },
               ].map((stat, index) => (
                 <motion.div 

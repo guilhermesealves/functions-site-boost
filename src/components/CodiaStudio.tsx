@@ -107,10 +107,12 @@ interface CodiaStudioProps {
     name?: string;
     prompt?: string;
   };
+  initialToolId?: string;
 }
 
-const CodiaStudio = ({ onBack, projectContext }: CodiaStudioProps) => {
-  const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
+const CodiaStudio = ({ onBack, projectContext, initialToolId }: CodiaStudioProps) => {
+  const initialTool = initialToolId ? aiTools.find(t => t.id === initialToolId) : null;
+  const [selectedTool, setSelectedTool] = useState<AITool | null>(initialTool);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);

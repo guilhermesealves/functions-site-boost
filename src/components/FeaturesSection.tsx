@@ -4,13 +4,13 @@ import { Zap, Palette, Globe, Shield, Code, Rocket } from "lucide-react";
 const features = [
   {
     icon: Zap,
-    title: "Ultra Rápido",
-    description: "Crie um site completo em menos de 5 minutos. Nossa IA trabalha na velocidade dos seus pensamentos.",
+    title: "Tudo em Um",
+    description: "Site, branding, logo, marketing e vendas. Todas as ferramentas que sua empresa precisa em um só lugar.",
   },
   {
     icon: Palette,
-    title: "Design Profissional",
-    description: "Templates modernos e personalizáveis. Cada site é único e feito sob medida para você.",
+    title: "IAs Especializadas",
+    description: "Cada etapa tem uma IA dedicada. Resultados profissionais sem precisar de conhecimento técnico.",
   },
   {
     icon: Globe,
@@ -25,12 +25,12 @@ const features = [
   {
     icon: Code,
     title: "Sem Código",
-    description: "Não precisa saber programar. A IA cuida de toda a parte técnica para você.",
+    description: "Não precisa saber programar. As IAs cuidam de toda a parte técnica para você.",
   },
   {
     icon: Rocket,
-    title: "SEO Otimizado",
-    description: "Sites otimizados para aparecer no Google. Aumente sua visibilidade online.",
+    title: "Do Zero ao Sucesso",
+    description: "Acompanhamos sua jornada do primeiro site até a primeira venda e além.",
   },
 ];
 
@@ -51,10 +51,10 @@ const FeaturesSection = () => {
         >
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
             Por que escolher a{" "}
-            <span className="text-gradient-orange">Functions</span>?
+            <span className="text-gradient-orange">Codia</span>?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Recursos poderosos que tornam a criação de sites simples e acessível para todos.
+            Tudo que você precisa para criar e escalar sua empresa, do zero ao sucesso.
           </p>
         </motion.div>
 
