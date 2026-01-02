@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import codiaLogo from "@/assets/codia-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,15 +34,7 @@ const Header = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-orange flex items-center justify-center shadow-lg shadow-primary/30">
-                <span className="text-primary-foreground font-display font-bold text-xl">C</span>
-              </div>
-              <motion.div
-                className="absolute inset-0 rounded-xl bg-gradient-orange opacity-0 blur-lg group-hover:opacity-60 transition-opacity duration-300"
-              />
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">Codia</span>
+            <img src={codiaLogo} alt="Codia" className="h-8 object-contain" />
           </motion.a>
 
           {/* Desktop Navigation */}
