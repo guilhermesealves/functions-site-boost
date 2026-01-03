@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMessageProps {
@@ -7,9 +7,21 @@ interface ChatMessageProps {
   role: "user" | "assistant";
   userName?: string;
   isStreaming?: boolean;
+  imageUrl?: string;
 }
 
-const ChatMessage = ({ content, role, userName = "U", isStreaming = false }: ChatMessageProps) => {
+const ChatMessage = ({ content, role, userName = "U", isStreaming = false, imageUrl }: ChatMessageProps) => {
+  const handleDownload = () => {
+    if (!imageUrl) return;
+    
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = `codia-logo-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (role === "user") {
     return (
       <motion.div
@@ -46,6 +58,25 @@ const ChatMessage = ({ content, role, userName = "U", isStreaming = false }: Cha
               <span className="text-xs text-orange-400 animate-pulse ml-auto">Gerando...</span>
             )}
           </div>
+          
+          {/* Image display if present */}
+          {imageUrl && (
+            <div className="p-4 border-b border-white/[0.06]">
+              <div className="relative group">
+                <img 
+                  src={imageUrl} 
+                  alt="Logo gerada" 
+                  className="w-full max-w-md mx-auto rounded-xl shadow-2xl"
+                />
+                <button
+                  onClick={handleDownload}
+                  className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-black/80 rounded-lg text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
           
           {/* Response content with markdown */}
           <div className="p-4 prose prose-invert prose-sm max-w-none 
