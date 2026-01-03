@@ -16,7 +16,8 @@ import {
   Sparkles,
   Image,
   Mic,
-  Plus
+  Plus,
+  Code2
 } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
 import TypingEffect from "./TypingEffect";
@@ -37,6 +38,7 @@ interface Tool {
   examples: string[];
   tips: string[];
   typingTexts: string[];
+  hasPreview: boolean; // Define se a ferramenta tem preview
 }
 
 const toolsConfig: Record<string, Tool> = {
@@ -57,7 +59,8 @@ const toolsConfig: Record<string, Tool> = {
       "validar minha ideia de produto...",
       "definir meu modelo de receita...",
       "analisar meu mercado-alvo..."
-    ]
+    ],
+    hasPreview: false
   },
   branding: {
     id: "branding",
@@ -76,7 +79,8 @@ const toolsConfig: Record<string, Tool> = {
       "um tom de voz profissional...",
       "uma marca feminina e elegante...",
       "uma marca masculina e forte..."
-    ]
+    ],
+    hasPreview: false
   },
   logo: {
     id: "logo",
@@ -95,7 +99,8 @@ const toolsConfig: Record<string, Tool> = {
       "uma identidade visual premium...",
       "conceito de logo para tech...",
       "paleta de cores sofisticada..."
-    ]
+    ],
+    hasPreview: true
   },
   website: {
     id: "website",
@@ -114,7 +119,8 @@ const toolsConfig: Record<string, Tool> = {
       "um site para minha empresa...",
       "uma loja virtual elegante...",
       "um portfólio profissional..."
-    ]
+    ],
+    hasPreview: true
   },
   copywriter: {
     id: "copywriter",
@@ -133,7 +139,8 @@ const toolsConfig: Record<string, Tool> = {
       "headlines que convertem...",
       "textos de vendas persuasivos...",
       "descrição de produto..."
-    ]
+    ],
+    hasPreview: false
   },
   marketing: {
     id: "marketing",
@@ -152,7 +159,8 @@ const toolsConfig: Record<string, Tool> = {
       "calendário de conteúdo mensal...",
       "estratégia de funil de vendas...",
       "campanhas para Instagram..."
-    ]
+    ],
+    hasPreview: false
   },
   sales: {
     id: "sales",
@@ -171,7 +179,8 @@ const toolsConfig: Record<string, Tool> = {
       "respostas para objeções...",
       "sequência de follow-up...",
       "pitch de elevador..."
-    ]
+    ],
+    hasPreview: false
   },
   existing: {
     id: "existing",
@@ -190,7 +199,28 @@ const toolsConfig: Record<string, Tool> = {
       "otimizar meus processos...",
       "escalar meu negócio...",
       "melhorar minha conversão..."
-    ]
+    ],
+    hasPreview: false
+  },
+  dev: {
+    id: "dev",
+    name: "Desenvolvimento",
+    description: "Código profissional, soluções técnicas e arquitetura de sistemas.",
+    icon: Code2,
+    placeholder: "O que você precisa desenvolver?",
+    examples: ["Componente React", "API REST", "Função TypeScript"],
+    tips: [
+      "Seja específico sobre tecnologias",
+      "Descreva o problema que quer resolver",
+      "Mencione restrições e requisitos"
+    ],
+    typingTexts: [
+      "um componente React moderno...",
+      "uma API REST completa...",
+      "uma função TypeScript...",
+      "uma integração com API..."
+    ],
+    hasPreview: false
   }
 };
 
@@ -202,7 +232,7 @@ interface UnifiedChatProps {
 
 const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: UnifiedChatProps) => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesPerTool, setMessagesPerTool] = useState<Record<string, Message[]>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(true);
   const [previewContent, setPreviewContent] = useState<string>("");
@@ -210,14 +240,23 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const tool = toolsConfig[selectedTool] || toolsConfig.business;
+  const messages = messagesPerTool[selectedTool] || [];
+
+  // Helper to update messages for current tool
+  const setMessages = (updater: Message[] | ((prev: Message[]) => Message[])) => {
+    setMessagesPerTool(prev => ({
+      ...prev,
+      [selectedTool]: typeof updater === 'function' ? updater(prev[selectedTool] || []) : updater
+    }));
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streamingContent]);
 
   useEffect(() => {
-    setMessages([]);
-    setShowTips(true);
+    // Reseta dicas quando muda de ferramenta, mas mantém mensagens
+    setShowTips(messages.length === 0);
     setPreviewContent("");
     setStreamingContent("");
   }, [selectedTool]);
@@ -568,14 +607,16 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
         </div>
       </div>
 
-      {/* Preview Panel */}
-      <div className="hidden lg:block w-[45%] xl:w-[50%]">
-        <PreviewPanel 
-          content={previewContent || streamingContent}
-          type={selectedTool as any}
-          isLoading={isLoading}
-        />
-      </div>
+      {/* Preview Panel - Only for visual tools */}
+      {tool.hasPreview && (
+        <div className="hidden lg:block w-[45%] xl:w-[50%]">
+          <PreviewPanel 
+            content={previewContent || streamingContent}
+            type={selectedTool as any}
+            isLoading={isLoading}
+          />
+        </div>
+      )}
     </div>
   );
 };
