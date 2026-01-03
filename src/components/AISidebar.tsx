@@ -11,7 +11,8 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Code2
 } from "lucide-react";
 
 interface AITool {
@@ -39,6 +40,7 @@ const aiTools: AITool[] = [
   { id: "copywriter", name: "Copywriter", description: "Textos persuasivos", icon: FileText, step: 5 },
   { id: "marketing", name: "Marketing", description: "Estratégias de growth", icon: TrendingUp, step: 6 },
   { id: "sales", name: "Vendas", description: "Scripts e conversão", icon: Target, step: 7 },
+  { id: "dev", name: "Desenvolvimento", description: "Código profissional", icon: Code2, step: 8 },
 ];
 
 interface AISidebarProps {
