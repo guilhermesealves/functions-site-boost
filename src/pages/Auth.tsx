@@ -55,7 +55,7 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Você já pode usar a Functions.");
+        toast.success("Conta criada! Você já pode usar a Codia.");
       }
     } catch (error: any) {
       console.error("Auth error:", error);
@@ -109,12 +109,9 @@ const Auth = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-3 mb-8"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-orange flex items-center justify-center shadow-xl shadow-primary/30">
-              <span className="text-primary-foreground font-display font-bold text-3xl">F</span>
-            </div>
-            <div>
-              <h1 className="font-display text-3xl font-bold">Functions</h1>
-              <p className="text-sm text-muted-foreground">IA para Sites</p>
+            <div className="flex items-center gap-2">
+              <span className="font-display text-4xl font-bold text-orange-500">Codia</span>
+              <span className="text-4xl text-orange-500">∞</span>
             </div>
           </motion.div>
 
@@ -168,11 +165,9 @@ const Auth = () => {
           className="w-full max-w-sm"
         >
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-gradient-orange flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-2xl">F</span>
-            </div>
-            <span className="font-display font-bold text-xl">Functions</span>
+          <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
+            <span className="font-display text-2xl font-bold text-orange-500">Codia</span>
+            <span className="text-2xl text-orange-500">∞</span>
           </div>
 
           <div className="text-center mb-8">

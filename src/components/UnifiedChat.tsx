@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
 import TypingEffect from "./TypingEffect";
+import ChatMessage from "./ChatMessage";
 
 interface Message {
   role: "user" | "assistant";
@@ -423,48 +424,22 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
                   className="space-y-5 py-6"
                 >
                   {messages.map((message, index) => (
-                    <motion.div
+                    <ChatMessage
                       key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                    >
-                      {message.role === "assistant" && (
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0">
-                          <Sparkles className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                      <div
-                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                          message.role === "user"
-                            ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white"
-                            : "bg-white/[0.03] border border-white/[0.06] text-white/80"
-                        }`}
-                      >
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                      </div>
-                      {message.role === "user" && (
-                        <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0 text-white/60 font-semibold text-sm">
-                          {userName.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </motion.div>
+                      content={message.content}
+                      role={message.role}
+                      userName={userName}
+                    />
                   ))}
 
                   {/* Streaming content */}
                   {streamingContent && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex gap-3"
-                    >
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-4 h-4 text-white" />
-                      </div>
-                      <div className="max-w-[80%] bg-white/[0.03] border border-white/[0.06] rounded-2xl px-4 py-3">
-                        <p className="text-sm text-white/80 leading-relaxed whitespace-pre-wrap">{streamingContent}</p>
-                      </div>
-                    </motion.div>
+                    <ChatMessage
+                      content={streamingContent}
+                      role="assistant"
+                      userName={userName}
+                      isStreaming={true}
+                    />
                   )}
 
                   {isLoading && !streamingContent && (
