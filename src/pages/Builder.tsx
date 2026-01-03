@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
 import StudioLayout from "@/components/StudioLayout";
-import AppHeader from "@/components/AppHeader";
+import MainSidebar from "@/components/MainSidebar";
 import Footer from "@/components/Footer";
+import TemplatesModal from "@/components/templates/TemplatesModal";
+import { Template } from "@/components/templates/TemplatesData";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -23,6 +25,9 @@ const Builder = () => {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
   const [initialTool, setInitialTool] = useState("business");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [currentSection, setCurrentSection] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
   const initialPromptProcessed = useRef(false);
@@ -75,6 +80,20 @@ const Builder = () => {
     setCurrentProject(null);
     setInitialTool("business");
     setViewMode("studio");
+  };
+
+  const handleSelectTemplate = (template: Template) => {
+    toast.success(`Template "${template.name}" selecionado!`);
+    setShowTemplates(false);
+    setInitialTool("website");
+    setViewMode("studio");
+  };
+
+  const handleSidebarNavigate = (section: string) => {
+    setCurrentSection(section);
+    if (section === "home") {
+      setViewMode("dashboard");
+    }
   };
 
   const handleSendMessage = async (message: string, toolId: string): Promise<string> => {
@@ -144,28 +163,40 @@ const Builder = () => {
 
   const userName = user?.email?.split("@")[0] || "você";
 
-  // Show Dashboard
+  // Show Dashboard with Main Sidebar
   if (viewMode === "dashboard") {
     return (
-      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
-        <AppHeader 
-          user={user} 
-          onNewProject={handleNewProject}
-        />
-        <Dashboard 
-          onStartWebsite={() => {
-            setInitialTool("website");
-            setViewMode("studio");
-          }}
-          onOpenStudio={(toolId) => {
-            if (toolId) setInitialTool(toolId);
-            setViewMode("studio");
-          }}
-          projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
-          projects={projects}
+      <div className="min-h-screen flex bg-[hsl(0,0%,4%)]">
+        <MainSidebar 
           userName={userName}
+          onNavigate={handleSidebarNavigate}
+          onOpenTemplates={() => setShowTemplates(true)}
+          currentSection={currentSection}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
-        <Footer />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Dashboard 
+            onStartWebsite={() => {
+              setInitialTool("website");
+              setViewMode("studio");
+            }}
+            onOpenStudio={(toolId) => {
+              if (toolId) setInitialTool(toolId);
+              setViewMode("studio");
+            }}
+            projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+            projects={projects}
+            userName={userName}
+          />
+          <Footer />
+        </div>
+
+        <TemplatesModal 
+          isOpen={showTemplates}
+          onClose={() => setShowTemplates(false)}
+          onSelectTemplate={handleSelectTemplate}
+        />
       </div>
     );
   }
