@@ -2,6 +2,9 @@ import { useState } from "react";
 import AISidebar from "./AISidebar";
 import UnifiedChat from "./UnifiedChat";
 import AppHeader from "./AppHeader";
+import TemplatesModal from "./templates/TemplatesModal";
+import { Template } from "./templates/TemplatesData";
+import { toast } from "sonner";
 
 interface Project {
   id: string;
@@ -33,7 +36,14 @@ const StudioLayout = ({
   onNewProject
 }: StudioLayoutProps) => {
   const [selectedTool, setSelectedTool] = useState(initialTool);
+  const [showTemplates, setShowTemplates] = useState(false);
   const userName = user?.email?.split("@")[0] || "você";
+
+  const handleSelectTemplate = (template: Template) => {
+    toast.success(`Template "${template.name}" selecionado!`);
+    setShowTemplates(false);
+    setSelectedTool("website");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
@@ -55,6 +65,7 @@ const StudioLayout = ({
           onSelectProject={onSelectProject}
           currentProjectId={currentProjectId}
           userName={userName}
+          onOpenTemplates={() => setShowTemplates(true)}
         />
 
         {/* Main Content - Chat + Preview */}
@@ -64,6 +75,13 @@ const StudioLayout = ({
           userName={userName}
         />
       </div>
+
+      {/* Templates Modal */}
+      <TemplatesModal 
+        isOpen={showTemplates}
+        onClose={() => setShowTemplates(false)}
+        onSelectTemplate={handleSelectTemplate}
+      />
     </div>
   );
 };

@@ -8,7 +8,6 @@ import {
   TrendingUp, 
   Briefcase,
   Target,
-  Building2,
   ArrowUp,
   Paperclip,
   Plus,
@@ -16,9 +15,14 @@ import {
   Clock,
   Star,
   MoreHorizontal,
-  Sparkles
+  Sparkles,
+  LayoutTemplate,
+  Search
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import TypingEffect from "./TypingEffect";
+import TemplatesModal from "./templates/TemplatesModal";
+import { Template } from "./templates/TemplatesData";
+import { toast } from "sonner";
 
 interface DashboardProps {
   onStartWebsite: () => void;
@@ -50,15 +54,31 @@ const tools: Tool[] = [
   { id: "sales", name: "Vendas", description: "Scripts e conversão", icon: Target, step: 7, color: "from-amber-500 to-yellow-500" },
 ];
 
+const typingTexts = [
+  "um plano de negócio completo...",
+  "uma marca profissional...",
+  "um site moderno e elegante...",
+  "textos que convertem...",
+  "estratégias de marketing..."
+];
+
 const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "você" }: DashboardProps) => {
   const [input, setInput] = useState("");
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"recent" | "projects" | "templates">("recent");
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
       onOpenStudio("business");
     }
+  };
+
+  const handleSelectTemplate = (template: Template) => {
+    toast.success(`Template "${template.name}" selecionado!`);
+    setShowTemplates(false);
+    onOpenStudio("website");
   };
 
   // Mock projects for display
@@ -69,41 +89,9 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
   ];
 
   return (
-    <div className="flex-1 overflow-auto relative">
-      {/* Background Effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        {/* Gradient orb top right */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px]">
-          <div className="absolute top-20 right-20 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl" />
-          <div className="absolute top-40 right-40 w-24 h-24 bg-cyan-500/20 rounded-full blur-2xl" />
-          <div className="absolute top-10 right-60 w-16 h-16 bg-emerald-500/30 rounded-full blur-xl" />
-          {/* Confetti-like lines */}
-          <svg className="absolute top-0 right-0 w-full h-full opacity-40" viewBox="0 0 400 400">
-            {[...Array(30)].map((_, i) => (
-              <motion.line
-                key={i}
-                x1={200 + Math.random() * 150}
-                y1={50 + Math.random() * 200}
-                x2={200 + Math.random() * 150 + 20}
-                y2={50 + Math.random() * 200 + 40}
-                stroke={['#3B82F6', '#10B981', '#6366F1', '#F59E0B', '#EC4899'][i % 5]}
-                strokeWidth={2}
-                strokeLinecap="round"
-                initial={{ opacity: 0, pathLength: 0 }}
-                animate={{ opacity: 0.6, pathLength: 1 }}
-                transition={{ delay: i * 0.05, duration: 0.5 }}
-              />
-            ))}
-          </svg>
-        </div>
-        {/* Gradient orb bottom left */}
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px]">
-          <div className="absolute bottom-20 left-20 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-40 left-40 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl" />
-        </div>
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12">
+    <div className="flex-1 overflow-auto bg-[hsl(0,0%,4%)]">
+      {/* Content */}
+      <div className="max-w-5xl mx-auto px-6 py-12">
         
         {/* Hero Section */}
         <motion.section 
@@ -127,59 +115,61 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.15 }}
-            className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight"
+            className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight"
           >
-            Pronto para criar, {userName}?
+            Olá, {userName}!
           </motion.h1>
+
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-white/50 mb-8"
+          >
+            Peça para a Codia criar{" "}
+            <TypingEffect 
+              texts={typingTexts}
+              className="text-orange-400"
+            />
+          </motion.p>
           
           {/* Main Input */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.25 }}
             className="max-w-2xl mx-auto"
           >
             <form onSubmit={handleSubmit}>
-              <div className="relative bg-[hsl(0,0%,10%)] border border-white/[0.08] rounded-2xl p-4 focus-within:border-white/20 transition-colors">
+              <div className="relative bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-2xl p-4 focus-within:border-orange-500/30 focus-within:ring-4 focus-within:ring-orange-500/5 transition-all">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Peça a Codia para criar um"
-                  className="w-full bg-transparent text-white text-lg placeholder:text-white/40 outline-none mb-4"
+                  placeholder="Descreva o que você quer criar..."
+                  className="w-full bg-transparent text-white text-lg placeholder:text-white/30 outline-none mb-4"
                 />
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-sm transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-sm transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 hover:text-white text-sm transition-colors"
                     >
                       <Paperclip className="w-4 h-4" />
-                      <span>Anexar</span>
+                      <span className="hidden sm:inline">Anexar</span>
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-sm transition-colors"
+                      onClick={() => setShowTemplates(true)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 hover:text-white text-sm transition-colors"
                     >
-                      <Palette className="w-4 h-4" />
-                      <span>Tema</span>
+                      <LayoutTemplate className="w-4 h-4" />
+                      <span className="hidden sm:inline">Templates</span>
                     </button>
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-sm transition-colors border border-white/[0.06]"
-                    >
-                      💬 Chat
-                    </button>
                     <button
                       type="button"
                       className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.04] transition-colors"
@@ -188,7 +178,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                     </button>
                     <button
                       type="submit"
-                      className="w-10 h-10 rounded-full bg-white/[0.06] hover:bg-white/[0.1] flex items-center justify-center text-white/60 hover:text-white transition-colors border border-white/[0.08]"
+                      className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 flex items-center justify-center text-white transition-all shadow-lg shadow-orange-500/20"
                     >
                       <ArrowUp className="w-5 h-5" />
                     </button>
@@ -207,15 +197,33 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
           className="mb-12"
         >
           {/* Tabs */}
-          <div className="flex items-center gap-1 mb-6 p-1 bg-white/[0.03] rounded-xl w-fit">
-            <button className="px-4 py-2 rounded-lg text-sm font-medium bg-white/[0.08] text-white">
+          <div className="flex items-center gap-1 mb-6 p-1 bg-white/[0.02] rounded-xl w-fit border border-white/[0.04]">
+            <button 
+              onClick={() => setActiveTab("recent")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeTab === "recent" 
+                  ? 'bg-white/[0.08] text-white' 
+                  : 'text-white/50 hover:text-white hover:bg-white/[0.04]'
+              }`}
+            >
               Visualizados recentemente
             </button>
-            <button className="px-4 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors">
+            <button 
+              onClick={() => setActiveTab("projects")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeTab === "projects" 
+                  ? 'bg-white/[0.08] text-white' 
+                  : 'text-white/50 hover:text-white hover:bg-white/[0.04]'
+              }`}
+            >
               Meus projetos
             </button>
-            <button className="px-4 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors">
+            <button 
+              onClick={() => setShowTemplates(true)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white hover:bg-white/[0.04] flex items-center gap-2`}
+            >
               Templates
+              <span className="text-[10px] text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">Novo</span>
             </button>
           </div>
 
@@ -229,12 +237,12 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                 transition={{ delay: 0.35 + index * 0.05 }}
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
-                className="group relative bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-all cursor-pointer"
+                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-all cursor-pointer"
               >
                 {/* Preview area */}
-                <div className="h-40 bg-gradient-to-br from-[hsl(0,0%,8%)] to-[hsl(0,0%,6%)] relative">
+                <div className="h-36 bg-[hsl(0,0%,6%)] relative">
                   {/* Fake preview content */}
-                  <div className="absolute inset-4 bg-[hsl(0,0%,10%)] rounded-lg border border-white/[0.04] overflow-hidden">
+                  <div className="absolute inset-3 bg-[hsl(0,0%,8%)] rounded-lg border border-white/[0.04] overflow-hidden">
                     <div className="h-3 bg-white/[0.03] flex items-center gap-1 px-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-red-400/50" />
                       <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/50" />
@@ -249,18 +257,18 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
 
                   {/* Star button */}
                   <button 
-                    className={`absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                    className={`absolute top-2 right-2 w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
                       project.starred 
                         ? 'bg-amber-500/20 text-amber-400' 
-                        : 'bg-black/20 text-white/40 opacity-0 group-hover:opacity-100'
+                        : 'bg-black/30 text-white/40 opacity-0 group-hover:opacity-100'
                     }`}
                   >
-                    <Star className={`w-4 h-4 ${project.starred ? 'fill-current' : ''}`} />
+                    <Star className={`w-3.5 h-3.5 ${project.starred ? 'fill-current' : ''}`} />
                   </button>
 
                   {/* More button */}
-                  <button className="absolute top-3 right-12 w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center text-white/40 opacity-0 group-hover:opacity-100 hover:text-white transition-all">
-                    <MoreHorizontal className="w-4 h-4" />
+                  <button className="absolute top-2 right-10 w-7 h-7 rounded-lg bg-black/30 flex items-center justify-center text-white/40 opacity-0 group-hover:opacity-100 hover:text-white transition-all">
+                    <MoreHorizontal className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
@@ -287,10 +295,10 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               onClick={() => onOpenStudio("business")}
-              className="h-full min-h-[200px] flex flex-col items-center justify-center gap-3 bg-white/[0.02] border border-dashed border-white/[0.08] rounded-2xl hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
+              className="h-full min-h-[180px] flex flex-col items-center justify-center gap-3 bg-white/[0.01] border border-dashed border-white/[0.08] rounded-2xl hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
             >
-              <div className="w-12 h-12 rounded-xl bg-white/[0.04] group-hover:bg-orange-500/20 flex items-center justify-center transition-colors">
-                <Plus className="w-6 h-6 text-white/40 group-hover:text-orange-400 transition-colors" />
+              <div className="w-10 h-10 rounded-xl bg-white/[0.04] group-hover:bg-orange-500/20 flex items-center justify-center transition-colors">
+                <Plus className="w-5 h-5 text-white/40 group-hover:text-orange-400 transition-colors" />
               </div>
               <span className="text-sm text-white/40 group-hover:text-white/60">Criar novo projeto</span>
             </motion.button>
@@ -338,6 +346,13 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
         </motion.section>
 
       </div>
+
+      {/* Templates Modal */}
+      <TemplatesModal 
+        isOpen={showTemplates}
+        onClose={() => setShowTemplates(false)}
+        onSelectTemplate={handleSelectTemplate}
+      />
     </div>
   );
 };

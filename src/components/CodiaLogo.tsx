@@ -13,8 +13,8 @@ const CodiaLogo = ({ size = "md", showText = true, onClick }: CodiaLogoProps) =>
 
   const sizes = {
     sm: { icon: "w-7 h-7", text: "text-base" },
-    md: { icon: "w-9 h-9", text: "text-xl" },
-    lg: { icon: "w-12 h-12", text: "text-2xl" },
+    md: { icon: "w-8 h-8", text: "text-lg" },
+    lg: { icon: "w-10 h-10", text: "text-xl" },
   };
 
   const handleClick = () => {
@@ -28,11 +28,11 @@ const CodiaLogo = ({ size = "md", showText = true, onClick }: CodiaLogoProps) =>
   return (
     <motion.button 
       onClick={handleClick}
-      className="flex items-center gap-2.5 group"
+      className="flex items-center gap-2 group"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <div className={`${sizes[size].icon} rounded-xl overflow-hidden shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/30 transition-shadow`}>
+      <div className={`${sizes[size].icon} rounded-lg overflow-hidden`}>
         <img 
           src={codiaLogoImage} 
           alt="Codia Logo" 
@@ -40,7 +40,7 @@ const CodiaLogo = ({ size = "md", showText = true, onClick }: CodiaLogoProps) =>
         />
       </div>
       {showText && (
-        <span className={`font-bold ${sizes[size].text} text-white`}>
+        <span className={`font-bold ${sizes[size].text} text-white tracking-tight`}>
           Codia
         </span>
       )}

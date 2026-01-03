@@ -19,6 +19,7 @@ import {
   Plus
 } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
+import TypingEffect from "./TypingEffect";
 
 interface Message {
   role: "user" | "assistant";
@@ -33,6 +34,7 @@ interface Tool {
   placeholder: string;
   examples: string[];
   tips: string[];
+  typingTexts: string[];
 }
 
 const toolsConfig: Record<string, Tool> = {
@@ -47,6 +49,12 @@ const toolsConfig: Record<string, Tool> = {
       "Comece definindo o problema que você resolve",
       "Identifique quem são seus clientes ideais",
       "Pense em como você vai ganhar dinheiro"
+    ],
+    typingTexts: [
+      "um plano de negócio para minha startup...",
+      "validar minha ideia de produto...",
+      "definir meu modelo de receita...",
+      "analisar meu mercado-alvo..."
     ]
   },
   branding: {
@@ -60,6 +68,12 @@ const toolsConfig: Record<string, Tool> = {
       "Pense em 3 palavras que definem sua marca",
       "Como você quer que clientes se sintam?",
       "O que diferencia você da concorrência?"
+    ],
+    typingTexts: [
+      "uma identidade de marca moderna...",
+      "um tom de voz profissional...",
+      "uma marca feminina e elegante...",
+      "uma marca masculina e forte..."
     ]
   },
   logo: {
@@ -73,6 +87,12 @@ const toolsConfig: Record<string, Tool> = {
       "Logos simples são mais memoráveis",
       "Escolha cores que transmitam emoção certa",
       "Considere como ficará em tamanhos pequenos"
+    ],
+    typingTexts: [
+      "um logo minimalista e moderno...",
+      "uma identidade visual premium...",
+      "conceito de logo para tech...",
+      "paleta de cores sofisticada..."
     ]
   },
   website: {
@@ -86,6 +106,12 @@ const toolsConfig: Record<string, Tool> = {
       "Tenha uma proposta de valor clara no topo",
       "Use CTAs claros e visíveis",
       "Mobile first - pense no celular primeiro"
+    ],
+    typingTexts: [
+      "uma landing page moderna...",
+      "um site para minha empresa...",
+      "uma loja virtual elegante...",
+      "um portfólio profissional..."
     ]
   },
   copywriter: {
@@ -99,6 +125,12 @@ const toolsConfig: Record<string, Tool> = {
       "Foque nos benefícios, não nas características",
       "Use linguagem do seu público",
       "Crie urgência e escassez quando apropriado"
+    ],
+    typingTexts: [
+      "uma bio impactante para Instagram...",
+      "headlines que convertem...",
+      "textos de vendas persuasivos...",
+      "descrição de produto..."
     ]
   },
   marketing: {
@@ -112,6 +144,12 @@ const toolsConfig: Record<string, Tool> = {
       "Comece onde seu público já está",
       "Consistência é melhor que perfeição",
       "Meça tudo e otimize baseado em dados"
+    ],
+    typingTexts: [
+      "um plano de marketing digital...",
+      "calendário de conteúdo mensal...",
+      "estratégia de funil de vendas...",
+      "campanhas para Instagram..."
     ]
   },
   sales: {
@@ -125,6 +163,12 @@ const toolsConfig: Record<string, Tool> = {
       "Ouça mais do que fala",
       "Entenda a dor antes de oferecer solução",
       "Sempre tenha próximo passo definido"
+    ],
+    typingTexts: [
+      "um script de vendas eficaz...",
+      "respostas para objeções...",
+      "sequência de follow-up...",
+      "pitch de elevador..."
     ]
   },
   existing: {
@@ -138,6 +182,12 @@ const toolsConfig: Record<string, Tool> = {
       "Quanto mais detalhes, melhor a personalização",
       "Inclua informações sobre sua concorrência",
       "Descreva seu diferencial competitivo"
+    ],
+    typingTexts: [
+      "analisar minha empresa atual...",
+      "otimizar meus processos...",
+      "escalar meu negócio...",
+      "melhorar minha conversão..."
     ]
   }
 };
@@ -154,19 +204,88 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(true);
   const [previewContent, setPreviewContent] = useState<string>("");
+  const [streamingContent, setStreamingContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const tool = toolsConfig[selectedTool] || toolsConfig.business;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, streamingContent]);
 
   useEffect(() => {
     setMessages([]);
     setShowTips(true);
     setPreviewContent("");
+    setStreamingContent("");
   }, [selectedTool]);
+
+  const handleStreamingAI = async (userMessage: string) => {
+    setStreamingContent("");
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-ai`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [...messages, { role: "user", content: userMessage }],
+          toolId: selectedTool
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao conectar com a IA");
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("Erro ao ler resposta");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let fullContent = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        
+        let newlineIndex: number;
+        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, newlineIndex);
+          buffer = buffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              fullContent += content;
+              setStreamingContent(fullContent);
+            }
+          } catch {
+            buffer = line + "\n" + buffer;
+            break;
+          }
+        }
+      }
+      
+      return fullContent;
+    } catch (error: any) {
+      console.error("Streaming error:", error);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,32 +298,25 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
     setIsLoading(true);
 
     try {
-      if (onSendMessage) {
-        const response = await onSendMessage(userMessage, selectedTool);
-        setMessages(prev => [...prev, { role: "assistant", content: response }]);
-        // Set preview content if it's a website or content response
-        if (selectedTool === "website" || response.includes("<!DOCTYPE") || response.includes("<html")) {
-          setPreviewContent(response);
-        } else {
-          setPreviewContent(response);
-        }
+      let response: string;
+      
+      if (selectedTool === "website" && onSendMessage) {
+        // Use website generator for website tool
+        response = await onSendMessage(userMessage, selectedTool);
       } else {
-        setTimeout(() => {
-          const demoResponse = `Analisando sua solicitação sobre: "${userMessage}"...\n\nEsta funcionalidade está sendo desenvolvida. Em breve você poderá usar a IA de ${tool.name} para criar conteúdo incrível para sua empresa.`;
-          setMessages(prev => [...prev, { 
-            role: "assistant", 
-            content: demoResponse
-          }]);
-          setPreviewContent(demoResponse);
-          setIsLoading(false);
-        }, 1500);
-        return;
+        // Use streaming AI for other tools
+        response = await handleStreamingAI(userMessage);
       }
-    } catch (error) {
+      
+      setMessages(prev => [...prev, { role: "assistant", content: response }]);
+      setStreamingContent("");
+      setPreviewContent(response);
+    } catch (error: any) {
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "Desculpe, ocorreu um erro. Tente novamente." 
+        content: `Desculpe, ocorreu um erro: ${error.message}` 
       }]);
+      setStreamingContent("");
     } finally {
       setIsLoading(false);
     }
@@ -217,7 +329,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
   return (
     <div className="flex-1 flex h-[calc(100vh-64px)]">
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col bg-[hsl(0,0%,4%)]">
+      <div className="flex-1 flex flex-col bg-[hsl(0,0%,5%)]">
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-3xl mx-auto px-6 py-8">
             <AnimatePresence mode="wait">
@@ -235,11 +347,15 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
                     animate={{ scale: 1, opacity: 1 }}
                     className="text-center mb-8"
                   >
-                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-3">
                       Olá, {userName}!
                     </h1>
-                    <p className="text-base text-white/40">
-                      Como posso ajudar com <span className="text-orange-400">{tool.name}</span> hoje?
+                    <p className="text-base text-white/50">
+                      Peça para a Codia criar{" "}
+                      <TypingEffect 
+                        texts={tool.typingTexts}
+                        className="text-orange-400"
+                      />
                     </p>
                   </motion.div>
 
@@ -248,7 +364,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="w-full max-w-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] rounded-2xl p-5 mb-6"
+                    className="w-full max-w-xl bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 mb-6"
                   >
                     <div className="flex items-start gap-4 mb-5">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
@@ -335,7 +451,23 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
                     </motion.div>
                   ))}
 
-                  {isLoading && (
+                  {/* Streaming content */}
+                  {streamingContent && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex gap-3"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="max-w-[80%] bg-white/[0.03] border border-white/[0.06] rounded-2xl px-4 py-3">
+                        <p className="text-sm text-white/80 leading-relaxed whitespace-pre-wrap">{streamingContent}</p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {isLoading && !streamingContent && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -365,7 +497,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-white/[0.06] bg-[hsl(0,0%,5%)]">
+        <div className="border-t border-white/[0.06] bg-[hsl(0,0%,4%)]">
           <div className="max-w-3xl mx-auto px-6 py-4">
             <form onSubmit={handleSubmit}>
               <div className="relative flex items-center bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-2xl focus-within:border-orange-500/30 focus-within:ring-4 focus-within:ring-orange-500/5 transition-all">
@@ -423,7 +555,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
       {/* Preview Panel */}
       <div className="hidden lg:block w-[45%] xl:w-[50%]">
         <PreviewPanel 
-          content={previewContent}
+          content={previewContent || streamingContent}
           type={selectedTool as any}
           isLoading={isLoading}
         />
