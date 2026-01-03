@@ -25,6 +25,7 @@ import ChatMessage from "./ChatMessage";
 interface Message {
   role: "user" | "assistant";
   content: string;
+  imageUrl?: string;
 }
 
 interface Tool {
@@ -288,6 +289,33 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
     }
   };
 
+  const handleLogoGeneration = async (userMessage: string) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-logo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          prompt: userMessage,
+          style: "modern"
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao gerar logo");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      throw new Error(errorMessage);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -299,23 +327,35 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
     setIsLoading(true);
 
     try {
-      let response: string;
-      
-      if (selectedTool === "website" && onSendMessage) {
-        // Use website generator for website tool
-        response = await onSendMessage(userMessage, selectedTool);
-      } else {
-        // Use streaming AI for other tools
-        response = await handleStreamingAI(userMessage);
+      // Logo tool - generate image directly
+      if (selectedTool === "logo") {
+        const logoData = await handleLogoGeneration(userMessage);
+        setMessages(prev => [...prev, { 
+          role: "assistant", 
+          content: `✨ **Logo Gerada com Sucesso!**\n\nSua logo foi criada com base no conceito: "${userMessage}"`,
+          imageUrl: logoData.imageUrl
+        }]);
+        setPreviewContent(logoData.imageUrl);
+      } 
+      // Website tool - use generator
+      else if (selectedTool === "website" && onSendMessage) {
+        const response = await onSendMessage(userMessage, selectedTool);
+        setMessages(prev => [...prev, { role: "assistant", content: response }]);
+        setPreviewContent(response);
+      } 
+      // Other tools - use streaming AI
+      else {
+        const response = await handleStreamingAI(userMessage);
+        setMessages(prev => [...prev, { role: "assistant", content: response }]);
+        setPreviewContent(response);
       }
       
-      setMessages(prev => [...prev, { role: "assistant", content: response }]);
       setStreamingContent("");
-      setPreviewContent(response);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: `Desculpe, ocorreu um erro: ${error.message}` 
+        content: `❌ Desculpe, ocorreu um erro: ${errorMessage}` 
       }]);
       setStreamingContent("");
     } finally {
@@ -429,6 +469,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
                       content={message.content}
                       role={message.role}
                       userName={userName}
+                      imageUrl={message.imageUrl}
                     />
                   ))}
 
