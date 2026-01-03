@@ -17,7 +17,8 @@ import {
   Image,
   Mic,
   Plus,
-  Code2
+  Code2,
+  Trash2
 } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
 import TypingEffect from "./TypingEffect";
@@ -27,6 +28,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   imageUrl?: string;
+  toolOrigin?: string; // De qual ferramenta veio (para conectar com dev)
 }
 
 interface Tool {
@@ -230,9 +232,19 @@ interface UnifiedChatProps {
   userName?: string;
 }
 
+const STORAGE_KEY = "codia_chat_history";
+
 const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: UnifiedChatProps) => {
   const [input, setInput] = useState("");
-  const [messagesPerTool, setMessagesPerTool] = useState<Record<string, Message[]>>({});
+  const [messagesPerTool, setMessagesPerTool] = useState<Record<string, Message[]>>(() => {
+    // Carregar do localStorage ao iniciar
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(true);
   const [previewContent, setPreviewContent] = useState<string>("");
@@ -242,6 +254,15 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
   const tool = toolsConfig[selectedTool] || toolsConfig.business;
   const messages = messagesPerTool[selectedTool] || [];
 
+  // Salvar no localStorage sempre que mensagens mudarem
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messagesPerTool));
+    } catch (e) {
+      console.error("Erro ao salvar histórico:", e);
+    }
+  }, [messagesPerTool]);
+
   // Helper to update messages for current tool
   const setMessages = (updater: Message[] | ((prev: Message[]) => Message[])) => {
     setMessagesPerTool(prev => ({
@@ -250,12 +271,36 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
     }));
   };
 
+  // Adicionar mensagem ao Desenvolvimento (conectar ferramentas)
+  const addToDevHistory = (message: Message, fromTool: string) => {
+    const devMessage: Message = {
+      ...message,
+      toolOrigin: fromTool,
+      content: `📁 **Criado em ${toolsConfig[fromTool]?.name || fromTool}**\n\n${message.content}`
+    };
+    setMessagesPerTool(prev => ({
+      ...prev,
+      dev: [...(prev.dev || []), devMessage]
+    }));
+  };
+
+  // Limpar conversa da ferramenta atual
+  const handleClearChat = () => {
+    setMessagesPerTool(prev => ({
+      ...prev,
+      [selectedTool]: []
+    }));
+    setShowTips(true);
+    setPreviewContent("");
+    setStreamingContent("");
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streamingContent]);
 
   useEffect(() => {
-    // Reseta dicas quando muda de ferramenta, mas mantém mensagens
+    // Atualiza dicas quando muda de ferramenta
     setShowTips(messages.length === 0);
     setPreviewContent("");
     setStreamingContent("");
@@ -369,18 +414,24 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
       // Logo tool - generate image directly
       if (selectedTool === "logo") {
         const logoData = await handleLogoGeneration(userMessage);
-        setMessages(prev => [...prev, { 
+        const logoMessage: Message = { 
           role: "assistant", 
           content: `✨ **Logo Gerada com Sucesso!**\n\nSua logo foi criada com base no conceito: "${userMessage}"`,
           imageUrl: logoData.imageUrl
-        }]);
+        };
+        setMessages(prev => [...prev, logoMessage]);
         setPreviewContent(logoData.imageUrl);
+        // Salvar no Desenvolvimento
+        addToDevHistory(logoMessage, "logo");
       } 
       // Website tool - use generator
       else if (selectedTool === "website" && onSendMessage) {
         const response = await onSendMessage(userMessage, selectedTool);
-        setMessages(prev => [...prev, { role: "assistant", content: response }]);
+        const websiteMessage: Message = { role: "assistant", content: response };
+        setMessages(prev => [...prev, websiteMessage]);
         setPreviewContent(response);
+        // Salvar no Desenvolvimento
+        addToDevHistory(websiteMessage, "website");
       } 
       // Other tools - use streaming AI
       else {
@@ -554,6 +605,19 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
         {/* Input Area */}
         <div className="border-t border-white/[0.06] bg-[hsl(0,0%,4%)]">
           <div className="max-w-3xl mx-auto px-6 py-4">
+            {/* Clear chat button - show only when there are messages */}
+            {messages.length > 0 && (
+              <div className="flex justify-end mb-2">
+                <button
+                  type="button"
+                  onClick={handleClearChat}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Limpar conversa
+                </button>
+              </div>
+            )}
             <form onSubmit={handleSubmit}>
               <div className="relative flex items-center bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-2xl focus-within:border-orange-500/30 focus-within:ring-4 focus-within:ring-orange-500/5 transition-all">
                 {/* Left buttons */}
