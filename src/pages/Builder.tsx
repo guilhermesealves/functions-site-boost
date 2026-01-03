@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
 import StudioLayout from "@/components/StudioLayout";
 import AppHeader from "@/components/AppHeader";
+import Footer from "@/components/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -146,7 +147,7 @@ const Builder = () => {
   // Show Dashboard
   if (viewMode === "dashboard") {
     return (
-      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,3%)]">
+      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
         <AppHeader 
           user={user} 
           onNewProject={handleNewProject}
@@ -164,6 +165,7 @@ const Builder = () => {
           projects={projects}
           userName={userName}
         />
+        <Footer />
       </div>
     );
   }
