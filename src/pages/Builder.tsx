@@ -174,21 +174,24 @@ const Builder = () => {
           currentSection={currentSection}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onNewProject={handleNewProject}
         />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Dashboard 
-            onStartWebsite={() => {
-              setInitialTool("website");
-              setViewMode("studio");
-            }}
-            onOpenStudio={(toolId) => {
-              if (toolId) setInitialTool(toolId);
-              setViewMode("studio");
-            }}
-            projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
-            projects={projects}
-            userName={userName}
-          />
+        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+          <div className="flex-1 overflow-y-auto">
+            <Dashboard 
+              onStartWebsite={() => {
+                setInitialTool("website");
+                setViewMode("studio");
+              }}
+              onOpenStudio={(toolId) => {
+                if (toolId) setInitialTool(toolId);
+                setViewMode("studio");
+              }}
+              projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+              projects={projects}
+              userName={userName}
+            />
+          </div>
           <Footer />
         </div>
 

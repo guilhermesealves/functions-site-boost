@@ -230,11 +230,12 @@ interface UnifiedChatProps {
   selectedTool: string;
   onSendMessage?: (message: string, toolId: string) => Promise<string>;
   userName?: string;
+  onToolChange?: (toolId: string) => void;
 }
 
 const STORAGE_KEY = "codia_chat_history";
 
-const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: UnifiedChatProps) => {
+const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolChange }: UnifiedChatProps) => {
   const [input, setInput] = useState("");
   const [messagesPerTool, setMessagesPerTool] = useState<Record<string, Message[]>>(() => {
     // Carregar do localStorage ao iniciar
@@ -282,6 +283,33 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
       ...prev,
       dev: [...(prev.dev || []), devMessage]
     }));
+  };
+
+  // Detectar qual IA usar baseado no conteúdo do prompt
+  const detectToolFromPrompt = (text: string): string | null => {
+    const lowerText = text.toLowerCase();
+    
+    // Keywords para cada ferramenta
+    const toolKeywords: Record<string, string[]> = {
+      logo: ["logo", "logotipo", "logomarca", "marca visual", "identidade visual", "criar logo", "design de logo"],
+      website: ["site", "website", "landing page", "página web", "loja virtual", "ecommerce", "e-commerce", "portfólio", "portfolio"],
+      branding: ["branding", "marca", "identidade", "tom de voz", "posicionamento"],
+      copywriter: ["copy", "texto", "redação", "bio", "headline", "título", "descrição", "slogan"],
+      marketing: ["marketing", "campanha", "funil", "anúncio", "ads", "instagram", "facebook", "tráfego"],
+      sales: ["vendas", "vender", "script", "objeção", "follow-up", "pitch", "conversão"],
+      business: ["negócio", "empresa", "startup", "plano de negócio", "modelo de negócio", "receita"],
+      dev: ["código", "programar", "desenvolver", "api", "função", "componente", "react", "typescript"]
+    };
+
+    for (const [tool, keywords] of Object.entries(toolKeywords)) {
+      for (const keyword of keywords) {
+        if (lowerText.includes(keyword)) {
+          return tool;
+        }
+      }
+    }
+
+    return null;
   };
 
   // Limpar conversa da ferramenta atual
@@ -405,30 +433,50 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
+    
+    // Detectar e mudar para a IA correspondente se necessário
+    const detectedTool = detectToolFromPrompt(userMessage);
+    if (detectedTool && detectedTool !== selectedTool && onToolChange) {
+      onToolChange(detectedTool);
+      // Pequeno delay para garantir que a mudança de ferramenta seja processada
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    const currentTool = detectedTool || selectedTool;
+    
     setInput("");
     setShowTips(false);
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setMessagesPerTool(prev => ({
+      ...prev,
+      [currentTool]: [...(prev[currentTool] || []), { role: "user", content: userMessage }]
+    }));
     setIsLoading(true);
 
     try {
       // Logo tool - generate image directly
-      if (selectedTool === "logo") {
+      if (currentTool === "logo") {
         const logoData = await handleLogoGeneration(userMessage);
         const logoMessage: Message = { 
           role: "assistant", 
           content: `✨ **Logo Gerada com Sucesso!**\n\nSua logo foi criada com base no conceito: "${userMessage}"`,
           imageUrl: logoData.imageUrl
         };
-        setMessages(prev => [...prev, logoMessage]);
+        setMessagesPerTool(prev => ({
+          ...prev,
+          [currentTool]: [...(prev[currentTool] || []), logoMessage]
+        }));
         setPreviewContent(logoData.imageUrl);
         // Salvar no Desenvolvimento
         addToDevHistory(logoMessage, "logo");
       } 
       // Website tool - use generator
-      else if (selectedTool === "website" && onSendMessage) {
-        const response = await onSendMessage(userMessage, selectedTool);
+      else if (currentTool === "website" && onSendMessage) {
+        const response = await onSendMessage(userMessage, currentTool);
         const websiteMessage: Message = { role: "assistant", content: response };
-        setMessages(prev => [...prev, websiteMessage]);
+        setMessagesPerTool(prev => ({
+          ...prev,
+          [currentTool]: [...(prev[currentTool] || []), websiteMessage]
+        }));
         setPreviewContent(response);
         // Salvar no Desenvolvimento
         addToDevHistory(websiteMessage, "website");
@@ -436,7 +484,10 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você" }: Unifie
       // Other tools - use streaming AI
       else {
         const response = await handleStreamingAI(userMessage);
-        setMessages(prev => [...prev, { role: "assistant", content: response }]);
+        setMessagesPerTool(prev => ({
+          ...prev,
+          [currentTool]: [...(prev[currentTool] || []), { role: "assistant", content: response }]
+        }));
         setPreviewContent(response);
       }
       

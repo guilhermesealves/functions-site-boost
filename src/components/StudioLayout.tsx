@@ -73,6 +73,7 @@ const StudioLayout = ({
           selectedTool={selectedTool}
           onSendMessage={onSendMessage}
           userName={userName}
+          onToolChange={setSelectedTool}
         />
       </div>
 

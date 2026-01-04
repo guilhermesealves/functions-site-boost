@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Home, 
   Search, 
@@ -13,8 +13,15 @@ import {
   Zap,
   ChevronDown,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Plus,
+  Settings,
+  LogOut,
+  HelpCircle
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import CodiaLogo from "./CodiaLogo";
 
 interface MainSidebarProps {
@@ -24,6 +31,7 @@ interface MainSidebarProps {
   currentSection?: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  onNewProject?: () => void;
 }
 
 const MainSidebar = ({ 
@@ -32,9 +40,29 @@ const MainSidebar = ({
   onOpenTemplates,
   currentSection = "home",
   collapsed = false,
-  onToggleCollapse
+  onToggleCollapse,
+  onNewProject
 }: MainSidebarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Você saiu da sua conta");
+    navigate("/");
+  };
 
   const mainNavItems = [
     { id: "home", label: "Home", icon: Home, shortcut: "" },
@@ -56,6 +84,12 @@ const MainSidebar = ({
   const handleItemClick = (id: string, action?: () => void) => {
     if (action) {
       action();
+    } else if (id === "search") {
+      toast.info("Busca em breve!");
+    } else if (id === "discover") {
+      toast.info("Descobrir em breve!");
+    } else if (id === "learn") {
+      toast.info("Tutoriais em breve!");
     } else {
       onNavigate?.(id);
     }
@@ -66,7 +100,7 @@ const MainSidebar = ({
       <motion.aside
         initial={{ width: 60 }}
         animate={{ width: 60 }}
-        className="h-full bg-[hsl(0,0%,6%)] border-r border-white/[0.06] flex flex-col"
+        className="h-screen sticky top-0 bg-[hsl(0,0%,6%)] border-r border-white/[0.06] flex flex-col"
       >
         {/* Collapsed Header */}
         <div className="p-3 flex justify-center">
@@ -103,7 +137,7 @@ const MainSidebar = ({
     <motion.aside
       initial={{ width: 260 }}
       animate={{ width: 260 }}
-      className="h-full bg-[hsl(0,0%,6%)] border-r border-white/[0.06] flex flex-col"
+      className="h-screen sticky top-0 bg-[hsl(0,0%,6%)] border-r border-white/[0.06] flex flex-col"
     >
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
@@ -116,8 +150,8 @@ const MainSidebar = ({
         </button>
       </div>
 
-      {/* Workspace Selector */}
-      <div className="p-3">
+      {/* User/Workspace Selector with Dropdown */}
+      <div className="p-3 relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.04] transition-colors group"
@@ -129,6 +163,60 @@ const MainSidebar = ({
             {userName}'s Codia
           </span>
           <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {/* User Dropdown */}
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="absolute left-3 right-3 top-full mt-1 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+            >
+              <div className="p-1.5">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    toast.info("Configurações em breve!");
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                >
+                  <Settings className="w-4 h-4" />
+                  Configurações
+                </button>
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    toast.info("Suporte em breve!");
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  Suporte
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Create New Project Button */}
+      <div className="px-3 mb-2">
+        <button
+          onClick={onNewProject}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium transition-all shadow-lg shadow-orange-500/20"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Criar nova empresa</span>
         </button>
       </div>
 
@@ -210,7 +298,10 @@ const MainSidebar = ({
           <span className="text-[10px] text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">+10</span>
         </button>
         
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-gradient-to-r from-orange-500/10 to-amber-500/10 text-orange-400 hover:from-orange-500/20 hover:to-amber-500/20 transition-colors">
+        <button 
+          onClick={() => navigate("/#precos")}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-gradient-to-r from-orange-500/10 to-amber-500/10 text-orange-400 hover:from-orange-500/20 hover:to-amber-500/20 transition-colors"
+        >
           <Zap className="w-4 h-4" />
           <span className="flex-1 text-left">Upgrade para Pro</span>
           <span className="text-orange-300">→</span>
