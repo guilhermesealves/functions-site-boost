@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogOut, Settings, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import CodiaLogo from "./CodiaLogo";
+import { toast } from "sonner";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +25,24 @@ const Header = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Você saiu da sua conta");
+    setShowUserMenu(false);
+    navigate("/");
+  };
 
   const navLinks = [
     { label: "Recursos", href: "#recursos" },
@@ -65,9 +86,9 @@ const Header = () => {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <>
+              <div className="relative" ref={userMenuRef}>
                 <button
-                  onClick={() => navigate("/builder")}
+                  onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
                 >
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-semibold text-sm">
@@ -75,14 +96,54 @@ const Header = () => {
                   </div>
                   <span className="text-sm text-white/80">{userName}</span>
                 </button>
-                <Button 
-                  size="sm" 
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-xl shadow-lg shadow-orange-500/20"
-                  onClick={() => navigate("/builder")}
-                >
-                  Dashboard
-                </Button>
-              </>
+
+                {/* User Dropdown Menu */}
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-56 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+                    >
+                      <div className="p-3 border-b border-white/[0.06]">
+                        <p className="text-sm text-white font-medium">{userName}</p>
+                        <p className="text-xs text-white/40">{user?.email}</p>
+                      </div>
+                      <div className="p-1.5">
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            navigate("/builder");
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                        >
+                          <User className="w-4 h-4" />
+                          Dashboard
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            toast.info("Configurações em breve!");
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Configurações
+                        </button>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sair
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
               <>
                 <Button 
@@ -139,14 +200,24 @@ const Header = () => {
               {link.label}
             </motion.a>
           ))}
-          <div className="flex gap-2 pt-4 mt-2 border-t border-white/[0.06]">
+          <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-white/[0.06]">
             {user ? (
-              <Button 
-                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
-                onClick={() => navigate("/builder")}
-              >
-                Dashboard
-              </Button>
+              <>
+                <Button 
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+                  onClick={() => navigate("/builder")}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="ghost"
+                  className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </Button>
+              </>
             ) : (
               <>
                 <Button 
