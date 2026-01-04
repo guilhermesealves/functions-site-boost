@@ -87,9 +87,9 @@ const MainSidebar = ({
     } else if (id === "search") {
       toast.info("Busca em breve!");
     } else if (id === "discover") {
-      toast.info("Descobrir em breve!");
+      navigate("/discover");
     } else if (id === "learn") {
-      toast.info("Tutoriais em breve!");
+      navigate("/learn");
     } else {
       onNavigate?.(id);
     }
@@ -299,7 +299,7 @@ const MainSidebar = ({
         </button>
         
         <button 
-          onClick={() => navigate("/#precos")}
+          onClick={() => navigate("/pricing")}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-gradient-to-r from-orange-500/10 to-amber-500/10 text-orange-400 hover:from-orange-500/20 hover:to-amber-500/20 transition-colors"
         >
           <Zap className="w-4 h-4" />

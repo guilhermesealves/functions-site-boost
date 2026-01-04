@@ -21,6 +21,7 @@ import {
   Trash2
 } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
+import DevSummary from "./DevSummary";
 import TypingEffect from "./TypingEffect";
 import ChatMessage from "./ChatMessage";
 
@@ -508,6 +509,11 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
     setInput(example);
   };
 
+  // Se for a aba de Desenvolvimento, mostrar o resumo em vez do chat
+  if (selectedTool === "dev") {
+    return <DevSummary userName={userName} />;
+  }
+
   return (
     <div className="flex-1 flex h-[calc(100vh-64px)]">
       {/* Chat Area */}
@@ -724,7 +730,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
 
       {/* Preview Panel - Only for visual tools */}
       {tool.hasPreview && (
-        <div className="hidden lg:block w-[45%] xl:w-[50%]">
+        <div className="hidden lg:flex lg:w-[50%] xl:w-[55%]">
           <PreviewPanel 
             content={previewContent || streamingContent}
             type={selectedTool as any}
