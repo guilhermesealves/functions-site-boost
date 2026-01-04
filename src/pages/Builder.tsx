@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
 import StudioLayout from "@/components/StudioLayout";
 import MainSidebar from "@/components/MainSidebar";
+import AllProjects from "@/components/AllProjects";
 import Footer from "@/components/Footer";
 import TemplatesModal from "@/components/templates/TemplatesModal";
 import { Template } from "@/components/templates/TemplatesData";
@@ -178,19 +179,29 @@ const Builder = () => {
         />
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
           <div className="flex-1 overflow-y-auto">
-            <Dashboard 
-              onStartWebsite={() => {
-                setInitialTool("website");
-                setViewMode("studio");
-              }}
-              onOpenStudio={(toolId) => {
-                if (toolId) setInitialTool(toolId);
-                setViewMode("studio");
-              }}
-              projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
-              projects={projects}
-              userName={userName}
-            />
+            {currentSection === "all-projects" || currentSection === "starred" || currentSection === "shared" ? (
+              <AllProjects 
+                onNewProject={handleNewProject}
+                onSelectProject={(project: any) => {
+                  handleSelectProject(project);
+                  setViewMode("studio");
+                }}
+              />
+            ) : (
+              <Dashboard 
+                onStartWebsite={() => {
+                  setInitialTool("website");
+                  setViewMode("studio");
+                }}
+                onOpenStudio={(toolId) => {
+                  if (toolId) setInitialTool(toolId);
+                  setViewMode("studio");
+                }}
+                projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+                projects={projects}
+                userName={userName}
+              />
+            )}
           </div>
           <Footer />
         </div>
