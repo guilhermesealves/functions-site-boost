@@ -1,114 +1,38 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Briefcase, 
-  ShoppingBag, 
-  Utensils, 
-  Heart, 
-  GraduationCap, 
-  Building2,
   Sparkles,
   ArrowRight,
   Globe,
   Palette,
-  Dumbbell,
-  Car,
-  Home,
-  Camera,
-  Scale,
-  Stethoscope,
-  Plane,
-  Music
+  Star,
+  Eye,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const categories = [
-  {
-    name: "E-commerce",
-    icon: ShoppingBag,
-    color: "from-blue-500 to-cyan-500",
-    examples: [
-      { name: "Loja de Roupas", description: "Moda feminina, masculina ou infantil" },
-      { name: "Cosméticos", description: "Beleza, skincare, maquiagem" },
-      { name: "Acessórios", description: "Joias, bolsas, óculos" },
-      { name: "Eletrônicos", description: "Gadgets, tech, informática" },
-    ]
-  },
-  {
-    name: "Restaurantes & Food",
-    icon: Utensils,
-    color: "from-orange-500 to-amber-500",
-    examples: [
-      { name: "Restaurante Fine Dining", description: "Cardápio elegante, reservas" },
-      { name: "Delivery de Comida", description: "Pedidos online, cardápio digital" },
-      { name: "Cafeteria", description: "Ambiente aconchegante, menu" },
-      { name: "Food Truck", description: "Localização, menu criativo" },
-    ]
-  },
-  {
-    name: "Saúde & Bem-estar",
-    icon: Heart,
-    color: "from-rose-500 to-pink-500",
-    examples: [
-      { name: "Clínica Médica", description: "Agendamento, especialidades" },
-      { name: "Academia", description: "Planos, modalidades, horários" },
-      { name: "Spa & Estética", description: "Tratamentos, agendamento" },
-      { name: "Nutricionista", description: "Consultas, programas" },
-    ]
-  },
-  {
-    name: "Educação",
-    icon: GraduationCap,
-    color: "from-purple-500 to-violet-500",
-    examples: [
-      { name: "Curso Online", description: "Aulas, módulos, inscrição" },
-      { name: "Escola de Idiomas", description: "Níveis, metodologia" },
-      { name: "Coaching", description: "Mentoria, programas" },
-      { name: "Escola Infantil", description: "Proposta pedagógica" },
-    ]
-  },
-  {
-    name: "Serviços Profissionais",
-    icon: Briefcase,
-    color: "from-emerald-500 to-teal-500",
-    examples: [
-      { name: "Escritório de Advocacia", description: "Áreas de atuação, contato" },
-      { name: "Contabilidade", description: "Serviços, clientes" },
-      { name: "Consultoria", description: "Especialidades, cases" },
-      { name: "Arquitetura", description: "Portfólio, projetos" },
-    ]
-  },
-  {
-    name: "Imobiliário",
-    icon: Building2,
-    color: "from-amber-500 to-yellow-500",
-    examples: [
-      { name: "Imobiliária", description: "Listagem, busca, contato" },
-      { name: "Construtora", description: "Empreendimentos, lançamentos" },
-      { name: "Corretora", description: "Portfólio, avaliação" },
-      { name: "Aluguel por Temporada", description: "Reservas, fotos" },
-    ]
-  }
-];
-
-const quickIdeas = [
-  { icon: Dumbbell, name: "Personal Trainer", desc: "Treinos personalizados" },
-  { icon: Camera, name: "Fotógrafo", desc: "Portfólio visual" },
-  { icon: Car, name: "Oficina Mecânica", desc: "Serviços, orçamento" },
-  { icon: Home, name: "Decoração", desc: "Projetos, inspirações" },
-  { icon: Scale, name: "Nutricionista", desc: "Planos alimentares" },
-  { icon: Stethoscope, name: "Médico", desc: "Especialidades, agenda" },
-  { icon: Plane, name: "Agência de Viagens", desc: "Pacotes, destinos" },
-  { icon: Music, name: "Escola de Música", desc: "Instrumentos, aulas" },
-];
+import { templates, categories, Template } from "@/components/templates/TemplatesData";
 
 const Discover = () => {
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
-  const handleCreateSite = (type: string) => {
-    navigate("/builder", { state: { prompt: `Crie um site para ${type}`, tool: "website" } });
+  const popularTemplates = templates.filter(t => t.popular);
+  const filteredTemplates = selectedCategory === "Todos" 
+    ? templates 
+    : templates.filter(t => t.category === selectedCategory);
+
+  const handleUseTemplate = (template: Template) => {
+    navigate("/builder", { 
+      state: { 
+        prompt: `Use o template "${template.name}" para criar um site`, 
+        tool: "website",
+        template: template 
+      } 
+    });
   };
 
   return (
@@ -117,7 +41,7 @@ const Discover = () => {
       
       <main className="pt-24">
         {/* Hero */}
-        <section className="py-20 relative overflow-hidden">
+        <section className="py-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-orange-500/5 to-background" />
           <motion.div
             animate={{ opacity: [0.03, 0.08, 0.03] }}
@@ -138,108 +62,182 @@ const Discover = () => {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-6"
               >
                 <Sparkles className="w-4 h-4 text-orange-400" />
-                <span className="text-sm text-orange-400 font-medium">Inspiração & Ideias</span>
+                <span className="text-sm text-orange-400 font-medium">Templates Prontos</span>
               </motion.div>
 
-              <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-                Descubra o site{" "}
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
+                Templates{" "}
                 <span className="bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
-                  perfeito
+                  profissionais
                 </span>{" "}
                 para seu negócio
               </h1>
 
-              <p className="text-xl text-white/60 mb-8">
-                Explore ideias por categoria e comece com um template otimizado para seu segmento.
+              <p className="text-lg text-white/60 mb-8">
+                Escolha um template, personalize com IA e tenha seu site pronto em minutos.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Quick Ideas */}
+        {/* Popular Templates */}
         <section className="py-12">
           <div className="container mx-auto px-6">
-            <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
-              {quickIdeas.map((idea, index) => (
-                <motion.button
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => handleCreateSite(idea.name)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.03] border border-white/[0.08] hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
+            <div className="flex items-center gap-2 mb-6">
+              <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
+              <h2 className="text-xl font-bold text-white">Mais Usados</h2>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {popularTemplates.map((template, index) => (
+                <motion.div
+                  key={template.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden hover:border-orange-500/30 transition-all cursor-pointer"
                 >
-                  <idea.icon className="w-4 h-4 text-white/40 group-hover:text-orange-400 transition-colors" />
-                  <span className="text-sm text-white/70 group-hover:text-white transition-colors">{idea.name}</span>
-                </motion.button>
+                  <div
+                    className="relative h-48 overflow-hidden"
+                    style={{ background: template.thumbnail }}
+                  >
+                    {template.previewHtml && (
+                      <iframe
+                        srcDoc={template.previewHtml}
+                        className="absolute inset-0 w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
+                        title={template.name}
+                      />
+                    )}
+                    
+                    <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-current" /> Popular
+                    </div>
+
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      {(template.type === "both" || template.type === "website") && (
+                        <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Globe className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                      {(template.type === "both" || template.type === "logo") && (
+                        <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Palette className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setPreviewTemplate(template)}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-white transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Preview
+                      </button>
+                      <button
+                        onClick={() => handleUseTemplate(template)}
+                        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-sm text-white font-medium transition-colors"
+                      >
+                        Usar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-4" onClick={() => handleUseTemplate(template)}>
+                    <h3 className="font-semibold text-white text-sm mb-1">{template.name}</h3>
+                    <p className="text-xs text-white/40 line-clamp-1">{template.description}</p>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
         {/* Categories */}
-        <section className="py-20">
+        <section className="py-12">
           <div className="container mx-auto px-6">
-            <div className="space-y-16">
-              {categories.map((category, catIndex) => (
-                <motion.div
-                  key={category.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: catIndex * 0.1 }}
+            <h2 className="text-xl font-bold text-white mb-6">Explorar por Categoria</h2>
+            
+            <div className="flex flex-wrap gap-2 mb-8">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === cat
+                      ? "bg-orange-500 text-white"
+                      : "bg-white/[0.04] text-white/60 hover:bg-white/[0.08] hover:text-white"
+                  }`}
                 >
-                  {/* Category Header */}
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center shadow-lg`}>
-                      <category.icon className="w-7 h-7 text-white" />
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredTemplates.map((template, index) => (
+                <motion.div
+                  key={template.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                  className="group relative bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden hover:border-orange-500/30 transition-all cursor-pointer"
+                >
+                  <div
+                    className="relative h-40 overflow-hidden"
+                    style={{ background: template.thumbnail }}
+                  >
+                    {template.previewHtml && (
+                      <iframe
+                        srcDoc={template.previewHtml}
+                        className="absolute inset-0 w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
+                        title={template.name}
+                      />
+                    )}
+
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      {(template.type === "both" || template.type === "website") && (
+                        <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Globe className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                      {(template.type === "both" || template.type === "logo") && (
+                        <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Palette className="w-3 h-3 text-white" />
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-white">{category.name}</h2>
-                      <p className="text-white/50">{category.examples.length} templates disponíveis</p>
+
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setPreviewTemplate(template)}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-white transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleUseTemplate(template)}
+                        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-sm text-white font-medium transition-colors"
+                      >
+                        Usar
+                      </button>
                     </div>
                   </div>
 
-                  {/* Examples Grid */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {category.examples.map((example, exIndex) => (
-                      <motion.div
-                        key={example.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: exIndex * 0.05 }}
-                        className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-orange-500/30 transition-all cursor-pointer"
-                        onClick={() => handleCreateSite(example.name)}
-                      >
-                        {/* Preview placeholder */}
-                        <div className="aspect-[4/3] rounded-xl bg-white/[0.03] border border-white/[0.04] mb-4 overflow-hidden relative">
-                          <div className="absolute inset-2 bg-[hsl(0,0%,8%)] rounded-lg">
-                            <div className="h-2 bg-white/[0.03] flex items-center gap-0.5 px-1.5">
-                              <div className="w-1 h-1 rounded-full bg-red-400/50" />
-                              <div className="w-1 h-1 rounded-full bg-yellow-400/50" />
-                              <div className="w-1 h-1 rounded-full bg-green-400/50" />
-                            </div>
-                            <div className="p-2 space-y-1">
-                              <div className="h-1 bg-orange-500/30 rounded w-1/3" />
-                              <div className="h-0.5 bg-white/[0.06] rounded w-full" />
-                              <div className="h-0.5 bg-white/[0.04] rounded w-2/3" />
-                            </div>
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                            <span className="px-4 py-2 rounded-full bg-orange-500 text-white text-sm font-medium flex items-center gap-2">
-                              <Globe className="w-4 h-4" />
-                              Criar este site
-                            </span>
-                          </div>
-                        </div>
-
-                        <h3 className="font-medium text-white mb-1 group-hover:text-orange-400 transition-colors">
-                          {example.name}
-                        </h3>
-                        <p className="text-sm text-white/40">{example.description}</p>
-                      </motion.div>
-                    ))}
+                  <div className="p-4" onClick={() => handleUseTemplate(template)}>
+                    <div className="flex items-start justify-between mb-1">
+                      <h3 className="font-semibold text-white text-sm">{template.name}</h3>
+                      <div className="flex gap-1">
+                        {template.colors.slice(0, 3).map((color, i) => (
+                          <div
+                            key={i}
+                            className="w-2.5 h-2.5 rounded-full border border-white/10"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-xs text-white/40 line-clamp-1">{template.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -258,7 +256,7 @@ const Discover = () => {
             >
               <Palette className="w-16 h-16 text-orange-400 mx-auto mb-6" />
               <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-                Não encontrou seu segmento?
+                Não encontrou o que procura?
               </h2>
               <p className="text-lg text-white/60 mb-8">
                 Descreva seu negócio e a IA cria um site sob medida para você.
@@ -277,6 +275,66 @@ const Discover = () => {
       </main>
 
       <Footer />
+
+      {/* Preview Modal */}
+      {previewTemplate && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setPreviewTemplate(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="relative w-full max-w-6xl h-[85vh] bg-[hsl(0,0%,6%)] rounded-xl overflow-hidden border border-white/[0.08]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.08]">
+              <div>
+                <h3 className="font-semibold text-white">{previewTemplate.name}</h3>
+                <p className="text-sm text-white/50">{previewTemplate.description}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    handleUseTemplate(previewTemplate);
+                    setPreviewTemplate(null);
+                  }}
+                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-sm text-white font-medium transition-colors"
+                >
+                  Usar Template
+                </button>
+                <button
+                  onClick={() => setPreviewTemplate(null)}
+                  className="p-2 hover:bg-white/[0.06] rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-white/60" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="h-[calc(100%-72px)] overflow-hidden">
+              {previewTemplate.previewHtml ? (
+                <iframe
+                  srcDoc={previewTemplate.previewHtml}
+                  className="w-full h-full bg-white"
+                  title={previewTemplate.name}
+                />
+              ) : (
+                <div 
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ background: previewTemplate.thumbnail }}
+                >
+                  <span className="text-white text-2xl font-bold">{previewTemplate.name}</span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };
