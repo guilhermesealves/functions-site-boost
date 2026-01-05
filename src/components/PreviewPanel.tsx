@@ -249,7 +249,7 @@ const PreviewPanel = ({ content, type, isLoading }: PreviewPanelProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-4 bg-[hsl(0,0%,6%)]">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -263,13 +263,24 @@ const PreviewPanel = ({ content, type, isLoading }: PreviewPanelProps) => {
           </div>
         ) : content ? (
           <div className="h-full flex items-center justify-center">
-            {type === "website" && !showCode ? (
+            {type === "logo" && (content.startsWith("data:image") || content.startsWith("http")) ? (
+              // Logo image preview
+              <div className="flex items-center justify-center p-8">
+                <div className="relative max-w-lg w-full bg-white/[0.02] rounded-2xl p-8 border border-white/[0.08]">
+                  <img 
+                    src={content} 
+                    alt="Logo gerada" 
+                    className="w-full h-auto rounded-xl shadow-2xl"
+                  />
+                </div>
+              </div>
+            ) : type === "website" && !showCode ? (
               <div 
                 className="bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300"
                 style={{ 
                   width: deviceWidths[device],
                   maxWidth: "100%",
-                  height: device === "mobile" ? "667px" : "100%"
+                  height: device === "mobile" ? "667px" : "calc(100vh - 160px)"
                 }}
               >
                 <iframe
@@ -281,7 +292,7 @@ const PreviewPanel = ({ content, type, isLoading }: PreviewPanelProps) => {
               </div>
             ) : (
               <div className="w-full h-full">
-                <pre className="p-4 bg-[hsl(0,0%,6%)] rounded-xl border border-white/[0.06] overflow-auto text-sm text-white/70 font-mono whitespace-pre-wrap">
+                <pre className="p-4 bg-[hsl(0,0%,5%)] rounded-xl border border-white/[0.06] overflow-auto text-sm text-white/70 font-mono whitespace-pre-wrap h-full">
                   {content}
                 </pre>
               </div>
