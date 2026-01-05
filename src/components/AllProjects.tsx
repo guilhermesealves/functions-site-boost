@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   Globe, 
   Star, 
   MoreHorizontal, 
   FolderOpen, 
-  Calendar,
   Clock,
   Search,
-  Filter,
   Grid,
   List,
-  Plus
+  Plus,
+  Palette
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Project {
   id: string;
@@ -22,6 +22,8 @@ interface Project {
   status: "active" | "draft" | "published";
   updatedAt: string;
   starred: boolean;
+  prompt?: string;
+  code?: string | null;
 }
 
 interface AllProjectsProps {
@@ -29,15 +31,6 @@ interface AllProjectsProps {
   onSelectProject?: (project: Project) => void;
   onNewProject?: () => void;
 }
-
-// Mock projects for display
-const mockProjects: Project[] = [
-  { id: "1", name: "E-commerce Fashion", type: "Website", status: "published", updatedAt: "Há 2 horas", starred: true },
-  { id: "2", name: "App de Delivery", type: "Plano de Negócio", status: "draft", updatedAt: "Ontem", starred: false },
-  { id: "3", name: "Marca de Cosméticos", type: "Branding", status: "active", updatedAt: "3 dias atrás", starred: true },
-  { id: "4", name: "Landing Page SaaS", type: "Website", status: "published", updatedAt: "1 semana atrás", starred: false },
-  { id: "5", name: "Consultoria Financeira", type: "Website", status: "draft", updatedAt: "2 semanas atrás", starred: false },
-];
 
 const statusColors = {
   active: "bg-blue-500/20 text-blue-400",
@@ -51,7 +44,60 @@ const statusLabels = {
   published: "Publicado",
 };
 
-const AllProjects = ({ projects = mockProjects, onSelectProject, onNewProject }: AllProjectsProps) => {
+const AllProjects = ({ onSelectProject, onNewProject }: AllProjectsProps) => {
+  const [userProjects, setUserProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false });
+
+      if (!error && data) {
+        const formattedProjects: Project[] = data.map((p) => ({
+          id: p.id,
+          name: p.name,
+          type: p.code ? "Website" : "Projeto",
+          status: p.code ? "published" : "draft",
+          updatedAt: formatDate(p.updated_at),
+          starred: false,
+          prompt: p.prompt,
+          code: p.code
+        }));
+        setUserProjects(formattedProjects);
+      }
+      setLoading(false);
+    };
+
+    loadProjects();
+  }, []);
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffHours < 1) return "Agora";
+    if (diffHours < 24) return `Há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+    if (diffDays === 1) return "Ontem";
+    if (diffDays < 7) return `${diffDays} dias atrás`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} semana${diffDays >= 14 ? 's' : ''} atrás`;
+    return `${Math.floor(diffDays / 30)} mês${diffDays >= 60 ? 'es' : ''} atrás`;
+  };
+
+  const projects = userProjects;
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"all" | "active" | "draft" | "published">("all");
