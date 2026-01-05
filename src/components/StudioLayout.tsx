@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, PanelLeftOpen } from "lucide-react";
 import AISidebar from "./AISidebar";
 import UnifiedChat from "./UnifiedChat";
-import AppHeader from "./AppHeader";
 import TemplatesModal from "./templates/TemplatesModal";
 import { Template } from "./templates/TemplatesData";
 import { toast } from "sonner";
@@ -37,6 +38,7 @@ const StudioLayout = ({
 }: StudioLayoutProps) => {
   const [selectedTool, setSelectedTool] = useState(initialTool);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const userName = user?.email?.split("@")[0] || "você";
 
   const handleSelectTemplate = (template: Template) => {
@@ -45,36 +47,93 @@ const StudioLayout = ({
     setSelectedTool("website");
   };
 
+  // Ferramentas que mostram preview (sidebar fica oculta por padrão)
+  const isVisualTool = ["website", "logo"].includes(selectedTool);
+
   return (
     <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
-      {/* Global Header */}
-      <AppHeader 
-        user={user} 
-        onNewProject={onNewProject}
-        showNewButton={!!onNewProject}
-      />
+      {/* Header with Back Button */}
+      <header className="h-14 border-b border-white/[0.06] flex items-center px-4 gap-4 bg-[hsl(0,0%,4%)]">
+        <button
+          onClick={onGoHome}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar</span>
+        </button>
+        
+        {/* Toggle Sidebar Button */}
+        <button
+          onClick={() => setSidebarVisible(!sidebarVisible)}
+          className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${
+            sidebarVisible 
+              ? "text-orange-400 bg-orange-500/10" 
+              : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+          }`}
+        >
+          <PanelLeftOpen className="w-4 h-4" />
+          <span className="hidden sm:inline">Ferramentas</span>
+        </button>
+
+        <div className="flex-1" />
+        
+        {/* Current Tool Indicator */}
+        <div className="text-sm text-white/50">
+          Ferramenta: <span className="text-orange-400 font-medium">{
+            selectedTool === "business" ? "Plano de Negócio" :
+            selectedTool === "branding" ? "Branding" :
+            selectedTool === "logo" ? "Logo & Visual" :
+            selectedTool === "website" ? "Website" :
+            selectedTool === "copywriter" ? "Copywriter" :
+            selectedTool === "marketing" ? "Marketing" :
+            selectedTool === "sales" ? "Vendas" :
+            selectedTool === "dev" ? "Desenvolvimento" :
+            "IA"
+          }</span>
+        </div>
+      </header>
 
       {/* Content */}
-      <div className="flex-1 flex">
-        {/* Sidebar */}
-        <AISidebar 
-          selectedTool={selectedTool}
-          onSelectTool={setSelectedTool}
-          onGoHome={onGoHome}
-          projects={projects}
-          onSelectProject={onSelectProject}
-          currentProjectId={currentProjectId}
-          userName={userName}
-          onOpenTemplates={() => setShowTemplates(true)}
-        />
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar - Animated */}
+        <AnimatePresence>
+          {sidebarVisible && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 240, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden shrink-0"
+            >
+              <AISidebar 
+                selectedTool={selectedTool}
+                onSelectTool={(tool) => {
+                  setSelectedTool(tool);
+                  // Pode fechar sidebar automaticamente em ferramentas visuais
+                  // if (["website", "logo"].includes(tool)) {
+                  //   setSidebarVisible(false);
+                  // }
+                }}
+                onGoHome={onGoHome}
+                projects={projects}
+                onSelectProject={onSelectProject}
+                currentProjectId={currentProjectId}
+                userName={userName}
+                onOpenTemplates={() => setShowTemplates(true)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Main Content - Chat + Preview */}
-        <UnifiedChat 
-          selectedTool={selectedTool}
-          onSendMessage={onSendMessage}
-          userName={userName}
-          onToolChange={setSelectedTool}
-        />
+        <div className="flex-1 overflow-hidden">
+          <UnifiedChat 
+            selectedTool={selectedTool}
+            onSendMessage={onSendMessage}
+            userName={userName}
+            onToolChange={setSelectedTool}
+          />
+        </div>
       </div>
 
       {/* Templates Modal */}
