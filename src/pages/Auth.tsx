@@ -150,8 +150,8 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex bg-background">
-      {/* Left side - Login Form (50%) */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16 xl:px-24 relative">
+      {/* Left side - Login Form (40%) */}
+      <div className="w-full lg:w-[40%] flex flex-col justify-center px-6 lg:px-12 xl:px-16 relative">
         {/* Background subtle gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5" />
         
@@ -330,10 +330,10 @@ const Auth = () => {
         </motion.div>
       </div>
 
-      {/* Right side - Visual Content (50%) */}
-      <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
+      {/* Right side - Visual Content (60%) */}
+      <div className="hidden lg:flex w-[60%] relative items-center justify-center overflow-hidden">
         {/* Gradient Background - same style as Home */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/15" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/20" />
         
         {/* Animated glow orbs */}
         <motion.div

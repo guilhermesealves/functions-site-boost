@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check, Sparkles, Zap, Building2, ArrowRight, Shield, Clock, Users, Star, ChevronDown } from "lucide-react";
+import { Check, Sparkles, Zap, Building2, ArrowRight, Shield, Clock, Users, Star, ChevronDown, ArrowLeft, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -128,7 +128,38 @@ const Pricing = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-24">
+      {/* Free Trial Banner */}
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white py-2.5"
+      >
+        <div className="container mx-auto px-4 flex items-center justify-center gap-3 text-sm">
+          <Gift className="w-4 h-4" />
+          <span className="font-medium">Teste grátis por 7 dias</span>
+          <span className="hidden sm:inline text-white/80">• Sem cartão de crédito • Cancele quando quiser</span>
+          <Button
+            onClick={() => navigate("/auth")}
+            size="sm"
+            className="ml-4 bg-white text-primary hover:bg-white/90 text-xs h-7 px-3"
+          >
+            Começar grátis
+          </Button>
+        </div>
+      </motion.div>
+
+      {/* Back Button */}
+      <div className="fixed top-14 left-4 z-50 pt-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-lg transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar</span>
+        </button>
+      </div>
+      
+      <main className="pt-36">
         {/* Hero Section */}
         <section className="py-20 relative overflow-hidden">
           {/* Background effects */}
