@@ -1171,7 +1171,7 @@ export const templates: Template[] = [
     logoSvg: lawyerLogo
   },
   
-  // Mais templates simplificados
+  // BELEZA - Mais templates
   {
     id: "beauty-salon",
     name: "Salão de Beleza",
@@ -1181,17 +1181,12 @@ export const templates: Template[] = [
     thumbnail: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
     colors: ["#ec4899", "#f472b6", "#fdf2f8"],
     type: "both",
-    popular: true
-  },
-  {
-    id: "fitness-gym",
-    name: "Academia",
-    description: "Site energético para academias e centros fitness",
-    category: "Saúde & Fitness",
-    style: "Moderno",
-    thumbnail: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-    colors: ["#10b981", "#059669", "#111827"],
-    type: "both"
+    popular: true,
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="20" fill="#ec4899"/>
+      <text x="30" y="38" font-family="Georgia" font-size="24" fill="#fff" text-anchor="middle">✿</text>
+      <text x="65" y="38" font-family="Georgia" font-size="22" fill="#ec4899" font-style="italic">Belle Studio</text>
+    </svg>`
   },
   {
     id: "spa-wellness",
@@ -1201,7 +1196,29 @@ export const templates: Template[] = [
     style: "Minimalista",
     thumbnail: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
     colors: ["#14b8a6", "#0d9488", "#f0fdfa"],
-    type: "both"
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 35c10-15 20-25 15-5s-5 20 15 5" stroke="#14b8a6" stroke-width="3" fill="none"/>
+      <text x="60" y="38" font-family="Georgia" font-size="20" fill="#14b8a6">Serenity Spa</text>
+    </svg>`
+  },
+  
+  // SAÚDE & FITNESS - Mais templates
+  {
+    id: "fitness-gym",
+    name: "Academia",
+    description: "Site energético para academias e centros fitness",
+    category: "Saúde & Fitness",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    colors: ["#10b981", "#059669", "#111827"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="25" width="40" height="10" rx="2" fill="#10b981"/>
+      <rect x="5" y="20" width="10" height="20" rx="2" fill="#10b981"/>
+      <rect x="45" y="20" width="10" height="20" rx="2" fill="#10b981"/>
+      <text x="65" y="38" font-family="Arial Black" font-size="22" fill="#10b981">FIT GYM</text>
+    </svg>`
   },
   {
     id: "psychologist",
@@ -1211,118 +1228,12 @@ export const templates: Template[] = [
     style: "Minimalista",
     thumbnail: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
     colors: ["#8b5cf6", "#7c3aed", "#f5f3ff"],
-    type: "both"
-  },
-  {
-    id: "architect",
-    name: "Arquiteto",
-    description: "Portfolio minimalista para arquitetos e designers",
-    category: "Serviços",
-    style: "Minimalista",
-    thumbnail: "linear-gradient(135deg, #4b5563 0%, #f59e0b 100%)",
-    colors: ["#f59e0b", "#4b5563", "#f9fafb"],
-    type: "both"
-  },
-  {
-    id: "restaurant",
-    name: "Restaurante Premium",
-    description: "Site sofisticado para restaurantes e gastronomia",
-    category: "Gastronomia",
-    style: "Luxuoso",
-    thumbnail: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-    colors: ["#f59e0b", "#d97706", "#1c1917"],
     type: "both",
-    popular: true
-  },
-  {
-    id: "coffee-shop",
-    name: "Cafeteria",
-    description: "Design aconchegante para cafeterias e padarias",
-    category: "Gastronomia",
-    style: "Acolhedor",
-    thumbnail: "linear-gradient(135deg, #92400e 0%, #78350f 100%)",
-    colors: ["#92400e", "#78350f", "#fef3c7"],
-    type: "both"
-  },
-  {
-    id: "ecommerce-fashion",
-    name: "Loja de Moda",
-    description: "E-commerce elegante para lojas de roupas",
-    category: "E-commerce",
-    style: "Moderno",
-    thumbnail: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    colors: ["#667eea", "#764ba2", "#ffffff"],
-    type: "website"
-  },
-  {
-    id: "tech-startup",
-    name: "Startup Tech",
-    description: "Landing page futurista para startups de tecnologia",
-    category: "Tecnologia",
-    style: "Futurista",
-    thumbnail: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
-    colors: ["#7c3aed", "#4c1d95", "#000000"],
-    type: "both"
-  },
-  {
-    id: "saas-platform",
-    name: "Plataforma SaaS",
-    description: "Site moderno para produtos digitais e SaaS",
-    category: "Tecnologia",
-    style: "Moderno",
-    thumbnail: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-    colors: ["#0ea5e9", "#0284c7", "#0f172a"],
-    type: "website"
-  },
-  {
-    id: "marketing-agency",
-    name: "Agência de Marketing",
-    description: "Site criativo para agências de marketing digital",
-    category: "Agência",
-    style: "Criativo",
-    thumbnail: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
-    colors: ["#f97316", "#ea580c", "#0f0f0f"],
-    type: "both"
-  },
-  {
-    id: "wedding-planner",
-    name: "Assessoria de Casamentos",
-    description: "Design romântico e elegante para wedding planners",
-    category: "Serviços",
-    style: "Feminino",
-    thumbnail: "linear-gradient(135deg, #fbbf24 0%, #f9a8d4 100%)",
-    colors: ["#fbbf24", "#f9a8d4", "#fefce8"],
-    type: "both"
-  },
-  {
-    id: "real-estate",
-    name: "Imobiliária",
-    description: "Site profissional para corretores e imobiliárias",
-    category: "Serviços",
-    style: "Corporativo",
-    thumbnail: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-    colors: ["#3b82f6", "#1e40af", "#ffffff"],
-    type: "website"
-  },
-  {
-    id: "pet-shop",
-    name: "Pet Shop",
-    description: "Design alegre para pet shops e clínicas veterinárias",
-    category: "Serviços",
-    style: "Criativo",
-    thumbnail: "linear-gradient(135deg, #22c55e 0%, #facc15 100%)",
-    colors: ["#22c55e", "#facc15", "#ffffff"],
-    type: "both"
-  },
-  {
-    id: "music-school",
-    name: "Escola de Música",
-    description: "Site criativo para escolas e professores de música",
-    category: "Educação",
-    style: "Criativo",
-    thumbnail: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
-    colors: ["#6366f1", "#ec4899", "#0f0f0f"],
-    type: "both"
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="18" stroke="#8b5cf6" stroke-width="3" fill="none"/>
+      <path d="M22 30c0-5 8-5 8 0s8 5 8 0" stroke="#8b5cf6" stroke-width="2" fill="none"/>
+      <text x="60" y="38" font-family="Georgia" font-size="20" fill="#8b5cf6">Mente Plena</text>
+    </svg>`
   },
   {
     id: "yoga-studio",
@@ -1332,6 +1243,304 @@ export const templates: Template[] = [
     style: "Minimalista",
     thumbnail: "linear-gradient(135deg, #a78bfa 0%, #f0abfc 100%)",
     colors: ["#a78bfa", "#f0abfc", "#faf5ff"],
-    type: "both"
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 15l-15 30h30z" stroke="#a78bfa" stroke-width="2" fill="none"/>
+      <circle cx="30" cy="28" r="6" fill="#a78bfa"/>
+      <text x="55" y="38" font-family="Georgia" font-size="20" fill="#a78bfa" font-style="italic">Yoga Flow</text>
+    </svg>`
+  },
+
+  // GASTRONOMIA - Mais templates
+  {
+    id: "restaurant",
+    name: "Restaurante Premium",
+    description: "Site sofisticado para restaurantes e gastronomia",
+    category: "Gastronomia",
+    style: "Luxuoso",
+    thumbnail: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+    colors: ["#f59e0b", "#d97706", "#1c1917"],
+    type: "both",
+    popular: true,
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="20" stroke="#f59e0b" stroke-width="2" fill="none"/>
+      <text x="30" y="38" font-family="Georgia" font-size="20" fill="#f59e0b" text-anchor="middle">★</text>
+      <text x="60" y="38" font-family="Georgia" font-size="20" fill="#f59e0b" font-style="italic">Le Gourmet</text>
+    </svg>`
+  },
+  {
+    id: "coffee-shop",
+    name: "Cafeteria",
+    description: "Design aconchegante para cafeterias e padarias",
+    category: "Gastronomia",
+    style: "Minimalista",
+    thumbnail: "linear-gradient(135deg, #92400e 0%, #78350f 100%)",
+    colors: ["#92400e", "#78350f", "#fef3c7"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 20h25c5 0 10 5 10 15s-5 15-10 15H15z" fill="#92400e"/>
+      <path d="M40 25c5 0 8 5 8 10s-3 10-8 10" stroke="#92400e" stroke-width="3" fill="none"/>
+      <text x="65" y="38" font-family="Georgia" font-size="20" fill="#92400e">Café Arte</text>
+    </svg>`
+  },
+  {
+    id: "pizzeria",
+    name: "Pizzaria",
+    description: "Site vibrante para pizzarias e delivery",
+    category: "Gastronomia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)",
+    colors: ["#dc2626", "#f59e0b", "#1c1917"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="22" fill="#dc2626"/>
+      <circle cx="25" cy="25" r="4" fill="#f59e0b"/>
+      <circle cx="35" cy="28" r="3" fill="#f59e0b"/>
+      <circle cx="28" cy="35" r="3" fill="#f59e0b"/>
+      <text x="60" y="38" font-family="Arial Black" font-size="22" fill="#dc2626">PIZZA HOT</text>
+    </svg>`
+  },
+
+  // SERVIÇOS - Mais templates
+  {
+    id: "architect",
+    name: "Arquiteto",
+    description: "Portfolio minimalista para arquitetos e designers",
+    category: "Serviços",
+    style: "Minimalista",
+    thumbnail: "linear-gradient(135deg, #4b5563 0%, #f59e0b 100%)",
+    colors: ["#f59e0b", "#4b5563", "#f9fafb"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 50l20-35 20 35H10z" stroke="#f59e0b" stroke-width="2" fill="none"/>
+      <rect x="25" y="35" width="10" height="15" fill="#f59e0b"/>
+      <text x="60" y="38" font-family="Helvetica" font-size="20" fill="#4b5563">ARQSTUDIO</text>
+    </svg>`
+  },
+  {
+    id: "wedding-planner",
+    name: "Assessoria de Casamentos",
+    description: "Design romântico e elegante para wedding planners",
+    category: "Serviços",
+    style: "Feminino",
+    thumbnail: "linear-gradient(135deg, #fbbf24 0%, #f9a8d4 100%)",
+    colors: ["#fbbf24", "#f9a8d4", "#fefce8"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 30c0-10 10-15 10-15s10 5 10 15c0 10-10 15-10 15s-10-5-10-15z" fill="#f9a8d4"/>
+      <path d="M20 30c0-10 10-15 10-15s10 5 10 15c0 10-10 15-10 15s-10-5-10-15z" stroke="#fbbf24" stroke-width="2" fill="none" transform="rotate(90 30 30)"/>
+      <text x="55" y="38" font-family="Georgia" font-size="18" fill="#f9a8d4" font-style="italic">Forever After</text>
+    </svg>`
+  },
+  {
+    id: "real-estate",
+    name: "Imobiliária",
+    description: "Site profissional para corretores e imobiliárias",
+    category: "Serviços",
+    style: "Corporativo",
+    thumbnail: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+    colors: ["#3b82f6", "#1e40af", "#ffffff"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 50V25l20-15 20 15v25H10z" fill="#3b82f6"/>
+      <rect x="22" y="32" width="16" height="18" fill="#1e40af"/>
+      <text x="60" y="38" font-family="Arial" font-size="18" fill="#3b82f6" font-weight="700">Prime Imóveis</text>
+    </svg>`
+  },
+  {
+    id: "pet-shop",
+    name: "Pet Shop",
+    description: "Design alegre para pet shops e clínicas veterinárias",
+    category: "Serviços",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #22c55e 0%, #facc15 100%)",
+    colors: ["#22c55e", "#facc15", "#ffffff"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="25" r="8" fill="#22c55e"/>
+      <circle cx="35" cy="25" r="8" fill="#22c55e"/>
+      <circle cx="20" cy="35" r="8" fill="#22c55e"/>
+      <circle cx="40" cy="35" r="8" fill="#22c55e"/>
+      <circle cx="30" cy="42" r="10" fill="#facc15"/>
+      <text x="60" y="38" font-family="Comic Sans MS" font-size="18" fill="#22c55e">Happy Pets</text>
+    </svg>`
+  },
+
+  // E-COMMERCE
+  {
+    id: "ecommerce-fashion",
+    name: "Loja de Moda",
+    description: "E-commerce elegante para lojas de roupas",
+    category: "E-commerce",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    colors: ["#667eea", "#764ba2", "#ffffff"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="15" width="30" height="30" rx="2" stroke="#667eea" stroke-width="2" fill="none"/>
+      <path d="M20 15v-5c0-5 20-5 20 0v5" stroke="#667eea" stroke-width="2" fill="none"/>
+      <text x="55" y="38" font-family="Helvetica" font-size="20" fill="#667eea" font-weight="300">STYLE</text>
+    </svg>`
+  },
+  {
+    id: "ecommerce-tech",
+    name: "Loja de Eletrônicos",
+    description: "E-commerce moderno para produtos tech",
+    category: "E-commerce",
+    style: "Futurista",
+    thumbnail: "linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%)",
+    colors: ["#0ea5e9", "#0f172a", "#ffffff"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="18" width="36" height="24" rx="3" stroke="#0ea5e9" stroke-width="2" fill="none"/>
+      <line x1="30" y1="42" x2="30" y2="48" stroke="#0ea5e9" stroke-width="2"/>
+      <line x1="20" y1="48" x2="40" y2="48" stroke="#0ea5e9" stroke-width="2"/>
+      <text x="55" y="38" font-family="Arial" font-size="18" fill="#0ea5e9" font-weight="700">TechStore</text>
+    </svg>`
+  },
+
+  // TECNOLOGIA
+  {
+    id: "tech-startup",
+    name: "Startup Tech",
+    description: "Landing page futurista para startups de tecnologia",
+    category: "Tecnologia",
+    style: "Futurista",
+    thumbnail: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+    colors: ["#7c3aed", "#4c1d95", "#000000"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,10 50,30 30,50 10,30" stroke="#7c3aed" stroke-width="2" fill="none"/>
+      <circle cx="30" cy="30" r="8" fill="#7c3aed"/>
+      <text x="60" y="38" font-family="Helvetica" font-size="20" fill="#7c3aed" font-weight="700">NEXUS</text>
+    </svg>`
+  },
+  {
+    id: "saas-platform",
+    name: "Plataforma SaaS",
+    description: "Site moderno para produtos digitais e SaaS",
+    category: "Tecnologia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+    colors: ["#0ea5e9", "#0284c7", "#0f172a"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="20" width="40" height="25" rx="4" stroke="#0ea5e9" stroke-width="2" fill="none"/>
+      <circle cx="25" cy="32" r="6" stroke="#0ea5e9" stroke-width="2" fill="none"/>
+      <circle cx="35" cy="32" r="6" stroke="#0ea5e9" stroke-width="2" fill="none"/>
+      <text x="60" y="38" font-family="Arial" font-size="18" fill="#0ea5e9" font-weight="700">CloudApp</text>
+    </svg>`
+  },
+  {
+    id: "app-landing",
+    name: "Landing de App",
+    description: "Página de download para aplicativos mobile",
+    category: "Tecnologia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    colors: ["#10b981", "#059669", "#0f172a"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="18" y="10" width="24" height="40" rx="4" stroke="#10b981" stroke-width="2" fill="none"/>
+      <circle cx="30" cy="45" r="3" fill="#10b981"/>
+      <text x="55" y="38" font-family="Arial" font-size="18" fill="#10b981" font-weight="700">AppMaster</text>
+    </svg>`
+  },
+
+  // AGÊNCIA
+  {
+    id: "marketing-agency",
+    name: "Agência de Marketing",
+    description: "Site criativo para agências de marketing digital",
+    category: "Agência",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+    colors: ["#f97316", "#ea580c", "#0f0f0f"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="30" r="15" stroke="#f97316" stroke-width="3" fill="none"/>
+      <path d="M40 30l15-10v20z" fill="#f97316"/>
+      <text x="65" y="38" font-family="Arial Black" font-size="18" fill="#f97316">BOOST</text>
+    </svg>`
+  },
+  {
+    id: "design-agency",
+    name: "Agência de Design",
+    description: "Portfolio criativo para agências de design",
+    category: "Agência",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)",
+    colors: ["#ec4899", "#8b5cf6", "#0f0f0f"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="15" width="15" height="15" fill="#ec4899"/>
+      <rect x="30" y="15" width="15" height="15" fill="#8b5cf6"/>
+      <rect x="15" y="30" width="15" height="15" fill="#8b5cf6"/>
+      <rect x="30" y="30" width="15" height="15" fill="#ec4899"/>
+      <text x="55" y="38" font-family="Helvetica" font-size="18" fill="#ec4899" font-weight="700">PIXEL</text>
+    </svg>`
+  },
+  {
+    id: "web-agency",
+    name: "Agência Web",
+    description: "Site para agências de desenvolvimento web",
+    category: "Agência",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+    colors: ["#3b82f6", "#1d4ed8", "#0f172a"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 25l10-10 10 10-10 10z" fill="#3b82f6"/>
+      <path d="M35 25l10-10 10 10-10 10z" fill="#1d4ed8"/>
+      <text x="65" y="38" font-family="Arial" font-size="18" fill="#3b82f6" font-weight="700">CodeLab</text>
+    </svg>`
+  },
+
+  // EDUCAÇÃO
+  {
+    id: "music-school",
+    name: "Escola de Música",
+    description: "Site criativo para escolas e professores de música",
+    category: "Educação",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
+    colors: ["#6366f1", "#ec4899", "#0f0f0f"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="40" r="8" fill="#6366f1"/>
+      <line x1="33" y1="40" x2="33" y2="15" stroke="#6366f1" stroke-width="3"/>
+      <path d="M33 15c5 0 10 3 10 8s-5 5-10 5" fill="#ec4899"/>
+      <text x="55" y="38" font-family="Georgia" font-size="18" fill="#6366f1" font-style="italic">Harmonia</text>
+    </svg>`
+  },
+  {
+    id: "online-course",
+    name: "Cursos Online",
+    description: "Plataforma para venda de cursos digitais",
+    category: "Educação",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)",
+    colors: ["#8b5cf6", "#06b6d4", "#0f172a"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 25l20-10 20 10-20 10z" fill="#8b5cf6"/>
+      <path d="M15 28v12l15 8 15-8v-12" stroke="#06b6d4" stroke-width="2" fill="none"/>
+      <text x="60" y="38" font-family="Arial" font-size="18" fill="#8b5cf6" font-weight="700">EduPro</text>
+    </svg>`
+  },
+  {
+    id: "language-school",
+    name: "Escola de Idiomas",
+    description: "Site para escolas de idiomas e professores",
+    category: "Educação",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #14b8a6 0%, #f59e0b 100%)",
+    colors: ["#14b8a6", "#f59e0b", "#ffffff"],
+    type: "both",
+    logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="30" r="18" stroke="#14b8a6" stroke-width="2" fill="none"/>
+      <text x="25" y="36" font-family="Arial" font-size="16" fill="#14b8a6" text-anchor="middle" font-weight="700">ABC</text>
+      <text x="55" y="38" font-family="Arial" font-size="18" fill="#14b8a6" font-weight="700">LinguaPro</text>
+    </svg>`
   }
 ];

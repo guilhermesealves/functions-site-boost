@@ -11,7 +11,8 @@ import {
   PenTool,
   TrendingUp,
   FileText,
-  Palette
+  Palette,
+  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -119,6 +120,17 @@ const Learn = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+
+      {/* Back Button */}
+      <div className="fixed top-20 left-4 z-50">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-lg transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar</span>
+        </button>
+      </div>
       
       <main className="pt-24">
         {/* Hero */}
