@@ -1182,6 +1182,134 @@ export const templates: Template[] = [
     colors: ["#ec4899", "#f472b6", "#fdf2f8"],
     type: "both",
     popular: true,
+    previewHtml: `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #fdf2f8; color: #1a1a1a; }
+    
+    nav { padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(253, 242, 248, 0.95); backdrop-filter: blur(10px); }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: #ec4899; font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a { color: #1a1a1a; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover { color: #ec4899; }
+    .nav-cta { padding: 0.875rem 1.75rem; background: linear-gradient(135deg, #ec4899, #f472b6); color: white; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3); }
+    
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 8rem 4rem 4rem; background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
+    .hero-content { max-width: 550px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 1.5rem; color: #1a1a1a; }
+    h1 span { color: #ec4899; font-style: italic; }
+    .tagline { font-size: 1.125rem; color: #666; margin-bottom: 2.5rem; line-height: 1.7; }
+    .btn { padding: 1rem 2rem; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary { background: linear-gradient(135deg, #ec4899, #f472b6); color: white; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3); }
+    .hero-image { display: flex; justify-content: center; }
+    .hero-visual { width: 100%; max-width: 500px; aspect-ratio: 4/5; background: linear-gradient(135deg, #f472b6, #ec4899); border-radius: 200px 200px 100px 100px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .hero-visual::before { content: '💇‍♀️'; font-size: 8rem; }
+    
+    .services { padding: 6rem 4rem; background: white; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 1rem; }
+    .section-title span { color: #ec4899; font-style: italic; }
+    .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+    .service-card { padding: 2rem; background: #fdf2f8; border-radius: 20px; text-align: center; transition: all 0.3s; }
+    .service-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(236, 72, 153, 0.15); }
+    .service-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .service-card h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .service-card p { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+    .service-price { color: #ec4899; font-weight: 600; font-size: 1.25rem; }
+    
+    .about { padding: 6rem 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto; }
+    .about-image { aspect-ratio: 4/5; background: linear-gradient(135deg, #fce7f3, #f9a8d4); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+    .about-image::before { content: '✨'; font-size: 6rem; }
+    .about-content h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1.5rem; }
+    .about-content p { color: #666; line-height: 1.8; margin-bottom: 1rem; }
+    
+    .cta-section { padding: 6rem 4rem; text-align: center; background: linear-gradient(135deg, #ec4899, #f472b6); color: white; }
+    .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 1rem; }
+    .cta-section p { margin-bottom: 2rem; opacity: 0.9; font-size: 1.125rem; }
+    .cta-section .btn { background: white; color: #ec4899; }
+    
+    footer { padding: 3rem; text-align: center; background: #1a1a1a; color: rgba(255,255,255,0.6); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Belle Studio</div>
+    <div class="nav-links">
+      <a href="#">Serviços</a>
+      <a href="#">Sobre</a>
+      <a href="#">Galeria</a>
+      <a href="#">Contato</a>
+    </div>
+    <a href="#" class="nav-cta">Agendar</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Realce sua <span>beleza</span> natural</h1>
+      <p class="tagline">Transformamos cada visita em uma experiência única de autocuidado e renovação. Descubra o melhor da beleza feminina.</p>
+      <a href="#" class="btn btn-primary">Agendar Horário</a>
+    </div>
+    <div class="hero-image">
+      <div class="hero-visual"></div>
+    </div>
+  </section>
+
+  <section class="services">
+    <div class="section-header">
+      <h2 class="section-title">Nossos <span>Serviços</span></h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💇‍♀️</div>
+        <h3>Corte & Styling</h3>
+        <p>Cortes modernos e personalizados</p>
+        <div class="service-price">A partir de R$ 80</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💅</div>
+        <h3>Manicure & Pedicure</h3>
+        <p>Unhas perfeitas e esmaltação</p>
+        <div class="service-price">A partir de R$ 45</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✨</div>
+        <h3>Coloração</h3>
+        <p>Mechas, luzes e tinturas</p>
+        <div class="service-price">A partir de R$ 150</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💆‍♀️</div>
+        <h3>Tratamentos</h3>
+        <p>Hidratação e reconstrução</p>
+        <div class="service-price">A partir de R$ 90</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="about-image"></div>
+    <div class="about-content">
+      <h2>Experiência e Cuidado</h2>
+      <p>Há mais de 10 anos cuidando da beleza de mulheres que buscam o melhor para si. Nosso espaço foi criado para proporcionar momentos de relaxamento e transformação.</p>
+      <p>Contamos com profissionais especializados e produtos de alta qualidade para garantir resultados incríveis.</p>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Pronta para se sentir ainda mais bonita?</h2>
+    <p>Agende seu horário e venha nos conhecer</p>
+    <a href="#" class="btn">Agendar pelo WhatsApp</a>
+  </section>
+
+  <footer>© 2024 Belle Studio • Todos os direitos reservados</footer>
+</body>
+</html>`,
     logoSvg: `<svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="30" cy="30" r="20" fill="#ec4899"/>
       <text x="30" y="38" font-family="Georgia" font-size="24" fill="#fff" text-anchor="middle">✿</text>
