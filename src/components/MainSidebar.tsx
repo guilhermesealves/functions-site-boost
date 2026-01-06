@@ -28,6 +28,7 @@ interface MainSidebarProps {
   userName?: string;
   onNavigate?: (section: string) => void;
   onOpenTemplates?: () => void;
+  onOpenSettings?: () => void;
   currentSection?: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
@@ -38,6 +39,7 @@ const MainSidebar = ({
   userName = "Usuário", 
   onNavigate, 
   onOpenTemplates,
+  onOpenSettings,
   currentSection = "home",
   collapsed = false,
   onToggleCollapse,
@@ -179,7 +181,10 @@ const MainSidebar = ({
                 <button
                   onClick={() => {
                     setIsDropdownOpen(false);
-                    toast.info("Configurações em breve!");
+                    // Trigger settings modal via callback
+                    if (onOpenSettings) {
+                      onOpenSettings();
+                    }
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
                 >

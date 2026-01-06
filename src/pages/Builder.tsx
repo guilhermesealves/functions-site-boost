@@ -7,6 +7,7 @@ import MainSidebar from "@/components/MainSidebar";
 import AllProjects from "@/components/AllProjects";
 import Footer from "@/components/Footer";
 import TemplatesModal from "@/components/templates/TemplatesModal";
+import SettingsModal from "@/components/SettingsModal";
 import { Template } from "@/components/templates/TemplatesData";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ const Builder = () => {
   const [initialTool, setInitialTool] = useState("business");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const navigate = useNavigate();
@@ -198,6 +200,7 @@ const Builder = () => {
           userName={userName}
           onNavigate={handleSidebarNavigate}
           onOpenTemplates={() => setShowTemplates(true)}
+          onOpenSettings={() => setShowSettings(true)}
           currentSection={currentSection}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -236,6 +239,11 @@ const Builder = () => {
           isOpen={showTemplates}
           onClose={() => setShowTemplates(false)}
           onSelectTemplate={handleSelectTemplate}
+        />
+
+        <SettingsModal
+          isOpen={showSettings}
+          onClose={() => setShowSettings(false)}
         />
       </div>
     );
