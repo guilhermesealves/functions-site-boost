@@ -69,7 +69,12 @@ const Builder = () => {
     if (state?.selectedTemplate && !initialPromptProcessed.current) {
       initialPromptProcessed.current = true;
       setSelectedTemplate(state.selectedTemplate);
-      setInitialTool("website");
+      // Set tool based on template type
+      if (state.selectedTemplate.type === "logo") {
+        setInitialTool("logo");
+      } else {
+        setInitialTool("website");
+      }
       setViewMode("studio");
       window.history.replaceState({}, document.title);
     } else if (state?.prompt && !initialPromptProcessed.current) {

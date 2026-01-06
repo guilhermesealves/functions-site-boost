@@ -42,6 +42,8 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
   const handleUseTemplate = (template: Template) => {
     onSelectTemplate(template);
     onClose();
+    // Navigate to builder with template
+    navigate("/builder", { state: { selectedTemplate: template } });
   };
 
   if (!isOpen) return null;
@@ -185,7 +187,7 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
                       key={`popular-${template.id}`}
                       template={template}
                       onPreview={() => setPreviewTemplate(template)}
-                      onSelect={() => onSelectTemplate(template)}
+                      onSelect={() => handleUseTemplate(template)}
                     />
                   ))}
                 </div>
@@ -199,12 +201,12 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredTemplates.map((template) => (
-                  <TemplateCard
-                    key={template.id}
-                    template={template}
-                    onPreview={() => setPreviewTemplate(template)}
-                    onSelect={() => onSelectTemplate(template)}
+                  {filteredTemplates.map((template) => (
+                    <TemplateCard
+                      key={template.id}
+                      template={template}
+                      onPreview={() => setPreviewTemplate(template)}
+                      onSelect={() => handleUseTemplate(template)}
                   />
                 ))}
               </div>
@@ -251,7 +253,7 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => {
-                          onSelectTemplate(previewTemplate);
+                          handleUseTemplate(previewTemplate);
                           setPreviewTemplate(null);
                         }}
                         className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-sm text-white font-medium transition-colors"
