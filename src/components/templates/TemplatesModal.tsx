@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Search, Eye, ChevronDown, Globe, Palette, Star } from "lucide-react";
+import { X, Search, Eye, ChevronDown, Globe, Palette, Star, LayoutGrid, List } from "lucide-react";
 import { templates, categories, styles, Template } from "./TemplatesData";
+import { useNavigate } from "react-router-dom";
 
 interface TemplatesModalProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
   const [selectedStyle, setSelectedStyle] = useState("Todos");
   const [selectedType, setSelectedType] = useState<"all" | "website" | "logo">("all");
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const navigate = useNavigate();
 
   const filteredTemplates = templates.filter((template) => {
     const matchesSearch = template.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -26,6 +29,20 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
   });
 
   const popularTemplates = templates.filter(t => t.popular);
+
+  // Group templates by category for organized display
+  const templatesByCategory = categories.slice(1).reduce((acc, category) => {
+    const categoryTemplates = filteredTemplates.filter(t => t.category === category);
+    if (categoryTemplates.length > 0) {
+      acc[category] = categoryTemplates;
+    }
+    return acc;
+  }, {} as Record<string, Template[]>);
+
+  const handleUseTemplate = (template: Template) => {
+    onSelectTemplate(template);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -42,20 +59,20 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          className="relative w-full max-w-7xl mx-4 bg-[hsl(0,0%,6%)] border border-white/[0.08] rounded-2xl shadow-2xl my-auto"
+          className="relative w-full max-w-7xl mx-4 bg-card border border-border rounded-2xl shadow-2xl my-auto"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-[hsl(0,0%,6%)] border-b border-white/[0.08] rounded-t-2xl p-6">
+          <div className="sticky top-0 z-10 bg-card border-b border-border rounded-t-2xl p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-2xl font-bold text-white">Templates Prontos</h2>
-                <p className="text-white/50 mt-1">Sites e logos profissionais para começar rápido</p>
+                <h2 className="text-2xl font-bold text-foreground">Templates Prontos</h2>
+                <p className="text-muted-foreground mt-1">Sites e logos profissionais para começar rápido</p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/[0.06] rounded-lg transition-colors"
+                className="p-2 hover:bg-secondary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
 

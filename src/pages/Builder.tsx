@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { User, Session } from "@supabase/supabase-js";
 import Dashboard from "@/components/Dashboard";
 import StudioLayout from "@/components/StudioLayout";
 import MainSidebar from "@/components/MainSidebar";
@@ -21,7 +22,8 @@ interface Project {
 type ViewMode = "dashboard" | "studio";
 
 const Builder = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
@@ -29,31 +31,48 @@ const Builder = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const initialPromptProcessed = useRef(false);
 
+  // Proper auth state management with session storage
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
         setTimeout(() => loadProjects(), 0);
+      } else if (event === "SIGNED_OUT") {
+        navigate("/auth");
       }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
         setTimeout(() => loadProjects(), 0);
+      } else {
+        navigate("/auth");
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
+  // Handle template selection from navigation state
   useEffect(() => {
-    const state = location.state as { prompt?: string; tool?: string } | null;
-    if (state?.prompt && !initialPromptProcessed.current) {
+    const state = location.state as { prompt?: string; tool?: string; selectedTemplate?: Template } | null;
+    
+    if (state?.selectedTemplate && !initialPromptProcessed.current) {
+      initialPromptProcessed.current = true;
+      setSelectedTemplate(state.selectedTemplate);
+      setInitialTool("website");
+      setViewMode("studio");
+      window.history.replaceState({}, document.title);
+    } else if (state?.prompt && !initialPromptProcessed.current) {
       initialPromptProcessed.current = true;
       if (state.tool) setInitialTool(state.tool);
       setViewMode("studio");
@@ -79,6 +98,7 @@ const Builder = () => {
 
   const handleNewProject = () => {
     setCurrentProject(null);
+    setSelectedTemplate(null);
     setInitialTool("business");
     setViewMode("studio");
   };
@@ -86,6 +106,7 @@ const Builder = () => {
   const handleSelectTemplate = (template: Template) => {
     toast.success(`Template "${template.name}" selecionado!`);
     setShowTemplates(false);
+    setSelectedTemplate(template);
     setInitialTool("website");
     setViewMode("studio");
   };
@@ -218,7 +239,10 @@ const Builder = () => {
   // Show Studio Layout
   return (
     <StudioLayout 
-      onGoHome={() => setViewMode("dashboard")}
+      onGoHome={() => {
+        setViewMode("dashboard");
+        setSelectedTemplate(null);
+      }}
       initialTool={initialTool}
       onSendMessage={handleSendMessage}
       user={user}
@@ -226,6 +250,7 @@ const Builder = () => {
       onSelectProject={handleSelectProject}
       currentProjectId={currentProject?.id}
       onNewProject={handleNewProject}
+      selectedTemplate={selectedTemplate}
     />
   );
 };

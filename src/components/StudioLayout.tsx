@@ -24,6 +24,7 @@ interface StudioLayoutProps {
   onSelectProject?: (project: Project) => void;
   currentProjectId?: string;
   onNewProject?: () => void;
+  selectedTemplate?: Template | null;
 }
 
 const StudioLayout = ({ 
@@ -34,16 +35,19 @@ const StudioLayout = ({
   projects = [],
   onSelectProject,
   currentProjectId,
-  onNewProject
+  onNewProject,
+  selectedTemplate: initialTemplate
 }: StudioLayoutProps) => {
   const [selectedTool, setSelectedTool] = useState(initialTool);
   const [showTemplates, setShowTemplates] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<Template | null>(initialTemplate || null);
   const userName = user?.email?.split("@")[0] || "você";
 
   const handleSelectTemplate = (template: Template) => {
     toast.success(`Template "${template.name}" selecionado!`);
     setShowTemplates(false);
+    setActiveTemplate(template);
     setSelectedTool("website");
   };
 
@@ -132,6 +136,7 @@ const StudioLayout = ({
             onSendMessage={onSendMessage}
             userName={userName}
             onToolChange={setSelectedTool}
+            activeTemplate={activeTemplate}
           />
         </div>
       </div>
