@@ -227,16 +227,19 @@ const toolsConfig: Record<string, Tool> = {
   }
 };
 
+import { Template } from "./templates/TemplatesData";
+
 interface UnifiedChatProps {
   selectedTool: string;
   onSendMessage?: (message: string, toolId: string) => Promise<string>;
   userName?: string;
   onToolChange?: (toolId: string) => void;
+  activeTemplate?: Template | null;
 }
 
 const STORAGE_KEY = "codia_chat_history";
 
-const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolChange }: UnifiedChatProps) => {
+const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolChange, activeTemplate }: UnifiedChatProps) => {
   const [input, setInput] = useState("");
   const [messagesPerTool, setMessagesPerTool] = useState<Record<string, Message[]>>(() => {
     // Carregar do localStorage ao iniciar
@@ -249,12 +252,19 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(true);
-  const [previewContent, setPreviewContent] = useState<string>("");
+  const [previewContent, setPreviewContent] = useState<string>(activeTemplate?.previewHtml || "");
   const [streamingContent, setStreamingContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const tool = toolsConfig[selectedTool] || toolsConfig.business;
   const messages = messagesPerTool[selectedTool] || [];
+
+  // Load template preview when activeTemplate changes
+  useEffect(() => {
+    if (activeTemplate?.previewHtml) {
+      setPreviewContent(activeTemplate.previewHtml);
+    }
+  }, [activeTemplate]);
 
   // Salvar no localStorage sempre que mensagens mudarem
   useEffect(() => {
@@ -264,6 +274,7 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
       console.error("Erro ao salvar histórico:", e);
     }
   }, [messagesPerTool]);
+
 
   // Helper to update messages for current tool
   const setMessages = (updater: Message[] | ((prev: Message[]) => Message[])) => {
