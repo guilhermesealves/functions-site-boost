@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as React from "react";
 import { motion } from "framer-motion";
 import { 
   Monitor, 
@@ -18,9 +19,10 @@ interface PreviewPanelProps {
   content?: string;
   type: "website" | "logo" | "branding" | "copy" | "marketing" | "business" | "sales";
   isLoading?: boolean;
+  reactComponent?: React.ComponentType | null;
 }
 
-const PreviewPanel = ({ content, type, isLoading }: PreviewPanelProps) => {
+const PreviewPanel = ({ content, type, isLoading, reactComponent }: PreviewPanelProps) => {
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -261,9 +263,21 @@ const PreviewPanel = ({ content, type, isLoading }: PreviewPanelProps) => {
               <p className="text-white/40 text-sm">Gerando preview...</p>
             </div>
           </div>
-        ) : content ? (
+        ) : content || reactComponent ? (
           <div className="h-full flex items-center justify-center">
-            {type === "logo" && (content.startsWith("data:image") || content.startsWith("http")) ? (
+            {reactComponent ? (
+              // React Component Preview
+              <div 
+                className="bg-black rounded-lg shadow-2xl overflow-auto transition-all duration-300"
+                style={{ 
+                  width: deviceWidths[device],
+                  maxWidth: "100%",
+                  height: device === "mobile" ? "667px" : "calc(100vh - 160px)"
+                }}
+              >
+                {React.createElement(reactComponent)}
+              </div>
+            ) : type === "logo" && (content!.startsWith("data:image") || content!.startsWith("http")) ? (
               // Logo image preview
               <div className="flex items-center justify-center p-8">
                 <div className="relative max-w-lg w-full bg-white/[0.02] rounded-2xl p-8 border border-white/[0.08]">

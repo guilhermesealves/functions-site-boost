@@ -1670,5 +1670,91 @@ export const templates: Template[] = [
       <text x="25" y="36" font-family="Arial" font-size="16" fill="#14b8a6" text-anchor="middle" font-weight="700">ABC</text>
       <text x="55" y="38" font-family="Arial" font-size="18" fill="#14b8a6" font-weight="700">LinguaPro</text>
     </svg>`
+  },
+
+  // NOVOS TEMPLATES COMPLETOS - REACT
+  {
+    id: "academia-complete",
+    name: "Academia FitGym",
+    description: "Site completo para academia com design moderno, animações Framer Motion e seções profissionais",
+    category: "Saúde & Fitness",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+    colors: ["#ef4444", "#dc2626", "#0a0a0a"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:AcademiaComplete"
+  },
+  {
+    id: "psicologo-complete",
+    name: "Psicólogo Profissional",
+    description: "Site acolhedor para psicólogos com design zen, cores suaves e ambiente profissional",
+    category: "Saúde & Fitness",
+    style: "Minimalista",
+    thumbnail: "linear-gradient(135deg, #9333ea 0%, #6366f1 100%)",
+    colors: ["#9333ea", "#6366f1", "#f5f5f5"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:PsicologoComplete"
+  },
+  {
+    id: "yoga-complete",
+    name: "Estúdio de Yoga ZenFlow",
+    description: "Site zen para estúdio de yoga com design minimalista e paleta harmoniosa",
+    category: "Saúde & Fitness",
+    style: "Minimalista",
+    thumbnail: "linear-gradient(135deg, #f59e0b 0%, #9333ea 100%)",
+    colors: ["#f59e0b", "#9333ea", "#fffbeb"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:YogaComplete"
+  },
+  {
+    id: "restaurante-complete",
+    name: "Restaurante Le Gourmet",
+    description: "Site premium para restaurante com design luxuoso, menu completo e reservas",
+    category: "Gastronomia",
+    style: "Luxuoso",
+    thumbnail: "linear-gradient(135deg, #d97706 0%, #dc2626 100%)",
+    colors: ["#d97706", "#dc2626", "#0a0a0a"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:RestauranteComplete"
+  },
+  {
+    id: "cafeteria-complete",
+    name: "Cafeteria CaféHouse",
+    description: "Site aconchegante para cafeteria com cardápio completo e ambiente caloroso",
+    category: "Gastronomia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #ea580c 0%, #f59e0b 100%)",
+    colors: ["#ea580c", "#f59e0b", "#fff7ed"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:CafeteriaComplete"
+  },
+  {
+    id: "pizzaria-complete",
+    name: "Pizzaria Autêntica",
+    description: "Site vibrante para pizzaria com cardápio completo, combos e delivery",
+    category: "Gastronomia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #ea580c 0%, #dc2626 100%)",
+    colors: ["#ea580c", "#dc2626", "#0a0a0a"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:PizzariaComplete"
+  },
+  {
+    id: "psicologo-cinematic",
+    name: "Psicólogo Cinematic",
+    description: "Site cinematográfico para psicólogo com design anti-boring, scrollytelling e animações complexas",
+    category: "Saúde & Fitness",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #9333ea 0%, #ec4899 100%)",
+    colors: ["#9333ea", "#ec4899", "#0f0f23"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:PsicologoCinematic"
   }
 ];

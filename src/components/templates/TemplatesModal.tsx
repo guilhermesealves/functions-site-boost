@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Search, Eye, ChevronDown, Globe, Palette, Star, LayoutGrid, List } from "lucide-react";
 import { templates, categories, styles, Template } from "./TemplatesData";
 import { useNavigate } from "react-router-dom";
+import AcademiaComplete from "./sites/AcademiaComplete";
+import PsicologoComplete from "./sites/PsicologoComplete";
+import YogaComplete from "./sites/YogaComplete";
+import RestauranteComplete from "./sites/RestauranteComplete";
+import CafeteriaComplete from "./sites/CafeteriaComplete";
+import PizzariaComplete from "./sites/PizzariaComplete";
+import PsicologoCinematic from "./sites/PsicologoCinematic";
 
 interface TemplatesModalProps {
   isOpen: boolean;
@@ -18,6 +25,60 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const navigate = useNavigate();
+  const previewContentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll para o topo quando o preview abre
+  useEffect(() => {
+    if (previewTemplate && previewContentRef.current) {
+      previewContentRef.current.scrollTop = 0;
+    }
+  }, [previewTemplate]);
+
+  // Mapeamento de componentes React
+  const reactComponents: Record<string, React.ComponentType> = {
+    "AcademiaComplete": AcademiaComplete,
+    "PsicologoComplete": PsicologoComplete,
+    "YogaComplete": YogaComplete,
+    "RestauranteComplete": RestauranteComplete,
+    "CafeteriaComplete": CafeteriaComplete,
+    "PizzariaComplete": PizzariaComplete,
+    "PsicologoCinematic": PsicologoCinematic
+  };
+
+  // Função para renderizar o preview
+  const renderPreview = (template: Template) => {
+    if (template.previewHtml?.startsWith("REACT_COMPONENT:")) {
+      const componentName = template.previewHtml.replace("REACT_COMPONENT:", "");
+      const Component = reactComponents[componentName];
+      if (Component) {
+        return <Component />;
+      }
+    }
+    
+    // Fallback para HTML normal
+    if (template.previewHtml) {
+      return (
+        <iframe
+          srcDoc={template.previewHtml}
+          className="w-full h-full bg-white"
+          title={template.name}
+        />
+      );
+    }
+
+    // Fallback para template sem preview
+    return (
+      <div 
+        className="w-full h-full flex items-center justify-center"
+        style={{ background: template.thumbnail }}
+      >
+        <div className="text-center">
+          <span className="text-white text-4xl font-bold block mb-4">{template.name}</span>
+          <span className="text-white/60">Preview em desenvolvimento</span>
+        </div>
+      </div>
+    );
+  };
 
   const filteredTemplates = templates.filter((template) => {
     const matchesSearch = template.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -270,24 +331,11 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
                   </div>
                   
                   {/* Preview Content */}
-                  <div className="h-[calc(100%-72px)] overflow-hidden">
-                    {previewTemplate.previewHtml ? (
-                      <iframe
-                        srcDoc={previewTemplate.previewHtml}
-                        className="w-full h-full bg-white"
-                        title={previewTemplate.name}
-                      />
-                    ) : (
-                      <div 
-                        className="w-full h-full flex items-center justify-center"
-                        style={{ background: previewTemplate.thumbnail }}
-                      >
-                        <div className="text-center">
-                          <span className="text-white text-4xl font-bold block mb-4">{previewTemplate.name}</span>
-                          <span className="text-white/60">Preview em desenvolvimento</span>
-                        </div>
-                      </div>
-                    )}
+                  <div 
+                    ref={previewContentRef}
+                    className="h-[calc(100%-72px)] overflow-y-auto overflow-x-hidden bg-black"
+                  >
+                    {renderPreview(previewTemplate)}
                   </div>
                 </motion.div>
               </motion.div>
@@ -307,6 +355,30 @@ interface TemplateCardProps {
 }
 
 const TemplateCard = ({ template, onPreview, onSelect }: TemplateCardProps) => {
+  // Verifica se é um componente React
+  const isReactComponent = template.previewHtml?.startsWith("REACT_COMPONENT:");
+  
+  // Mapeamento de componentes React para preview
+  const reactComponents: Record<string, React.ComponentType> = {
+    "AcademiaComplete": AcademiaComplete,
+    "PsicologoComplete": PsicologoComplete,
+    "YogaComplete": YogaComplete,
+    "RestauranteComplete": RestauranteComplete,
+    "CafeteriaComplete": CafeteriaComplete,
+    "PizzariaComplete": PizzariaComplete,
+    "PsicologoCinematic": PsicologoCinematic
+  };
+  
+  const getReactComponent = () => {
+    if (isReactComponent && template.previewHtml) {
+      const componentName = template.previewHtml.replace("REACT_COMPONENT:", "");
+      return reactComponents[componentName];
+    }
+    return null;
+  };
+  
+  const ReactComponent = getReactComponent();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -318,13 +390,20 @@ const TemplateCard = ({ template, onPreview, onSelect }: TemplateCardProps) => {
         className="relative h-44 overflow-hidden"
         style={{ background: template.thumbnail }}
       >
-        {/* Live Preview in Thumbnail */}
-        {template.previewHtml && (
+        {/* Live Preview in Thumbnail - Somente para HTML normal */}
+        {template.previewHtml && !isReactComponent && (
           <iframe
             srcDoc={template.previewHtml}
             className="absolute inset-0 w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
             title={template.name}
           />
+        )}
+
+        {/* Para componentes React, renderiza em miniatura */}
+        {ReactComponent && (
+          <div className="absolute inset-0 w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none overflow-hidden">
+            <ReactComponent />
+          </div>
         )}
 
         {/* Popular Badge */}

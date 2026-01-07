@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, PanelLeftOpen } from "lucide-react";
 import AISidebar from "./AISidebar";
@@ -43,6 +43,13 @@ const StudioLayout = ({
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(initialTemplate || null);
   const userName = user?.email?.split("@")[0] || "você";
+
+  // Update activeTemplate when initialTemplate changes
+  useEffect(() => {
+    if (initialTemplate) {
+      setActiveTemplate(initialTemplate);
+    }
+  }, [initialTemplate]);
 
   const handleSelectTemplate = (template: Template) => {
     toast.success(`Template "${template.name}" selecionado!`);

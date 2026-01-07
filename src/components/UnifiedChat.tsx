@@ -228,6 +228,13 @@ const toolsConfig: Record<string, Tool> = {
 };
 
 import { Template } from "./templates/TemplatesData";
+import AcademiaComplete from "./templates/sites/AcademiaComplete";
+import PsicologoComplete from "./templates/sites/PsicologoComplete";
+import YogaComplete from "./templates/sites/YogaComplete";
+import RestauranteComplete from "./templates/sites/RestauranteComplete";
+import CafeteriaComplete from "./templates/sites/CafeteriaComplete";
+import PizzariaComplete from "./templates/sites/PizzariaComplete";
+import PsicologoCinematic from "./templates/sites/PsicologoCinematic";
 
 interface UnifiedChatProps {
   selectedTool: string;
@@ -254,6 +261,18 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
   const [showTips, setShowTips] = useState(true);
   const [previewContent, setPreviewContent] = useState<string>(activeTemplate?.previewHtml || "");
   const [streamingContent, setStreamingContent] = useState("");
+  const [showReactComponent, setShowReactComponent] = useState(false);
+
+  // Mapeamento de componentes React
+  const reactComponents: Record<string, React.ComponentType> = {
+    "AcademiaComplete": AcademiaComplete,
+    "PsicologoComplete": PsicologoComplete,
+    "YogaComplete": YogaComplete,
+    "RestauranteComplete": RestauranteComplete,
+    "CafeteriaComplete": CafeteriaComplete,
+    "PizzariaComplete": PizzariaComplete,
+    "PsicologoCinematic": PsicologoCinematic
+  };
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const tool = toolsConfig[selectedTool] || toolsConfig.business;
@@ -262,7 +281,13 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
   // Load template preview when activeTemplate changes
   useEffect(() => {
     if (activeTemplate?.previewHtml) {
-      setPreviewContent(activeTemplate.previewHtml);
+      // Verifica se é um componente React
+      if (activeTemplate.previewHtml.startsWith("REACT_COMPONENT:")) {
+        setShowReactComponent(true);
+      } else {
+        setShowReactComponent(false);
+        setPreviewContent(activeTemplate.previewHtml);
+      }
     }
   }, [activeTemplate]);
 
@@ -755,6 +780,11 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
             content={previewContent || streamingContent}
             type={selectedTool as any}
             isLoading={isLoading}
+            reactComponent={
+              showReactComponent && activeTemplate?.previewHtml
+                ? reactComponents[activeTemplate.previewHtml.replace("REACT_COMPONENT:", "")]
+                : null
+            }
           />
         </div>
       )}
