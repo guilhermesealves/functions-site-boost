@@ -36,19 +36,18 @@ interface DashboardProps {
 interface Tool {
   id: string;
   name: string;
-  description: string;
   icon: React.ElementType;
   color: string;
 }
 
 const tools: Tool[] = [
-  { id: "business", name: "Plano de Negócio", description: "Estruture sua empresa", icon: Briefcase, color: "from-blue-500 to-cyan-500" },
-  { id: "branding", name: "Branding", description: "Identidade da marca", icon: Palette, color: "from-purple-500 to-pink-500" },
-  { id: "logo", name: "Logo & Visual", description: "Identidade visual", icon: PenTool, color: "from-orange-500 to-amber-500" },
-  { id: "website", name: "Website", description: "Presença online", icon: Globe, color: "from-emerald-500 to-teal-500" },
-  { id: "copywriter", name: "Copywriter", description: "Textos persuasivos", icon: FileText, color: "from-rose-500 to-red-500" },
-  { id: "marketing", name: "Marketing", description: "Estratégias de growth", icon: TrendingUp, color: "from-violet-500 to-indigo-500" },
-  { id: "sales", name: "Vendas", description: "Scripts e conversão", icon: Target, color: "from-amber-500 to-yellow-500" },
+  { id: "business", name: "Plano de Negócio", icon: Briefcase, color: "bg-blue-500" },
+  { id: "branding", name: "Branding", icon: Palette, color: "bg-purple-500" },
+  { id: "logo", name: "Logo & Visual", icon: PenTool, color: "bg-orange-500" },
+  { id: "website", name: "Website", icon: Globe, color: "bg-emerald-500" },
+  { id: "copywriter", name: "Copywriter", icon: FileText, color: "bg-rose-500" },
+  { id: "marketing", name: "Marketing", icon: TrendingUp, color: "bg-violet-500" },
+  { id: "sales", name: "Vendas", icon: Target, color: "bg-amber-500" },
 ];
 
 const typingTexts = [
@@ -92,52 +91,19 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
   ];
 
   return (
-    <div className="flex-1 overflow-auto relative min-h-screen">
-      {/* Background - Same as Home Page */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/15" />
-      
-      {/* Animated glow orbs - exactly like HeroSection */}
-      <motion.div
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.08, 0.15, 0.08],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-primary/30 blur-[150px] pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.05, 0.12, 0.05],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-orange-500/20 blur-[120px] pointer-events-none"
-      />
-
-      {/* Grid pattern - same as home */}
-      <div 
-        className="absolute inset-0 opacity-[0.015] pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, hsl(24, 100%, 50%) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(24, 100%, 50%) 1px, transparent 1px)
-          `,
-          backgroundSize: '80px 80px'
-        }}
-      />
-
+    <div className="flex-1 overflow-auto relative min-h-screen bg-background">
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
         
         {/* Main centered content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="flex-1 flex flex-col items-center justify-start px-6 pt-16">
           
           {/* Welcome text */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-semibold text-foreground mb-4 italic"
+            className="text-3xl md:text-4xl font-semibold text-foreground mb-3 italic"
           >
             Vamos criar algo, {userName}
           </motion.h1>
@@ -163,7 +129,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             className="w-full max-w-2xl mb-12"
           >
             <form onSubmit={handleSubmit}>
-              <div className="relative bg-card border border-border rounded-2xl p-4 focus-within:border-primary/30 focus-within:ring-4 focus-within:ring-primary/5 transition-all shadow-lg">
+              <div className="relative bg-card border border-border rounded-2xl p-4 focus-within:border-primary/30 transition-all">
                 <input
                   type="text"
                   value={input}
@@ -176,31 +142,31 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
                     >
                       <Paperclip className="w-4 h-4" />
-                      <span className="hidden sm:inline">Anexar</span>
+                      <span>Anexar</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowTemplates(true)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
                     >
                       <LayoutTemplate className="w-4 h-4" />
-                      <span className="hidden sm:inline">Templates</span>
+                      <span>Templates</span>
                     </button>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
+                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <Mic className="w-5 h-5" />
                     </button>
                     <button
                       type="submit"
-                      className="w-10 h-10 rounded-full bg-gradient-orange hover:opacity-90 flex items-center justify-center text-white transition-all shadow-lg shadow-primary/30"
+                      className="w-10 h-10 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center text-primary-foreground transition-all"
                     >
                       <ArrowUp className="w-5 h-5" />
                     </button>
@@ -215,13 +181,13 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-4xl mb-16"
+            className="w-full max-w-4xl"
           >
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">
               Acesso Rápido às IAs
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+            <div className="flex flex-wrap justify-center gap-3">
               {tools.map((tool, index) => (
                 <motion.button
                   key={tool.id}
@@ -229,10 +195,10 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.25 + index * 0.03 }}
                   onClick={() => onOpenStudio(tool.id)}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card/50 border border-border hover:border-primary/30 hover:bg-card transition-all group"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border hover:border-primary/30 hover:bg-card transition-all group min-w-[100px]"
                 >
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity`}>
-                    <tool.icon className="w-5 h-5 text-white" />
+                  <div className={`w-12 h-12 rounded-xl ${tool.color} flex items-center justify-center`}>
+                    <tool.icon className="w-6 h-6 text-white" />
                   </div>
                   <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors text-center">
                     {tool.name}
@@ -243,12 +209,12 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
           </motion.div>
         </div>
 
-        {/* Bottom Projects Section - Lower position */}
+        {/* Bottom Projects Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-background/80 backdrop-blur-xl border-t border-border px-6 py-8"
+          className="px-6 py-8 mt-auto"
         >
           <div className="max-w-5xl mx-auto">
             {/* Tabs and Browse All */}
@@ -299,7 +265,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   transition={{ delay: 0.35 + index * 0.05 }}
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
-                  className="group relative bg-card/50 border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-all cursor-pointer"
+                  className="group relative bg-card border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-all cursor-pointer"
                 >
                   {/* Preview area */}
                   <div className="h-28 bg-secondary/30 relative">
@@ -310,7 +276,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                         <div className="w-1.5 h-1.5 rounded-full bg-green-400/50" />
                       </div>
                       <div className="p-2 space-y-1">
-                        <div className="h-2 bg-primary/20 rounded w-1/2" />
+                        <div className="h-2 bg-primary/40 rounded w-1/2" />
                         <div className="h-1.5 bg-secondary rounded w-full" />
                         <div className="h-1.5 bg-secondary/50 rounded w-3/4" />
                       </div>
@@ -349,7 +315,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 onClick={() => onOpenStudio("business")}
-                className="h-full min-h-[160px] flex flex-col items-center justify-center gap-2 bg-card/30 border border-dashed border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group"
+                className="h-full min-h-[160px] flex flex-col items-center justify-center gap-2 border border-dashed border-border rounded-xl hover:border-primary/30 hover:bg-card/50 transition-all group"
               >
                 <div className="w-10 h-10 rounded-xl bg-secondary group-hover:bg-primary/20 flex items-center justify-center transition-colors">
                   <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />

@@ -12,9 +12,9 @@ const CodiaLogo = ({ size = "md", onClick, animated = false }: CodiaLogoProps) =
   const navigate = useNavigate();
 
   const sizes = {
-    sm: { text: "text-lg", symbol: 20 },
-    md: { text: "text-xl", symbol: 24 },
-    lg: { text: "text-2xl", symbol: 28 },
+    sm: { text: "text-lg", symbol: 16 },
+    md: { text: "text-xl", symbol: 20 },
+    lg: { text: "text-2xl", symbol: 24 },
   };
 
   const handleClick = () => {
@@ -35,19 +35,17 @@ const CodiaLogo = ({ size = "md", onClick, animated = false }: CodiaLogoProps) =
       <span className={`font-bold ${sizes[size].text} text-primary tracking-tight`}>
         Codia
       </span>
-      {/* Animated Infinity Symbol */}
+      {/* Animated Flame/Fire Symbol */}
       <motion.div
         className="relative"
         animate={animated ? {
-          rotateY: [0, 180, 360],
-          scale: [1, 1.1, 1],
+          y: [0, -2, 0],
         } : {}}
         transition={animated ? {
-          duration: 3,
+          duration: 1.5,
           repeat: Infinity,
           ease: "easeInOut",
         } : {}}
-        style={{ transformStyle: "preserve-3d" }}
       >
         <svg 
           width={sizes[size].symbol} 
@@ -56,49 +54,46 @@ const CodiaLogo = ({ size = "md", onClick, animated = false }: CodiaLogoProps) =
           fill="none"
           className="text-primary"
         >
+          {/* Flame shape */}
           <motion.path
-            d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.781 0-4.781 8 0 8 5.606 0 7.644-8 12.74-8z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={animated ? { 
-              pathLength: [0, 1, 1, 0],
-              opacity: [0, 1, 1, 0],
-            } : { pathLength: 1, opacity: 1 }}
-            transition={animated ? {
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              times: [0, 0.4, 0.6, 1],
-            } : { duration: 0.5 }}
-          />
-          <motion.path
-            d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.781 0-4.781 8 0 8 5.606 0 7.644-8 12.74-8z"
+            d="M12 2C12 2 8 6 8 10C8 12 9 14 10 15C10 15 9 13 10 11C11 9 12 8 12 8C12 8 13 9 14 11C15 13 14 15 14 15C15 14 16 12 16 10C16 6 12 2 12 2Z"
             fill="currentColor"
-            initial={{ opacity: 0 }}
-            animate={animated ? { 
-              opacity: [0, 0.3, 0.3, 0],
-            } : { opacity: 0.2 }}
+            animate={animated ? {
+              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.05, 1],
+            } : {}}
             transition={animated ? {
-              duration: 3,
+              duration: 1.5,
               repeat: Infinity,
               ease: "easeInOut",
-              times: [0, 0.4, 0.6, 1],
+            } : {}}
+          />
+          {/* Inner flame */}
+          <motion.path
+            d="M12 6C12 6 10 9 10 11C10 12.5 11 13.5 12 14C12 14 11.5 12.5 12 11C12.5 9.5 13 8.5 12 6Z"
+            fill="hsl(32, 100%, 60%)"
+            animate={animated ? {
+              opacity: [0.5, 1, 0.5],
+              y: [0, -1, 0],
+            } : {}}
+            transition={animated ? {
+              duration: 1,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.2,
             } : {}}
           />
         </svg>
         {/* Glow effect */}
         {animated && (
           <motion.div
-            className="absolute inset-0 rounded-full bg-primary/30 blur-md"
+            className="absolute inset-0 rounded-full bg-primary/40 blur-sm -z-10"
             animate={{
-              opacity: [0, 0.5, 0],
-              scale: [0.8, 1.2, 0.8],
+              opacity: [0.3, 0.6, 0.3],
+              scale: [1, 1.3, 1],
             }}
             transition={{
-              duration: 3,
+              duration: 1.5,
               repeat: Infinity,
               ease: "easeInOut",
             }}
