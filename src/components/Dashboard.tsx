@@ -91,7 +91,40 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
   ];
 
   return (
-    <div className="flex-1 overflow-auto relative min-h-screen bg-background">
+    <div className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-screen">
+      {/* Background - Same as Home Page */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/15" />
+      
+      {/* Animated glow orbs */}
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.08, 0.15, 0.08],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-primary/30 blur-[150px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.05, 0.12, 0.05],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-orange-500/20 blur-[120px] pointer-events-none"
+      />
+
+      {/* Grid pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.015] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, hsl(24, 100%, 50%) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(24, 100%, 50%) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px'
+        }}
+      />
+
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
         
@@ -176,16 +209,25 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             </form>
           </motion.div>
 
-          {/* Quick Tools - AI Access */}
+          {/* Quick Tools - Ferramentas IAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="w-full max-w-4xl"
           >
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">
-              Acesso Rápido às IAs
-            </h2>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              {/* Logo Symbol */}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-primary">
+                <path
+                  d="M12 2C12 2 8 6 8 10C8 12 9 14 10 15C10 15 9 13 10 11C11 9 12 8 12 8C12 8 13 9 14 11C15 13 14 15 14 15C15 14 16 12 16 10C16 6 12 2 12 2Z"
+                  fill="currentColor"
+                />
+              </svg>
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Ferramentas IAs
+              </h2>
+            </div>
             
             <div className="flex flex-wrap justify-center gap-3">
               {tools.map((tool, index) => (
