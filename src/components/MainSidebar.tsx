@@ -143,7 +143,7 @@ const MainSidebar = ({
     >
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
-        <CodiaLogo size="md" />
+        <CodiaLogo size="md" animated />
         <button
           onClick={onToggleCollapse}
           className="p-2 rounded-lg hover:bg-white/[0.04] text-white/40 hover:text-white transition-colors"
