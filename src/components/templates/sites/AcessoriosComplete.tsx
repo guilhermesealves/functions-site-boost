@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingCart, Heart, Search, User, Star, Diamond, Watch, Gem, Gift, ChevronRight, Instagram, Facebook, Pinterest } from 'lucide-react';
+import { ShoppingCart, Heart, Search, User, Star, Diamond, Watch, Gem, Gift, ChevronRight, Instagram, Facebook, Twitter } from 'lucide-react';
 
 const AcessoriosComplete = () => {
   const products = [
@@ -215,7 +215,7 @@ const AcessoriosComplete = () => {
               <div className="flex gap-4 mt-6">
                 <a href="#" className="text-gray-400 hover:text-amber-400"><Instagram className="w-5 h-5" /></a>
                 <a href="#" className="text-gray-400 hover:text-amber-400"><Facebook className="w-5 h-5" /></a>
-                <a href="#" className="text-gray-400 hover:text-amber-400"><Pinterest className="w-5 h-5" /></a>
+                <a href="#" className="text-gray-400 hover:text-amber-400"><Twitter className="w-5 h-5" /></a>
               </div>
             </div>
             <div>
