@@ -10,6 +10,18 @@ import RestauranteComplete from "./sites/RestauranteComplete";
 import CafeteriaComplete from "./sites/CafeteriaComplete";
 import PizzariaComplete from "./sites/PizzariaComplete";
 import PsicologoCinematic from "./sites/PsicologoCinematic";
+import SalaoComplete from "./sites/SalaoComplete";
+import AdvogadoComplete from "./sites/AdvogadoComplete";
+import ContadorComplete from "./sites/ContadorComplete";
+import LojaRoupasComplete from "./sites/LojaRoupasComplete";
+import AcessoriosComplete from "./sites/AcessoriosComplete";
+import EletronicosComplete from "./sites/EletronicosComplete";
+import StartupSaasComplete from "./sites/StartupSaasComplete";
+import AppMobileComplete from "./sites/AppMobileComplete";
+import AgenciaDigitalComplete from "./sites/AgenciaDigitalComplete";
+import EscolaMusicaComplete from "./sites/EscolaMusicaComplete";
+import CursosOnlineComplete from "./sites/CursosOnlineComplete";
+import IdiomasComplete from "./sites/IdiomasComplete";
 
 interface TemplatesModalProps {
   isOpen: boolean;
@@ -42,7 +54,19 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
     "RestauranteComplete": RestauranteComplete,
     "CafeteriaComplete": CafeteriaComplete,
     "PizzariaComplete": PizzariaComplete,
-    "PsicologoCinematic": PsicologoCinematic
+    "PsicologoCinematic": PsicologoCinematic,
+    "SalaoComplete": SalaoComplete,
+    "AdvogadoComplete": AdvogadoComplete,
+    "ContadorComplete": ContadorComplete,
+    "LojaRoupasComplete": LojaRoupasComplete,
+    "AcessoriosComplete": AcessoriosComplete,
+    "EletronicosComplete": EletronicosComplete,
+    "StartupSaasComplete": StartupSaasComplete,
+    "AppMobileComplete": AppMobileComplete,
+    "AgenciaDigitalComplete": AgenciaDigitalComplete,
+    "EscolaMusicaComplete": EscolaMusicaComplete,
+    "CursosOnlineComplete": CursosOnlineComplete,
+    "IdiomasComplete": IdiomasComplete
   };
 
   // Função para renderizar o preview
@@ -115,14 +139,14 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-sm overflow-y-auto py-8"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          className="relative w-full max-w-7xl mx-4 bg-card border border-border rounded-2xl shadow-2xl my-auto"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="relative w-full max-w-7xl mx-4 bg-card border border-border rounded-2xl shadow-2xl flex flex-col max-h-[90vh]"
         >
           {/* Header */}
           <div className="sticky top-0 z-10 bg-card border-b border-border rounded-t-2xl p-6">
@@ -234,7 +258,7 @@ const TemplatesModal = ({ isOpen, onClose, onSelectTemplate }: TemplatesModalPro
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 overflow-y-auto flex-1">
             {/* Popular Section */}
             {selectedCategory === "Todos" && search === "" && (
               <div className="mb-8">
@@ -366,7 +390,19 @@ const TemplateCard = ({ template, onPreview, onSelect }: TemplateCardProps) => {
     "RestauranteComplete": RestauranteComplete,
     "CafeteriaComplete": CafeteriaComplete,
     "PizzariaComplete": PizzariaComplete,
-    "PsicologoCinematic": PsicologoCinematic
+    "PsicologoCinematic": PsicologoCinematic,
+    "SalaoComplete": SalaoComplete,
+    "AdvogadoComplete": AdvogadoComplete,
+    "ContadorComplete": ContadorComplete,
+    "LojaRoupasComplete": LojaRoupasComplete,
+    "AcessoriosComplete": AcessoriosComplete,
+    "EletronicosComplete": EletronicosComplete,
+    "StartupSaasComplete": StartupSaasComplete,
+    "AppMobileComplete": AppMobileComplete,
+    "AgenciaDigitalComplete": AgenciaDigitalComplete,
+    "EscolaMusicaComplete": EscolaMusicaComplete,
+    "CursosOnlineComplete": CursosOnlineComplete,
+    "IdiomasComplete": IdiomasComplete
   };
   
   const getReactComponent = () => {

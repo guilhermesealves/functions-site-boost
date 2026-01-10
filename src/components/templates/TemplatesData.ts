@@ -1756,5 +1756,154 @@ export const templates: Template[] = [
     type: "website",
     popular: true,
     previewHtml: "REACT_COMPONENT:PsicologoCinematic"
+  },
+  // === BELEZA ===
+  {
+    id: "salao-complete",
+    name: "Salão de Beleza Glamour",
+    description: "Site elegante para salão de beleza com serviços, equipe e agendamento online",
+    category: "Beleza",
+    style: "Feminino",
+    thumbnail: "linear-gradient(135deg, #ec4899 0%, #f97316 100%)",
+    colors: ["#ec4899", "#f97316", "#0a0a0a"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:SalaoComplete"
+  },
+  // === SERVIÇOS ===
+  {
+    id: "advogado-complete",
+    name: "Escritório de Advocacia",
+    description: "Site profissional para escritório de advocacia com áreas de atuação e equipe",
+    category: "Serviços",
+    style: "Corporativo",
+    thumbnail: "linear-gradient(135deg, #1e40af 0%, #0f172a 100%)",
+    colors: ["#1e40af", "#0f172a", "#f8fafc"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:AdvogadoComplete"
+  },
+  {
+    id: "contador-complete",
+    name: "Escritório de Contabilidade",
+    description: "Site moderno para contador com serviços, calculadoras e consultoria",
+    category: "Serviços",
+    style: "Corporativo",
+    thumbnail: "linear-gradient(135deg, #059669 0%, #0d9488 100%)",
+    colors: ["#059669", "#0d9488", "#0f172a"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:ContadorComplete"
+  },
+  // === E-COMMERCE ===
+  {
+    id: "loja-roupas-complete",
+    name: "Loja de Roupas ÉLÉGANCE",
+    description: "E-commerce de moda com design sofisticado, categorias e produtos em destaque",
+    category: "E-commerce",
+    style: "Luxuoso",
+    thumbnail: "linear-gradient(135deg, #1f2937 0%, #f5f5f4 100%)",
+    colors: ["#1f2937", "#f5f5f4", "#ffffff"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:LojaRoupasComplete"
+  },
+  {
+    id: "acessorios-complete",
+    name: "Joalheria Lumière",
+    description: "E-commerce de joias e acessórios com design elegante e produtos premium",
+    category: "E-commerce",
+    style: "Luxuoso",
+    thumbnail: "linear-gradient(135deg, #d97706 0%, #fbbf24 100%)",
+    colors: ["#d97706", "#fbbf24", "#faf9f7"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:AcessoriosComplete"
+  },
+  {
+    id: "eletronicos-complete",
+    name: "TechZone Eletrônicos",
+    description: "E-commerce de eletrônicos com design moderno, ofertas e categorias de produtos",
+    category: "E-commerce",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+    colors: ["#3b82f6", "#8b5cf6", "#030712"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:EletronicosComplete"
+  },
+  // === TECNOLOGIA ===
+  {
+    id: "startup-saas-complete",
+    name: "Startup SaaS Nexus",
+    description: "Landing page para startup SaaS com features, pricing e testimonials",
+    category: "Tecnologia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+    colors: ["#8b5cf6", "#ec4899", "#020617"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:StartupSaasComplete"
+  },
+  {
+    id: "app-mobile-complete",
+    name: "App Mobile Flowy",
+    description: "Landing page para app mobile com download links, features e reviews",
+    category: "Tecnologia",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+    colors: ["#6366f1", "#a855f7", "#ffffff"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:AppMobileComplete"
+  },
+  {
+    id: "agencia-digital-complete",
+    name: "Agência Digital Orbit",
+    description: "Site criativo para agência digital com portfólio, serviços e time",
+    category: "Tecnologia",
+    style: "Criativo",
+    thumbnail: "linear-gradient(135deg, #06b6d4 0%, #ec4899 100%)",
+    colors: ["#06b6d4", "#ec4899", "#000000"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:AgenciaDigitalComplete"
+  },
+  // === EDUCAÇÃO ===
+  {
+    id: "escola-musica-complete",
+    name: "Escola de Música Harmonia",
+    description: "Site para escola de música com cursos, professores e agendamento",
+    category: "Educação",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
+    colors: ["#f59e0b", "#ea580c", "#0c0c0c"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:EscolaMusicaComplete"
+  },
+  {
+    id: "cursos-online-complete",
+    name: "Plataforma EduPro",
+    description: "Plataforma de cursos online com categorias, cursos em destaque e planos",
+    category: "Educação",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #10b981 0%, #14b8a6 100%)",
+    colors: ["#10b981", "#14b8a6", "#ffffff"],
+    type: "website",
+    popular: true,
+    previewHtml: "REACT_COMPONENT:CursosOnlineComplete"
+  },
+  {
+    id: "idiomas-complete",
+    name: "Escola de Idiomas Polyglot",
+    description: "Site para escola de idiomas com cursos, planos e depoimentos",
+    category: "Educação",
+    style: "Moderno",
+    thumbnail: "linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
+    colors: ["#3b82f6", "#6366f1", "#fafafa"],
+    type: "website",
+    popular: false,
+    previewHtml: "REACT_COMPONENT:IdiomasComplete"
   }
 ];
