@@ -4,7 +4,6 @@ import {
   Home, 
   Search, 
   FolderOpen, 
-  Star, 
   Users, 
   Compass, 
   LayoutTemplate, 
@@ -17,12 +16,15 @@ import {
   Plus,
   Settings,
   LogOut,
-  HelpCircle
+  HelpCircle,
+  Flame,
+  Crown
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import CodiaLogo from "./CodiaLogo";
+import { useCredits } from "@/hooks/useCredits";
 
 interface MainSidebarProps {
   userName?: string;
@@ -48,7 +50,13 @@ const MainSidebar = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
+  const { balance } = useCredits();
+  
+  // Credit calculations
+  const totalCredits = balance?.total || 0;
+  const maxCredits = balance?.tier === "free" ? 50 : balance?.tier === "starter" ? 200 : balance?.tier === "pro" ? 500 : 1000;
+  const creditPercentage = Math.min((totalCredits / maxCredits) * 100, 100);
+  const isLowCredits = creditPercentage < 20;
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -73,9 +81,14 @@ const MainSidebar = ({
 
   const projectItems = [
     { id: "all-projects", label: "Todos os projetos", icon: FolderOpen },
-    { id: "starred", label: "Favoritos", icon: Star },
+    { id: "starred", label: "Favoritos", icon: CodiaLogoIcon },
     { id: "shared", label: "Compartilhados comigo", icon: Users },
   ];
+  
+  // Custom icon component for using CodiaLogo style
+  function CodiaLogoIcon({ className }: { className?: string }) {
+    return <span className={`${className} text-primary font-light`}>∞</span>;
+  }
 
   const resourceItems = [
     { id: "discover", label: "Descobrir", icon: Compass },
@@ -177,11 +190,53 @@ const MainSidebar = ({
               transition={{ duration: 0.15 }}
               className="absolute left-3 right-3 top-full mt-1 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
             >
+              {/* Credit Bar Section */}
+              <div className="p-3 border-b border-white/[0.06]">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-primary"}`} />
+                    <span className="text-sm font-medium text-white">{totalCredits} créditos</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {balance?.streak && balance.streak > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-amber-400">
+                        <Flame className="w-3 h-3" />
+                        <span>{balance.streak}</span>
+                      </div>
+                    )}
+                    {balance?.level && (
+                      <div className="flex items-center gap-1 text-xs text-violet-400">
+                        <Crown className="w-3 h-3" />
+                        <span>Nv.{balance.level}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="relative h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${creditPercentage}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className={`absolute inset-y-0 left-0 rounded-full ${
+                      isLowCredits 
+                        ? "bg-gradient-to-r from-red-500 to-red-400" 
+                        : "bg-gradient-to-r from-primary to-amber-400"
+                    }`}
+                  />
+                </div>
+                
+                <div className="flex justify-between mt-1.5">
+                  <span className="text-[10px] text-white/30">{balance?.daily?.used || 0} usado hoje</span>
+                  <span className="text-[10px] text-white/30 capitalize">{balance?.tier || "free"}</span>
+                </div>
+              </div>
+              
               <div className="p-1.5">
                 <button
                   onClick={() => {
                     setIsDropdownOpen(false);
-                    // Trigger settings modal via callback
                     if (onOpenSettings) {
                       onOpenSettings();
                     }
@@ -200,6 +255,13 @@ const MainSidebar = ({
                 >
                   <HelpCircle className="w-4 h-4" />
                   Suporte
+                </button>
+                <button
+                  onClick={() => { setIsDropdownOpen(false); navigate("/pricing"); }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                >
+                  <Zap className="w-4 h-4" />
+                  Comprar Créditos
                 </button>
                 <button
                   onClick={handleLogout}
