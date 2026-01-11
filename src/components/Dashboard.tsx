@@ -12,7 +12,6 @@ import {
   Paperclip,
   Plus,
   Mic,
-  Star,
   MoreHorizontal,
   LayoutTemplate,
   Zap
@@ -326,15 +325,15 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                       </div>
                     </div>
 
-                    {/* Star button */}
+                    {/* Codia Logo button instead of star */}
                     <button 
                       className={`absolute top-1.5 right-1.5 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
                         project.starred 
-                          ? 'bg-amber-500/20 text-amber-400' 
+                          ? 'bg-primary/20 text-primary' 
                           : 'bg-black/30 text-muted-foreground opacity-0 group-hover:opacity-100'
                       }`}
                     >
-                      <Star className={`w-3 h-3 ${project.starred ? 'fill-current' : ''}`} />
+                      <span className={`text-sm font-light ${project.starred ? 'text-primary' : ''}`}>∞</span>
                     </button>
 
                     {/* More button */}
