@@ -85,8 +85,9 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Check email verification
-    if (!profile.email_verified) {
+    // For balance check, allow unverified users to see their credits
+    // Only block for consume and add actions
+    if (action !== "balance" && !profile.email_verified) {
       return new Response(
         JSON.stringify({ error: "Verifique seu email para usar esta funcionalidade", code: "EMAIL_NOT_VERIFIED" }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
