@@ -35,47 +35,10 @@ const CodiaLogo = ({ size = "md", onClick, animated = false }: CodiaLogoProps) =
       <span className={`font-bold ${sizes[size].text} text-primary tracking-tight`}>
         Codia
       </span>
-      {/* Infinity Symbol with glow animation */}
-      <motion.div
-        className="relative"
-        animate={animated ? {
-          scale: [1, 1.1, 1],
-        } : {}}
-        transition={animated ? {
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        } : {}}
-      >
-        <motion.span 
-          className={`${sizes[size].text} text-primary font-light`}
-          animate={animated ? {
-            opacity: [0.7, 1, 0.7],
-          } : {}}
-          transition={animated ? {
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          } : {}}
-        >
-          ∞
-        </motion.span>
-        {/* Glow effect */}
-        {animated && (
-          <motion.div
-            className="absolute inset-0 rounded-full bg-primary/30 blur-md -z-10"
-            animate={{
-              opacity: [0.2, 0.5, 0.2],
-              scale: [0.8, 1.2, 0.8],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        )}
-      </motion.div>
+      {/* Infinity Symbol */}
+      <span className={`${sizes[size].text} text-primary font-light`}>
+        ∞
+      </span>
     </motion.button>
   );
 };

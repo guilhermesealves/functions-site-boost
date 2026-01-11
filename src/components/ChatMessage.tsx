@@ -10,6 +10,35 @@ interface ChatMessageProps {
   imageUrl?: string;
 }
 
+// Função para limpar o conteúdo - remove código HTML e blocos de código
+const cleanContent = (content: string): string => {
+  // Remove blocos de código HTML (```html ... ```)
+  let cleaned = content.replace(/```html[\s\S]*?```/gi, '');
+  
+  // Remove blocos de código genéricos (``` ... ```)
+  cleaned = cleaned.replace(/```[\s\S]*?```/gi, '');
+  
+  // Remove tags HTML brutas que podem aparecer
+  cleaned = cleaned.replace(/<(!DOCTYPE|html|head|body|meta|link|script|style|div|span|section|header|footer|nav|main|article|aside|h[1-6]|p|a|img|ul|ol|li|form|input|button|table|tr|td|th|svg|path|circle|rect)[\s\S]*?>/gi, '');
+  
+  // Remove [CONCEITO] e [FEATURES] headers
+  cleaned = cleaned.replace(/\[CONCEITO\]/gi, '**Conceito:**');
+  cleaned = cleaned.replace(/\[FEATURES\]/gi, '\n\n**Características:**');
+  
+  // Remove linhas vazias excessivas
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+  
+  // Limpa espaços no início e fim
+  cleaned = cleaned.trim();
+  
+  // Se ficou muito curto, retorna uma mensagem padrão
+  if (cleaned.length < 20) {
+    return "✅ Site gerado com sucesso! Confira o preview ao lado.";
+  }
+  
+  return cleaned;
+};
+
 const ChatMessage = ({ content, role, userName = "U", isStreaming = false, imageUrl }: ChatMessageProps) => {
   const handleDownload = () => {
     if (!imageUrl) return;
@@ -21,6 +50,9 @@ const ChatMessage = ({ content, role, userName = "U", isStreaming = false, image
     link.click();
     document.body.removeChild(link);
   };
+
+  // Limpar conteúdo para mensagens do assistente (exceto quando tem imagem)
+  const displayContent = role === "assistant" && !imageUrl ? cleanContent(content) : content;
 
   if (role === "user") {
     return (
@@ -91,7 +123,7 @@ const ChatMessage = ({ content, role, userName = "U", isStreaming = false, image
             prose-blockquote:border-l-orange-400 prose-blockquote:bg-white/[0.02] prose-blockquote:py-1 prose-blockquote:pl-4
             prose-hr:border-white/[0.08]"
           >
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown>{displayContent}</ReactMarkdown>
           </div>
         </div>
       </div>

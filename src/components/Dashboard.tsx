@@ -41,13 +41,13 @@ interface Tool {
 }
 
 const tools: Tool[] = [
-  { id: "business", name: "Plano de Negócio", icon: Briefcase, color: "bg-blue-500" },
-  { id: "branding", name: "Branding", icon: Palette, color: "bg-purple-500" },
-  { id: "logo", name: "Logo & Visual", icon: PenTool, color: "bg-orange-500" },
-  { id: "website", name: "Website", icon: Globe, color: "bg-emerald-500" },
-  { id: "copywriter", name: "Copywriter", icon: FileText, color: "bg-rose-500" },
-  { id: "marketing", name: "Marketing", icon: TrendingUp, color: "bg-violet-500" },
-  { id: "sales", name: "Vendas", icon: Target, color: "bg-amber-500" },
+  { id: "business", name: "Plano de Negócio", icon: Briefcase, color: "bg-primary/80" },
+  { id: "branding", name: "Branding", icon: Palette, color: "bg-primary/70" },
+  { id: "logo", name: "Logo & Visual", icon: PenTool, color: "bg-primary" },
+  { id: "website", name: "Website", icon: Globe, color: "bg-primary/90" },
+  { id: "copywriter", name: "Copywriter", icon: FileText, color: "bg-primary/75" },
+  { id: "marketing", name: "Marketing", icon: TrendingUp, color: "bg-primary/85" },
+  { id: "sales", name: "Vendas", icon: Target, color: "bg-primary/65" },
 ];
 
 const typingTexts = [
