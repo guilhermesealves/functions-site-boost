@@ -11,6 +11,7 @@ import SettingsModal from "@/components/SettingsModal";
 import { Template } from "@/components/templates/TemplatesData";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 
 interface Project {
   id: string;
@@ -195,8 +196,10 @@ const Builder = () => {
   // Show Dashboard with Main Sidebar
   if (viewMode === "dashboard") {
     return (
-      <div className="min-h-screen flex bg-[hsl(0,0%,4%)]">
-        <MainSidebar 
+      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
+        <EmailVerificationBanner />
+        <div className="flex-1 flex">
+        <MainSidebar
           userName={userName}
           onNavigate={handleSidebarNavigate}
           onOpenTemplates={() => setShowTemplates(true)}
@@ -245,6 +248,7 @@ const Builder = () => {
           isOpen={showSettings}
           onClose={() => setShowSettings(false)}
         />
+        </div>
       </div>
     );
   }

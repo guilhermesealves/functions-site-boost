@@ -6,6 +6,8 @@ import UnifiedChat from "./UnifiedChat";
 import TemplatesModal from "./templates/TemplatesModal";
 import { Template } from "./templates/TemplatesData";
 import { toast } from "sonner";
+import CreditDisplay from "./CreditDisplay";
+import EmailVerificationBanner from "./EmailVerificationBanner";
 
 interface Project {
   id: string;
@@ -63,7 +65,9 @@ const StudioLayout = ({
 
   return (
     <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
-      {/* Header with Back Button */}
+      {/* Email Verification Banner */}
+      <EmailVerificationBanner />
+      {/* Header with Back Button and Credit Display */}
       <header className="h-14 border-b border-white/[0.06] flex items-center px-4 gap-4 bg-[hsl(0,0%,4%)]">
         <button
           onClick={onGoHome}
@@ -78,7 +82,7 @@ const StudioLayout = ({
           onClick={() => setSidebarVisible(!sidebarVisible)}
           className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${
             sidebarVisible 
-              ? "text-orange-400 bg-orange-500/10" 
+              ? "text-primary bg-primary/10" 
               : "text-white/70 hover:text-white hover:bg-white/[0.04]"
           }`}
         >
@@ -88,9 +92,12 @@ const StudioLayout = ({
 
         <div className="flex-1" />
         
+        {/* Credit Display */}
+        <CreditDisplay compact />
+        
         {/* Current Tool Indicator */}
         <div className="text-sm text-white/50">
-          Ferramenta: <span className="text-orange-400 font-medium">{
+          Ferramenta: <span className="text-primary font-medium">{
             selectedTool === "business" ? "Plano de Negócio" :
             selectedTool === "branding" ? "Branding" :
             selectedTool === "logo" ? "Logo & Visual" :

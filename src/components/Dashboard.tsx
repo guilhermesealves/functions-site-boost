@@ -41,15 +41,15 @@ interface Tool {
   iconColor: string;
 }
 
-// Modern gradient colors for each tool
+// Tools with orange border style - no fill, just outline
 const tools: Tool[] = [
-  { id: "business", name: "Plano de Negócio", icon: Briefcase, gradient: "from-violet-600 to-purple-700", iconColor: "text-white" },
-  { id: "branding", name: "Branding", icon: Palette, gradient: "from-pink-500 to-rose-600", iconColor: "text-white" },
-  { id: "logo", name: "Logo & Visual", icon: PenTool, gradient: "from-amber-500 to-orange-600", iconColor: "text-white" },
-  { id: "website", name: "Website", icon: Globe, gradient: "from-cyan-500 to-blue-600", iconColor: "text-white" },
-  { id: "copywriter", name: "Copywriter", icon: FileText, gradient: "from-emerald-500 to-teal-600", iconColor: "text-white" },
-  { id: "marketing", name: "Marketing", icon: TrendingUp, gradient: "from-fuchsia-500 to-pink-600", iconColor: "text-white" },
-  { id: "sales", name: "Vendas", icon: Target, gradient: "from-red-500 to-rose-600", iconColor: "text-white" },
+  { id: "business", name: "Plano de Negócio", icon: Briefcase, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "branding", name: "Branding", icon: Palette, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "logo", name: "Logo & Visual", icon: PenTool, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "website", name: "Website", icon: Globe, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "copywriter", name: "Copywriter", icon: FileText, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "marketing", name: "Marketing", icon: TrendingUp, gradient: "border-primary", iconColor: "text-primary" },
+  { id: "sales", name: "Vendas", icon: Target, gradient: "border-primary", iconColor: "text-primary" },
 ];
 
 const typingTexts = [
@@ -144,7 +144,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             />
           </motion.p>
 
-          {/* Main Input - Clean design */}
+          {/* Main Input - Clean design without dividers */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -158,11 +158,11 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Descreva o que você quer criar..."
-                  className="w-full bg-transparent text-foreground text-lg placeholder:text-muted-foreground/50 outline-none mb-4"
+                  className="w-full bg-transparent text-foreground text-lg placeholder:text-muted-foreground/50 outline-none mb-3"
                 />
                 
-                <div className="flex items-center justify-between border-t border-border/50 pt-4">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center gap-1">
                     <button
                       type="button"
                       className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
@@ -236,9 +236,9 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   onClick={() => onOpenStudio(tool.id)}
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 hover:border-white/20 bg-card/50 backdrop-blur-sm transition-all group min-w-[100px] hover:shadow-lg hover:shadow-black/30"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm transition-all group min-w-[100px] hover:shadow-lg hover:shadow-primary/10"
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg`}>
+                  <div className={`w-12 h-12 rounded-xl ${tool.gradient} border-2 bg-transparent flex items-center justify-center`}>
                     <tool.icon className={`w-6 h-6 ${tool.iconColor}`} />
                   </div>
                   <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors text-center">
