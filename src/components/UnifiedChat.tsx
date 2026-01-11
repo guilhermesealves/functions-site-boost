@@ -509,15 +509,24 @@ const UnifiedChat = ({ selectedTool, onSendMessage, userName = "você", onToolCh
       // Website tool - use generator
       else if (currentTool === "website" && onSendMessage) {
         const response = await onSendMessage(userMessage, currentTool);
-        const websiteMessage: Message = { role: "assistant", content: response };
+        
+        // Extrair apenas o HTML do response para o preview
+        const htmlMatch = response.match(/```html([\s\S]*?)```/i);
+        const htmlContent = htmlMatch ? htmlMatch[1].trim() : response;
+        
+        // Mensagem amigável para o chat
+        const chatMessage = `✅ **Site gerado com sucesso!**\n\nSeu site foi criado com base na descrição: "${userMessage}"\n\nConfira o preview ao lado para visualizar o resultado.`;
+        
+        const websiteMessage: Message = { role: "assistant", content: chatMessage };
         setMessagesPerTool(prev => ({
           ...prev,
           [currentTool]: [...(prev[currentTool] || []), websiteMessage]
         }));
-        setPreviewContent(response);
+        // Só passa o HTML limpo para o preview
+        setPreviewContent(htmlContent);
         // Salvar no Desenvolvimento
         addToDevHistory(websiteMessage, "website");
-      } 
+      }
       // Other tools - use streaming AI
       else {
         const response = await handleStreamingAI(userMessage);
