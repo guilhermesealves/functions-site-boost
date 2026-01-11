@@ -36,28 +36,39 @@ const CodiaLogo = ({ size = "md", onClick, animated = true }: CodiaLogoProps) =>
         Codia
       </span>
       
-      {/* Infinity Symbol with Glow Effect */}
+      {/* Infinity Symbol with Spinning + Glow Effect */}
       <div className="relative">
         {animated && (
-          <motion.div
-            animate={{
-              opacity: [0.4, 0.8, 0.4],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 blur-md bg-primary/50 rounded-full"
-          />
+          <>
+            {/* Glow ring */}
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.7, 0.3],
+                scale: [1, 1.3, 1],
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 blur-md bg-primary/60 rounded-full"
+            />
+            {/* Outer spinning ring */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-[-4px] rounded-full border border-primary/30"
+            />
+          </>
         )}
         <motion.span 
           className={`${sizes[size].text} text-primary font-light relative z-10`}
           animate={animated ? {
+            rotate: [0, 10, -10, 0],
+            scale: [1, 1.1, 1],
             textShadow: [
-              "0 0 8px hsl(24, 100%, 55%)",
-              "0 0 16px hsl(24, 100%, 55%)",
-              "0 0 8px hsl(24, 100%, 55%)"
+              "0 0 10px hsl(24, 100%, 55%)",
+              "0 0 25px hsl(24, 100%, 55%)",
+              "0 0 10px hsl(24, 100%, 55%)"
             ]
           } : {}}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
           ∞
         </motion.span>

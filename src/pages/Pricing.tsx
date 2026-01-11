@@ -1,10 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check, Sparkles, Zap, Building2, ArrowRight, Shield, Clock, Users, Star, ChevronDown, ArrowLeft } from "lucide-react";
+import { Check, Sparkles, Zap, Building2, ArrowRight, Shield, Clock, ChevronDown, ArrowLeft, Package, Coins, Gift, Rocket, Crown, Star, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
+
+interface CreditPackage {
+  id: string;
+  name: string;
+  slug: string;
+  credits: number;
+  price: number;
+  price_per_credit: number;
+  bonus: number | null;
+  savings: number | null;
+  badge: string | null;
+  highlight: string | null;
+  popular: boolean | null;
+}
+
+interface Bundle {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  categories: any;
+  original_cost: number;
+  bundle_cost: number;
+  savings: number;
+  market_value: number | null;
+  badge: string | null;
+  popular: boolean | null;
+}
 
 const plans = [
   {
@@ -14,9 +43,8 @@ const plans = [
     period: "grátis para sempre",
     description: "Ideal para começar",
     features: [
+      "5 créditos diários",
       "1 site ativo",
-      "Subdomínio codia.app",
-      "5 páginas por site",
       "Templates básicos",
       "IA para textos (limitado)",
       "Suporte por email",
@@ -32,16 +60,14 @@ const plans = [
     period: "/mês",
     description: "Para escalar seu negócio",
     features: [
+      "50 créditos diários",
       "Sites ilimitados",
       "Domínio personalizado",
-      "Páginas ilimitadas",
       "Todos os templates premium",
       "IA ilimitada",
       "Analytics avançado",
       "Suporte prioritário 24/7",
       "Sem marca d'água",
-      "Exportar código fonte",
-      "Integração WhatsApp",
     ],
     cta: "Começar Agora",
     variant: "hero" as const,
@@ -54,6 +80,7 @@ const plans = [
     period: "",
     description: "Para grandes operações",
     features: [
+      "Créditos ilimitados",
       "Tudo do Pro incluído",
       "API dedicada",
       "SLA 99.9% garantido",
@@ -61,7 +88,6 @@ const plans = [
       "Integrações customizadas",
       "Treinamento da equipe",
       "White-label",
-      "Faturamento customizado",
     ],
     cta: "Falar com Especialista",
     variant: "outline" as const,
@@ -70,20 +96,24 @@ const plans = [
 
 const faqs = [
   {
-    question: "Como funciona o período de teste?",
-    answer: "Você pode começar gratuitamente no plano Starter sem precisar de cartão de crédito. Teste todas as funcionalidades básicas e faça upgrade quando estiver pronto."
+    question: "Como funciona o sistema de créditos?",
+    answer: "Créditos são usados para gerar conteúdo com IA. Cada geração consome créditos baseado na complexidade. Usuários gratuitos recebem 5 créditos diários, que renovam automaticamente."
   },
   {
     question: "Posso cancelar a qualquer momento?",
     answer: "Sim! Não há contratos de fidelidade. Você pode cancelar seu plano Pro ou Enterprise a qualquer momento, sem multas ou taxas escondidas."
   },
   {
-    question: "O que acontece com meus sites se eu cancelar?",
-    answer: "Seus sites continuam funcionando por 30 dias após o cancelamento. Você pode exportar todo seu código antes de encerrar."
+    question: "O que acontece com meus créditos comprados se eu cancelar?",
+    answer: "Créditos comprados nunca expiram e continuam disponíveis mesmo após cancelar a assinatura."
   },
   {
     question: "Vocês oferecem desconto para pagamento anual?",
     answer: "Sim! No plano anual você economiza 2 meses. Em vez de R$1.164/ano, você paga apenas R$970/ano."
+  },
+  {
+    question: "Como funciona o programa de indicação?",
+    answer: "Indique amigos e ganhe 5 créditos para cada indicação que criar uma conta verificada. Seu amigo também ganha 15 créditos de bônus!"
   },
 ];
 
@@ -91,6 +121,29 @@ const Pricing = () => {
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [packages, setPackages] = useState<CreditPackage[]>([]);
+  const [bundles, setBundles] = useState<Bundle[]>([]);
+  const [loadingPackages, setLoadingPackages] = useState(true);
+
+  useEffect(() => {
+    loadPackagesAndBundles();
+  }, []);
+
+  const loadPackagesAndBundles = async () => {
+    try {
+      const [packagesRes, bundlesRes] = await Promise.all([
+        supabase.from("credit_packages").select("*").eq("active", true).order("price", { ascending: true }),
+        supabase.from("bundles").select("*").eq("active", true).order("bundle_cost", { ascending: true })
+      ]);
+
+      if (packagesRes.data) setPackages(packagesRes.data);
+      if (bundlesRes.data) setBundles(bundlesRes.data);
+    } catch (error) {
+      console.error("Error loading packages:", error);
+    } finally {
+      setLoadingPackages(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -110,7 +163,6 @@ const Pricing = () => {
       <main className="pt-24">
         {/* Hero Section */}
         <section className="py-16 relative overflow-hidden">
-          {/* Background */}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
 
           <div className="container mx-auto px-6 relative">
@@ -177,7 +229,6 @@ const Pricing = () => {
                   <div className={`h-full rounded-2xl p-6 ${
                     plan.popular ? "bg-card" : "bg-card/50"
                   }`}>
-                    {/* Plan Header */}
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -194,7 +245,6 @@ const Pricing = () => {
                       </div>
                     </div>
 
-                    {/* Price */}
                     <div className="mb-6 pb-6 border-b border-border">
                       <div className="flex items-baseline gap-1">
                         {plan.price !== "Sob consulta" ? (
@@ -216,7 +266,6 @@ const Pricing = () => {
                       </div>
                     </div>
 
-                    {/* Features */}
                     <ul className="space-y-3 mb-8">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-3">
@@ -230,7 +279,6 @@ const Pricing = () => {
                       ))}
                     </ul>
 
-                    {/* CTA Button */}
                     <Button 
                       onClick={() => navigate("/auth")}
                       className={`w-full h-11 text-sm font-medium rounded-xl transition-all ${
@@ -265,6 +313,211 @@ const Pricing = () => {
                 </div>
               ))}
             </motion.div>
+          </div>
+        </section>
+
+        {/* Credit Packages Section */}
+        <section className="py-16 border-t border-border">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full mb-4">
+                <Coins className="w-4 h-4" />
+                <span className="text-sm font-medium">Pacotes de Créditos</span>
+              </div>
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+                Compre Créditos Avulsos
+              </h2>
+              <p className="text-muted-foreground max-w-lg mx-auto">
+                Precisa de mais créditos? Compre pacotes avulsos que nunca expiram.
+              </p>
+            </motion.div>
+
+            {loadingPackages ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-48 bg-card/50 border border-border rounded-xl animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                {packages.map((pkg, index) => (
+                  <motion.div
+                    key={pkg.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`relative rounded-xl p-5 border transition-all hover:border-primary/30 ${
+                      pkg.popular 
+                        ? "bg-gradient-to-b from-primary/10 to-card border-primary/30" 
+                        : "bg-card/50 border-border"
+                    }`}
+                  >
+                    {pkg.badge && (
+                      <div className="absolute -top-2 right-3 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-medium rounded-full">
+                        {pkg.badge}
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        pkg.popular ? "bg-primary/20" : "bg-secondary"
+                      }`}>
+                        <Coins className={`w-5 h-5 ${pkg.popular ? "text-primary" : "text-muted-foreground"}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground text-sm">{pkg.name}</h3>
+                        <p className="text-xs text-muted-foreground">{pkg.credits} créditos</p>
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-muted-foreground text-sm">R$</span>
+                        <span className="text-2xl font-bold text-foreground">{pkg.price.toFixed(0)}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        R${pkg.price_per_credit.toFixed(2)} por crédito
+                      </p>
+                      {pkg.bonus && pkg.bonus > 0 && (
+                        <p className="text-xs text-primary mt-1">
+                          +{pkg.bonus} créditos bônus!
+                        </p>
+                      )}
+                    </div>
+
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      size="sm"
+                      className={`w-full ${
+                        pkg.popular 
+                          ? "bg-primary hover:bg-primary/90" 
+                          : "bg-secondary hover:bg-secondary/80"
+                      }`}
+                    >
+                      Comprar
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Bundles Section */}
+        {bundles.length > 0 && (
+          <section className="py-16 border-t border-border bg-secondary/20">
+            <div className="container mx-auto px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-12"
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-500 rounded-full mb-4">
+                  <Package className="w-4 h-4" />
+                  <span className="text-sm font-medium">Bundles Especiais</span>
+                </div>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+                  Pacotes Completos
+                </h2>
+                <p className="text-muted-foreground max-w-lg mx-auto">
+                  Economize com nossos bundles que combinam múltiplas ferramentas.
+                </p>
+              </motion.div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {bundles.map((bundle, index) => (
+                  <motion.div
+                    key={bundle.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`relative rounded-xl p-6 border transition-all hover:border-amber-500/30 ${
+                      bundle.popular 
+                        ? "bg-gradient-to-b from-amber-500/10 to-card border-amber-500/30" 
+                        : "bg-card border-border"
+                    }`}
+                  >
+                    {bundle.badge && (
+                      <div className="absolute -top-2 right-4 px-3 py-1 bg-amber-500 text-black text-xs font-medium rounded-full">
+                        {bundle.badge}
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <h3 className="font-semibold text-foreground text-lg mb-1">{bundle.name}</h3>
+                      <p className="text-sm text-muted-foreground">{bundle.description}</p>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-sm text-muted-foreground line-through">R${bundle.original_cost}</span>
+                        <span className="text-2xl font-bold text-foreground">R${bundle.bundle_cost}</span>
+                      </div>
+                      <p className="text-sm text-emerald-500 font-medium">
+                        Economia de R${bundle.savings}
+                      </p>
+                    </div>
+
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full bg-amber-500 hover:bg-amber-600 text-black"
+                    >
+                      Adquirir Bundle
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Features Comparison */}
+        <section className="py-16 border-t border-border">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+                Por que escolher a Codia?
+              </h2>
+              <p className="text-muted-foreground">Vantagens exclusivas para nossos usuários</p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+              {[
+                { icon: Rocket, title: "IA Avançada", desc: "Modelos de última geração para criações profissionais" },
+                { icon: Crown, title: "Gamificação", desc: "Ganhe XP, suba de nível e desbloqueie conquistas" },
+                { icon: Gift, title: "Bônus Diários", desc: "Créditos gratuitos renovados automaticamente" },
+                { icon: Users, title: "Indicações", desc: "Ganhe créditos convidando amigos" },
+              ].map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="p-5 rounded-xl bg-card/50 border border-border hover:border-primary/30 transition-all"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                    <feature.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-1">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
