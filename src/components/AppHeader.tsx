@@ -8,12 +8,16 @@ import {
   ChevronDown,
   Bell,
   Search,
-  Plus
+  Plus,
+  Zap,
+  Flame,
+  Crown
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import CodiaLogo from "./CodiaLogo";
+import { useCredits } from "@/hooks/useCredits";
 
 interface AppHeaderProps {
   user?: any;
@@ -24,6 +28,7 @@ interface AppHeaderProps {
 const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate();
+  const { balance } = useCredits();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -33,6 +38,12 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
 
   const userName = user?.email?.split("@")[0] || "Usuário";
   const userInitial = userName.charAt(0).toUpperCase();
+  
+  // Credit bar calculations
+  const totalCredits = balance?.total || 0;
+  const maxCredits = balance?.tier === "free" ? 50 : balance?.tier === "starter" ? 200 : balance?.tier === "pro" ? 500 : 1000;
+  const creditPercentage = Math.min((totalCredits / maxCredits) * 100, 100);
+  const isLowCredits = creditPercentage < 20;
 
   return (
     <header className="h-16 border-b border-white/[0.06] bg-[hsl(0,0%,4%)] sticky top-0 z-50">
@@ -96,12 +107,58 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
                   <motion.div
                     initial={{ opacity: 0, y: 8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="absolute right-0 top-12 w-56 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden"
+                    className="absolute right-0 top-12 w-72 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden"
                   >
+                    {/* User Info */}
                     <div className="p-3 border-b border-white/[0.06]">
                       <p className="text-sm font-medium text-white truncate">{userName}</p>
                       <p className="text-xs text-white/40 truncate">{user.email}</p>
                     </div>
+                    
+                    {/* Credit Bar Section */}
+                    <div className="p-3 border-b border-white/[0.06]">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-primary"}`} />
+                          <span className="text-sm font-medium text-white">{totalCredits} créditos</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {balance?.streak && balance.streak > 0 && (
+                            <div className="flex items-center gap-1 text-xs text-amber-400">
+                              <Flame className="w-3 h-3" />
+                              <span>{balance.streak}</span>
+                            </div>
+                          )}
+                          {balance?.level && (
+                            <div className="flex items-center gap-1 text-xs text-violet-400">
+                              <Crown className="w-3 h-3" />
+                              <span>Nv.{balance.level}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Progress Bar */}
+                      <div className="relative h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${creditPercentage}%` }}
+                          transition={{ duration: 0.5, ease: "easeOut" }}
+                          className={`absolute inset-y-0 left-0 rounded-full ${
+                            isLowCredits 
+                              ? "bg-gradient-to-r from-red-500 to-red-400" 
+                              : "bg-gradient-to-r from-primary to-amber-400"
+                          }`}
+                        />
+                      </div>
+                      
+                      <div className="flex justify-between mt-1.5">
+                        <span className="text-[10px] text-white/30">{balance?.daily?.used || 0} usado hoje</span>
+                        <span className="text-[10px] text-white/30 capitalize">{balance?.tier || "free"}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Menu Items */}
                     <div className="p-1.5">
                       <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors">
                         <User className="w-4 h-4" />
@@ -111,7 +168,15 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
                         <Settings className="w-4 h-4" />
                         Configurações
                       </button>
+                      <button 
+                        onClick={() => { setShowUserMenu(false); navigate("/pricing"); }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                      >
+                        <Zap className="w-4 h-4" />
+                        Comprar Créditos
+                      </button>
                     </div>
+                    
                     <div className="p-1.5 border-t border-white/[0.06]">
                       <button 
                         onClick={handleLogout}

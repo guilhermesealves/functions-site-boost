@@ -14,13 +14,16 @@ import {
   Mic,
   Star,
   MoreHorizontal,
-  LayoutTemplate
+  LayoutTemplate,
+  Zap
 } from "lucide-react";
 import TypingEffect from "./TypingEffect";
 import TemplatesModal from "./templates/TemplatesModal";
 import { Template } from "./templates/TemplatesData";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useCredits } from "@/hooks/useCredits";
+import CodiaLogo from "./CodiaLogo";
 
 interface DashboardProps {
   onStartWebsite: () => void;
@@ -66,6 +69,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
   const [activeTab, setActiveTab] = useState<"recent" | "projects" | "templates">("recent");
   const [showTemplates, setShowTemplates] = useState(false);
   const navigate = useNavigate();
+  const { balance } = useCredits();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -206,24 +210,23 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             transition={{ duration: 0.5, delay: 0.2 }}
             className="w-full max-w-4xl"
           >
-            <div className="flex items-center justify-center gap-2 mb-6">
-              {/* Animated Infinity Symbol */}
-              <motion.span 
-                className="text-lg text-primary font-light"
-                animate={{
-                  textShadow: [
-                    "0 0 4px hsl(24, 100%, 55%)",
-                    "0 0 12px hsl(24, 100%, 55%)",
-                    "0 0 4px hsl(24, 100%, 55%)"
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                ∞
-              </motion.span>
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Ferramentas IAs
-              </h2>
+            {/* Header with Logo, Title and Credits */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="flex items-center gap-2">
+                <CodiaLogo size="sm" onClick={() => {}} animated={true} />
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Ferramentas IAs
+                </h2>
+              </div>
+              
+              {/* Credits Display */}
+              {balance && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                  <Zap className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-sm font-medium text-primary">{balance.total}</span>
+                  <span className="text-xs text-primary/60">créditos</span>
+                </div>
+              )}
             </div>
             
             <div className="flex flex-wrap justify-center gap-3">
