@@ -37,17 +37,19 @@ interface Tool {
   id: string;
   name: string;
   icon: React.ElementType;
-  color: string;
+  gradient: string;
+  iconColor: string;
 }
 
+// Modern gradient colors for each tool
 const tools: Tool[] = [
-  { id: "business", name: "Plano de Negócio", icon: Briefcase, color: "bg-primary/80" },
-  { id: "branding", name: "Branding", icon: Palette, color: "bg-primary/70" },
-  { id: "logo", name: "Logo & Visual", icon: PenTool, color: "bg-primary" },
-  { id: "website", name: "Website", icon: Globe, color: "bg-primary/90" },
-  { id: "copywriter", name: "Copywriter", icon: FileText, color: "bg-primary/75" },
-  { id: "marketing", name: "Marketing", icon: TrendingUp, color: "bg-primary/85" },
-  { id: "sales", name: "Vendas", icon: Target, color: "bg-primary/65" },
+  { id: "business", name: "Plano de Negócio", icon: Briefcase, gradient: "from-violet-600 to-purple-700", iconColor: "text-white" },
+  { id: "branding", name: "Branding", icon: Palette, gradient: "from-pink-500 to-rose-600", iconColor: "text-white" },
+  { id: "logo", name: "Logo & Visual", icon: PenTool, gradient: "from-amber-500 to-orange-600", iconColor: "text-white" },
+  { id: "website", name: "Website", icon: Globe, gradient: "from-cyan-500 to-blue-600", iconColor: "text-white" },
+  { id: "copywriter", name: "Copywriter", icon: FileText, gradient: "from-emerald-500 to-teal-600", iconColor: "text-white" },
+  { id: "marketing", name: "Marketing", icon: TrendingUp, gradient: "from-fuchsia-500 to-pink-600", iconColor: "text-white" },
+  { id: "sales", name: "Vendas", icon: Target, gradient: "from-red-500 to-rose-600", iconColor: "text-white" },
 ];
 
 const typingTexts = [
@@ -92,14 +94,14 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
 
   return (
     <div className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-screen">
-      {/* Background - Same as Home Page */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/15" />
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/10" />
       
       {/* Animated glow orbs */}
       <motion.div
         animate={{
           scale: [1, 1.3, 1],
-          opacity: [0.08, 0.15, 0.08],
+          opacity: [0.06, 0.12, 0.06],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-primary/30 blur-[150px] pointer-events-none"
@@ -107,22 +109,10 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
       <motion.div
         animate={{
           scale: [1.2, 1, 1.2],
-          opacity: [0.05, 0.12, 0.05],
+          opacity: [0.04, 0.08, 0.04],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-orange-500/20 blur-[120px] pointer-events-none"
-      />
-
-      {/* Grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.015] pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, hsl(24, 100%, 50%) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(24, 100%, 50%) 1px, transparent 1px)
-          `,
-          backgroundSize: '80px 80px'
-        }}
+        className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-violet-500/20 blur-[120px] pointer-events-none"
       />
 
       {/* Content */}
@@ -154,7 +144,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             />
           </motion.p>
 
-          {/* Main Input */}
+          {/* Main Input - Clean design */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -162,7 +152,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             className="w-full max-w-2xl mb-12"
           >
             <form onSubmit={handleSubmit}>
-              <div className="relative bg-card border border-border rounded-2xl p-4 focus-within:border-primary/30 transition-all">
+              <div className="relative bg-card border border-border rounded-2xl p-4 focus-within:border-primary/30 transition-all shadow-lg shadow-black/20">
                 <input
                   type="text"
                   value={input}
@@ -171,11 +161,11 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   className="w-full bg-transparent text-foreground text-lg placeholder:text-muted-foreground/50 outline-none mb-4"
                 />
                 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-t border-border/50 pt-4">
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
                     >
                       <Paperclip className="w-4 h-4" />
                       <span>Anexar</span>
@@ -183,7 +173,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                     <button
                       type="button"
                       onClick={() => setShowTemplates(true)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-colors"
                     >
                       <LayoutTemplate className="w-4 h-4" />
                       <span>Templates</span>
@@ -216,9 +206,21 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             transition={{ duration: 0.5, delay: 0.2 }}
             className="w-full max-w-4xl"
           >
-            <div className="flex items-center justify-center gap-2 mb-4">
-              {/* Logo Symbol - Infinity */}
-              <span className="text-lg text-primary font-light">∞</span>
+            <div className="flex items-center justify-center gap-2 mb-6">
+              {/* Animated Infinity Symbol */}
+              <motion.span 
+                className="text-lg text-primary font-light"
+                animate={{
+                  textShadow: [
+                    "0 0 4px hsl(24, 100%, 55%)",
+                    "0 0 12px hsl(24, 100%, 55%)",
+                    "0 0 4px hsl(24, 100%, 55%)"
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                ∞
+              </motion.span>
               <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Ferramentas IAs
               </h2>
@@ -232,10 +234,12 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.25 + index * 0.03 }}
                   onClick={() => onOpenStudio(tool.id)}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border hover:border-primary/30 hover:bg-card transition-all group min-w-[100px]"
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 hover:border-white/20 bg-card/50 backdrop-blur-sm transition-all group min-w-[100px] hover:shadow-lg hover:shadow-black/30"
                 >
-                  <div className={`w-12 h-12 rounded-xl ${tool.color} flex items-center justify-center`}>
-                    <tool.icon className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg`}>
+                    <tool.icon className={`w-6 h-6 ${tool.iconColor}`} />
                   </div>
                   <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors text-center">
                     {tool.name}
@@ -302,7 +306,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   transition={{ delay: 0.35 + index * 0.05 }}
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
-                  className="group relative bg-card border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-all cursor-pointer"
+                  className="group relative bg-card border border-border rounded-xl overflow-hidden hover:border-white/20 transition-all cursor-pointer hover:shadow-lg hover:shadow-black/20"
                 >
                   {/* Preview area */}
                   <div className="h-28 bg-secondary/30 relative">
@@ -313,7 +317,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                         <div className="w-1.5 h-1.5 rounded-full bg-green-400/50" />
                       </div>
                       <div className="p-2 space-y-1">
-                        <div className="h-2 bg-primary/40 rounded w-1/2" />
+                        <div className="h-2 bg-gradient-to-r from-violet-500/40 to-purple-500/40 rounded w-1/2" />
                         <div className="h-1.5 bg-secondary rounded w-full" />
                         <div className="h-1.5 bg-secondary/50 rounded w-3/4" />
                       </div>
@@ -352,10 +356,10 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 onClick={() => onOpenStudio("business")}
-                className="h-full min-h-[160px] flex flex-col items-center justify-center gap-2 border border-dashed border-border rounded-xl hover:border-primary/30 hover:bg-card/50 transition-all group"
+                className="h-full min-h-[160px] flex flex-col items-center justify-center gap-2 border border-dashed border-border rounded-xl hover:border-white/20 hover:bg-card/50 transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-secondary group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                  <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="w-10 h-10 rounded-xl bg-secondary group-hover:bg-gradient-to-br group-hover:from-violet-600 group-hover:to-purple-700 flex items-center justify-center transition-all">
+                  <Plus className="w-5 h-5 text-muted-foreground group-hover:text-white transition-colors" />
                 </div>
                 <span className="text-sm text-muted-foreground group-hover:text-foreground">Criar novo</span>
               </motion.button>

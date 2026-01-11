@@ -10,6 +10,8 @@ import Pricing from "./pages/Pricing";
 import Learn from "./pages/Learn";
 import Discover from "./pages/Discover";
 import NotFound from "./pages/NotFound";
+import VerifyEmail from "./pages/VerifyEmail";
+import CheckEmail from "./pages/CheckEmail";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/check-email" element={<CheckEmail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
