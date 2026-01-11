@@ -217,13 +217,8 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             className="w-full max-w-4xl"
           >
             <div className="flex items-center justify-center gap-2 mb-4">
-              {/* Logo Symbol */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <path
-                  d="M12 2C12 2 8 6 8 10C8 12 9 14 10 15C10 15 9 13 10 11C11 9 12 8 12 8C12 8 13 9 14 11C15 13 14 15 14 15C15 14 16 12 16 10C16 6 12 2 12 2Z"
-                  fill="currentColor"
-                />
-              </svg>
+              {/* Logo Symbol - Infinity */}
+              <span className="text-lg text-primary font-light">∞</span>
               <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Ferramentas IAs
               </h2>
