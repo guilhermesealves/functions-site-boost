@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Globe, 
   Palette, 
@@ -12,8 +12,20 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Code2
+  Code2,
+  ChevronDown,
+  Settings,
+  HelpCircle,
+  LogOut,
+  Zap,
+  Flame,
+  Crown
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useCredits } from "@/hooks/useCredits";
+import CodiaLogo from "./CodiaLogo";
 
 interface AITool {
   id: string;
@@ -52,6 +64,7 @@ interface AISidebarProps {
   currentProjectId?: string;
   userName?: string;
   onOpenTemplates?: () => void;
+  onOpenSettings?: () => void;
 }
 
 const AISidebar = ({ 
@@ -62,9 +75,37 @@ const AISidebar = ({
   onSelectProject,
   currentProjectId,
   userName = "Usuário",
-  onOpenTemplates
+  onOpenTemplates,
+  onOpenSettings
 }: AISidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const { balance } = useCredits();
+
+  // Credit calculations
+  const totalCredits = balance?.total || 0;
+  const maxCredits = balance?.tier === "free" ? 50 : balance?.tier === "starter" ? 200 : balance?.tier === "pro" ? 500 : 1000;
+  const creditPercentage = Math.min((totalCredits / maxCredits) * 100, 100);
+  const isLowCredits = creditPercentage < 20;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Você saiu da sua conta");
+    navigate("/");
+  };
 
   return (
     <motion.div
@@ -73,12 +114,125 @@ const AISidebar = ({
       transition={{ duration: 0.2 }}
       className="h-[calc(100vh-64px)] bg-[hsl(0,0%,4%)] border-r border-white/[0.06] flex flex-col shrink-0"
     >
+      {/* User/Workspace Selector with Dropdown */}
+      {!collapsed && (
+        <div className="p-3 border-b border-white/[0.06] relative" ref={dropdownRef}>
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.04] transition-colors group"
+          >
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white text-sm font-bold">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <span className="flex-1 text-left text-sm text-white font-medium truncate">
+              {userName}'s Codia
+            </span>
+            <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {/* User Dropdown */}
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-3 right-3 top-full mt-1 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+              >
+                {/* Credit Bar Section */}
+                <div className="p-3 border-b border-white/[0.06]">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-primary"}`} />
+                      <span className="text-sm font-medium text-white">{totalCredits} créditos</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      {balance?.streak && balance.streak > 0 && (
+                        <div className="flex items-center gap-1 text-xs text-amber-400">
+                          <Flame className="w-3 h-3" />
+                          <span>{balance.streak}</span>
+                        </div>
+                      )}
+                      {balance?.level && (
+                        <div className="flex items-center gap-1 text-xs text-violet-400">
+                          <Crown className="w-3 h-3" />
+                          <span>Nv.{balance.level}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="relative h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${creditPercentage}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      className={`absolute inset-y-0 left-0 rounded-full ${
+                        isLowCredits 
+                          ? "bg-gradient-to-r from-red-500 to-red-400" 
+                          : "bg-gradient-to-r from-primary to-amber-400"
+                      }`}
+                    />
+                  </div>
+                  
+                  <div className="flex justify-between mt-1.5">
+                    <span className="text-[10px] text-white/30">{balance?.daily?.used || 0} usado hoje</span>
+                    <span className="text-[10px] text-white/30 capitalize">{balance?.tier || "free"}</span>
+                  </div>
+                </div>
+                
+                <div className="p-1.5">
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      if (onOpenSettings) {
+                        onOpenSettings();
+                      }
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Configurações
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      toast.info("Suporte em breve!");
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    Suporte
+                  </button>
+                  <button
+                    onClick={() => { setIsDropdownOpen(false); navigate("/pricing"); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                  >
+                    <Zap className="w-4 h-4" />
+                    Comprar Créditos
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sair
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
       {/* Header */}
       <div className="p-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2 px-2">
-          <Sparkles className="w-5 h-5 text-orange-400" />
+          <CodiaLogo size="sm" animated onClick={() => {}} />
           {!collapsed && (
-            <span className="text-sm font-semibold text-white">Ferramentas IA</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ferramentas IA</span>
           )}
         </div>
       </div>

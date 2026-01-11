@@ -4,6 +4,7 @@ import {
   Home, 
   Search, 
   FolderOpen, 
+  Star,
   Users, 
   Compass, 
   LayoutTemplate, 
@@ -81,14 +82,9 @@ const MainSidebar = ({
 
   const projectItems = [
     { id: "all-projects", label: "Todos os projetos", icon: FolderOpen },
-    { id: "starred", label: "Favoritos", icon: CodiaLogoIcon },
+    { id: "starred", label: "Favoritos", icon: Star },
     { id: "shared", label: "Compartilhados comigo", icon: Users },
   ];
-  
-  // Custom icon component for using CodiaLogo style
-  function CodiaLogoIcon({ className }: { className?: string }) {
-    return <span className={`${className} text-primary font-light`}>∞</span>;
-  }
 
   const resourceItems = [
     { id: "discover", label: "Descobrir", icon: Compass },
