@@ -8,6 +8,7 @@ import { Template } from "./templates/TemplatesData";
 import { toast } from "sonner";
 import CreditDisplay from "./CreditDisplay";
 import EmailVerificationBanner from "./EmailVerificationBanner";
+import ToolsPanel from "./tools/ToolsPanel";
 
 interface Project {
   id: string;
@@ -42,9 +43,17 @@ const StudioLayout = ({
 }: StudioLayoutProps) => {
   const [selectedTool, setSelectedTool] = useState(initialTool);
   const [showTemplates, setShowTemplates] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true); // Aberto por padrão
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(initialTemplate || null);
   const userName = user?.email?.split("@")[0] || "você";
+
+  // Lista de ferramentas avançadas (que usam o ToolsPanel)
+  const advancedToolIds = [
+    "site-cloner", "zap-crm", "seo", "growth", "migrator", 
+    "copy-thief", "marketplace", "github-sync", "sales-recovery", 
+    "social-media", "checklist", "ai-explainer"
+  ];
+  const isAdvancedTool = advancedToolIds.includes(selectedTool);
 
   // Update activeTemplate when initialTemplate changes
   useEffect(() => {
@@ -96,7 +105,7 @@ const StudioLayout = ({
         <CreditDisplay compact />
         
         {/* Current Tool Indicator */}
-        <div className="text-sm text-white/50">
+        <div className="text-sm text-white/50 hidden md:block">
           Ferramenta: <span className="text-primary font-medium">{
             selectedTool === "business" ? "Plano de Negócio" :
             selectedTool === "branding" ? "Branding" :
@@ -106,6 +115,18 @@ const StudioLayout = ({
             selectedTool === "marketing" ? "Marketing" :
             selectedTool === "sales" ? "Vendas" :
             selectedTool === "dev" ? "Desenvolvimento" :
+            selectedTool === "site-cloner" ? "Clonador de Site" :
+            selectedTool === "zap-crm" ? "Zap E-commerce + CRM" :
+            selectedTool === "seo" ? "SEO Programático" :
+            selectedTool === "growth" ? "Growth Engine" :
+            selectedTool === "migrator" ? "Migrador Universal" :
+            selectedTool === "copy-thief" ? "Ladrão de Copy" :
+            selectedTool === "marketplace" ? "Hub Marketplace" :
+            selectedTool === "github-sync" ? "Sync GitHub" :
+            selectedTool === "sales-recovery" ? "Recuperador de Vendas" :
+            selectedTool === "social-media" ? "Gerador Social Media" :
+            selectedTool === "checklist" ? "Checklist de Status" :
+            selectedTool === "ai-explainer" ? "IA Explicadora" :
             "IA"
           }</span>
         </div>
@@ -143,15 +164,23 @@ const StudioLayout = ({
           )}
         </AnimatePresence>
 
-        {/* Main Content - Chat + Preview */}
+        {/* Main Content - Chat + Preview or Tools Panel */}
         <div className="flex-1 overflow-hidden">
-          <UnifiedChat 
-            selectedTool={selectedTool}
-            onSendMessage={onSendMessage}
-            userName={userName}
-            onToolChange={setSelectedTool}
-            activeTemplate={activeTemplate}
-          />
+          {isAdvancedTool ? (
+            <ToolsPanel 
+              selectedTool={selectedTool}
+              onClose={() => setSelectedTool("business")}
+              onSendMessage={(message) => onSendMessage?.(message, selectedTool)}
+            />
+          ) : (
+            <UnifiedChat 
+              selectedTool={selectedTool}
+              onSendMessage={onSendMessage}
+              userName={userName}
+              onToolChange={setSelectedTool}
+              activeTemplate={activeTemplate}
+            />
+          )}
         </div>
       </div>
 
