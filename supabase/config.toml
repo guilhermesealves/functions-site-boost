@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.generate-logo]
 verify_jwt = false
+
+[functions.tools-ai]
+verify_jwt = false
