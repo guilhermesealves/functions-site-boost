@@ -8,54 +8,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
+    --background: 0 0% 3%;
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 7%;
+    --card: 20 10% 6%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 7%;
+    --popover: 20 10% 6%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 24 100% 55%;
+    --primary: 24 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
+    --secondary: 20 15% 10%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 20 10% 12%;
+    --muted-foreground: 24 20% 55%;
 
-    --accent: 24 100% 55%;
+    --accent: 28 100% 52%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 24 100% 55%;
+    --border: 24 30% 15%;
+    --input: 24 20% 12%;
+    --ring: 24 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Custom gradient tokens */
-    --gradient-orange: linear-gradient(135deg, hsl(24, 100%, 55%) 0%, hsl(32, 100%, 58%) 100%);
-    --gradient-orange-glow: linear-gradient(135deg, hsl(24, 100%, 60%) 0%, hsl(18, 100%, 50%) 100%);
-    --gradient-dark: linear-gradient(180deg, hsl(0, 0%, 4%) 0%, hsl(0, 0%, 8%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 8%) 0%, hsl(0, 0%, 6%) 100%);
+    /* Custom gradient tokens - More vibrant orange */
+    --gradient-orange: linear-gradient(135deg, hsl(20, 100%, 50%) 0%, hsl(35, 100%, 55%) 50%, hsl(28, 100%, 52%) 100%);
+    --gradient-orange-glow: linear-gradient(135deg, hsl(20, 100%, 55%) 0%, hsl(15, 100%, 48%) 100%);
+    --gradient-orange-soft: linear-gradient(135deg, hsl(24, 100%, 50% / 0.15) 0%, hsl(35, 100%, 55% / 0.08) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(20, 8%, 3%) 0%, hsl(20, 5%, 6%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(20, 10%, 7%) 0%, hsl(20, 8%, 5%) 100%);
     
-    /* Glow effects */
-    --glow-orange: 0 0 60px hsl(24, 100%, 55% / 0.35);
-    --glow-orange-intense: 0 0 100px hsl(24, 100%, 55% / 0.5);
+    /* Glow effects - More intense */
+    --glow-orange: 0 0 80px hsl(24, 100%, 50% / 0.4);
+    --glow-orange-intense: 0 0 120px hsl(24, 100%, 50% / 0.6);
+    --glow-orange-subtle: 0 0 40px hsl(24, 100%, 50% / 0.2);
 
-    --sidebar-background: 0 0% 6%;
+    --sidebar-background: 20 8% 5%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 24 100% 55%;
+    --sidebar-primary: 24 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent: 24 30% 12%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 24 100% 55%;
+    --sidebar-border: 24 25% 12%;
+    --sidebar-ring: 24 100% 50%;
   }
 }
 
@@ -85,6 +87,10 @@
     background-image: var(--gradient-orange);
   }
 
+  .bg-gradient-orange-soft {
+    background-image: var(--gradient-orange-soft);
+  }
+
   .bg-gradient-dark {
     background-image: var(--gradient-dark);
   }
@@ -97,10 +103,24 @@
     box-shadow: var(--glow-orange-intense);
   }
 
+  .glow-orange-subtle {
+    box-shadow: var(--glow-orange-subtle);
+  }
+
   .border-gradient-orange {
     border: 1px solid transparent;
     background: linear-gradient(var(--background), var(--background)) padding-box,
                 var(--gradient-orange) border-box;
+  }
+
+  /* Orange accent border */
+  .border-orange-accent {
+    border-color: hsl(24 100% 50% / 0.3);
+  }
+
+  /* Orange text glow effect */
+  .text-glow-orange {
+    text-shadow: 0 0 20px hsl(24 100% 50% / 0.5);
   }
 
   /* Smooth scrolling */
@@ -108,34 +128,57 @@
     scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar with orange theme */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(0 0% 8%);
+    background: hsl(20 8% 5%);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(0 0% 20%);
+    background: hsl(24 60% 25%);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(24, 100%, 50%);
+    background: hsl(24 100% 50%);
   }
 
   /* Focus styles */
   *:focus-visible {
-    outline: 2px solid hsl(24, 100%, 50%);
+    outline: 2px solid hsl(24 100% 50%);
     outline-offset: 2px;
   }
 
-  /* Selection */
+  /* Selection with orange */
   ::selection {
-    background: hsl(24, 100%, 50% / 0.3);
+    background: hsl(24 100% 50% / 0.4);
     color: inherit;
+  }
+
+  /* Orange link underline animation */
+  .link-orange-underline {
+    position: relative;
+  }
+
+  .link-orange-underline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: var(--gradient-orange);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+  }
+
+  .link-orange-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
   }
 }
