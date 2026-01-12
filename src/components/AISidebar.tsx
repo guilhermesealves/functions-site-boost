@@ -258,9 +258,9 @@ const AISidebar = ({
               <button 
                 key={tool.id} 
                 onClick={() => onSelectTool(tool.id)} 
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${collapsed ? 'justify-center' : ''} ${isSelected ? "bg-violet-500/15 text-violet-400 border border-violet-500/20" : "text-white/70 hover:text-white hover:bg-white/[0.04] border border-transparent"}`}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${collapsed ? 'justify-center' : ''} ${isSelected ? "bg-orange-500/15 text-orange-400 border border-orange-500/20" : "text-white/70 hover:text-white hover:bg-white/[0.04] border border-transparent"}`}
               >
-                <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-violet-400' : ''}`} />
+                <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-orange-400' : ''}`} />
                 {!collapsed && (
                   <div className="flex-1 text-left">
                     <span className="block">{tool.name}</span>
