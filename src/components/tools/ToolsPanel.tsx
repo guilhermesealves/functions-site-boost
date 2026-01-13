@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock, Crown } from "lucide-react";
+import { X, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCredits } from "@/hooks/useCredits";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -15,6 +15,8 @@ import SalesRecoveryTool from "./SalesRecoveryTool";
 import SocialMediaTool from "./SocialMediaTool";
 import ChecklistTool from "./ChecklistTool";
 import AIExplainerTool from "./AIExplainerTool";
+import UpgradeNotice from "./UpgradeNotice";
+import PreviewOverlay from "./PreviewOverlay";
 
 interface ToolsPanelProps {
   selectedTool: string;
@@ -98,12 +100,6 @@ const toolsConfig: Record<string, { title: string; description: string; icon: st
   },
 };
 
-const planBadges = {
-  starter: { label: "Free", color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" },
-  pro: { label: "Pro", color: "bg-primary/20 text-primary border-primary/30" },
-  enterprise: { label: "Business", color: "bg-violet-500/20 text-violet-400 border-violet-500/30" },
-};
-
 const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) => {
   const navigate = useNavigate();
   const { balance } = useCredits();
@@ -113,8 +109,8 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
   
   if (!config) return null;
 
-  // Check access
-  const canAccessTool = () => {
+  // Check access - now allows viewing (preview mode)
+  const hasFullAccess = (): boolean => {
     if (isAdmin) return true;
     const planOrder = ["free", "starter", "pro", "enterprise"];
     const userPlanIndex = planOrder.indexOf(userPlan);
@@ -122,10 +118,10 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
     return userPlanIndex >= toolPlanIndex || config.plan === "starter";
   };
 
-  const hasAccess = canAccessTool();
-  const badge = planBadges[config.plan];
+  const hasAccess = hasFullAccess();
+  const isPreviewMode = !hasAccess;
 
-  // Wrapper that redirects to pricing when blocked
+  // In preview mode, critical actions are disabled
   const handleBlockedAction = () => {
     navigate("/pricing");
   };
@@ -182,29 +178,8 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
         <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
       </button>
 
-      {/* Locked Overlay */}
-      {!hasAccess && (
-        <div className="absolute inset-0 z-20 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-8">
-          <div className="text-center max-w-sm">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Lock className="w-8 h-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">
-              Ferramenta {badge.label}
-            </h3>
-            <p className="text-muted-foreground text-sm mb-6">
-              Esta ferramenta está disponível no plano {badge.label}. Faça upgrade para desbloquear todas as funcionalidades.
-            </p>
-            <button
-              onClick={() => navigate("/pricing")}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-amber-500 text-white font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
-            >
-              <Crown className="w-4 h-4" />
-              Ver Planos
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Preview Mode Indicator */}
+      {isPreviewMode && <PreviewOverlay />}
 
       {/* Tool Content */}
       <div className="flex-1 overflow-y-auto">
@@ -221,6 +196,9 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Upgrade Notice - Only in preview mode */}
+      {isPreviewMode && <UpgradeNotice />}
     </motion.div>
   );
 };
