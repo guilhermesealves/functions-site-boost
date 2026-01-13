@@ -11,3 +11,18 @@ verify_jwt = false
 
 [functions.tools-ai]
 verify_jwt = false
+
+[functions.business-plan]
+verify_jwt = false
+
+[functions.branding]
+verify_jwt = false
+
+[functions.logo-visual]
+verify_jwt = false
+
+[functions.regenerate-theme]
+verify_jwt = false
+
+[functions.copywriter]
+verify_jwt = false
