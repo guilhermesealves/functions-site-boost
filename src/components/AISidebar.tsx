@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useCredits } from "@/hooks/useCredits";
+import { useUserRole } from "@/hooks/useUserRole";
 import CodiaLogo from "./CodiaLogo";
 
 interface AITool {
@@ -115,6 +116,7 @@ const AISidebar = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
+  const { isAdmin } = useUserRole();
 
   // Credit calculations
   const totalCredits = balance?.total || 0;
@@ -147,7 +149,9 @@ const AISidebar = ({
     );
   };
 
+  // Admin tem acesso a tudo, senão verifica o plano
   const canAccessTool = (toolPlan: string) => {
+    if (isAdmin) return true;
     const planOrder = ["free", "starter", "pro", "enterprise"];
     const userPlanIndex = planOrder.indexOf(userPlan);
     const toolPlanIndex = planOrder.indexOf(toolPlan);
@@ -175,7 +179,12 @@ const AISidebar = ({
               <span className="text-sm text-foreground font-medium truncate block">
                 {userName}'s Codia
               </span>
-              <span className="text-[10px] text-muted-foreground capitalize">{userPlan}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-muted-foreground capitalize">{userPlan}</span>
+                {isAdmin && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-destructive/20 text-destructive border border-destructive/30">Admin</span>
+                )}
+              </div>
             </div>
             <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -310,19 +319,13 @@ const AISidebar = ({
                         <button
                           key={tool.id}
                           onClick={() => {
-                            if (hasAccess) {
-                              onSelectTool(tool.id);
-                            } else {
-                              toast.error(`Disponível no plano ${badge.label}`);
-                              navigate("/pricing");
-                            }
+                            // Sempre permite abrir a ferramenta para ver
+                            onSelectTool(tool.id);
                           }}
                           className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all group ${collapsed ? 'justify-center' : ''} ${
                             isSelected 
                               ? "bg-primary/15 text-primary border border-primary/20" 
-                              : hasAccess
-                                ? "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
-                                : "text-muted-foreground/50 hover:bg-secondary/30 border border-transparent cursor-not-allowed"
+                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
                           }`}
                         >
                           <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-primary' : ''}`} />
@@ -334,7 +337,7 @@ const AISidebar = ({
                               {!hasAccess && (
                                 <Lock className="w-3 h-3 text-muted-foreground/50" />
                               )}
-                              {tool.plan !== "starter" && hasAccess && (
+                              {tool.plan !== "starter" && (
                                 <span className={`px-1.5 py-0.5 text-[9px] rounded border ${badge.color}`}>
                                   {badge.label}
                                 </span>
@@ -367,6 +370,19 @@ const AISidebar = ({
           </button>
         </div>
       </div>
+
+      {/* Upgrade Button - Fixed at bottom */}
+      {!collapsed && userPlan !== "pro" && userPlan !== "enterprise" && !isAdmin && (
+        <div className="p-3 border-t border-border/50">
+          <button
+            onClick={() => navigate("/pricing")}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-amber-500 text-white font-medium text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+          >
+            <Crown className="w-4 h-4" />
+            Upgrade para PRO
+          </button>
+        </div>
+      )}
 
       {/* Collapse Button */}
       <div className="p-2 border-t border-border/50">
