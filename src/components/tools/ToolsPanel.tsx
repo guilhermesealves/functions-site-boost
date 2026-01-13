@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 import SiteClonerTool from "./SiteClonerTool";
 import ZapCRMTool from "./ZapCRMTool";
 import SEOTool from "./SEOTool";
@@ -124,49 +124,18 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="h-full bg-background border-l border-border flex flex-col"
+      className="h-full bg-background border-l border-border flex flex-col relative"
     >
-      {/* Header */}
-      <div className="relative overflow-hidden border-b border-border">
-        {/* Subtle gradient accent */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
-        
-        <div className="relative px-6 py-5">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-xl">
-                {config.icon}
-              </div>
-              
-              <div>
-                <h2 className="text-lg font-semibold text-foreground">
-                  {config.title}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {config.description}
-                </p>
-              </div>
-            </div>
-            
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary border border-border hover:border-primary/20 transition-all duration-200"
-            >
-              <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
-            </button>
-          </div>
-
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
-            <span>Ferramentas</span>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-foreground/70">{config.title}</span>
-          </div>
-        </div>
-      </div>
+      {/* Close Button - Floating */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 p-2 rounded-lg bg-secondary/80 hover:bg-secondary border border-border hover:border-primary/20 transition-all duration-200"
+      >
+        <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+      </button>
 
       {/* Tool Content */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={selectedTool}
@@ -174,22 +143,13 @@ const ToolsPanel = ({ selectedTool, onClose, onSendMessage }: ToolsPanelProps) =
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
+            className="h-full"
           >
             {renderTool()}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-border bg-card/50">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Powered by Codia AI</span>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>Online</span>
-          </div>
-        </div>
-      </div>
     </motion.div>
   );
 };
