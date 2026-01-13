@@ -163,7 +163,7 @@ const AISidebar = ({
       initial={{ x: -300 }}
       animate={{ x: 0, width: collapsed ? 56 : 260 }}
       transition={{ duration: 0.2 }}
-      className="h-[calc(100vh-64px)] bg-[hsl(0,0%,4%)] border-r border-border/50 flex flex-col shrink-0"
+      className="h-full min-h-0 bg-[hsl(0,0%,4%)] border-r border-border/50 flex flex-col shrink-0 overflow-hidden"
     >
       {/* User/Workspace Selector with Dropdown */}
       {!collapsed && (
