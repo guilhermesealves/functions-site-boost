@@ -19,13 +19,15 @@ import {
   LogOut,
   HelpCircle,
   Flame,
-  Crown
+  Crown,
+  Building2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import CodiaLogo from "./CodiaLogo";
 import { useCredits } from "@/hooks/useCredits";
+import { useStore } from "@/hooks/useStore";
 
 interface MainSidebarProps {
   userName?: string;
@@ -52,12 +54,14 @@ const MainSidebar = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
+  const { store, hasStore } = useStore();
   
   // Credit calculations
   const totalCredits = balance?.total || 0;
   const maxCredits = balance?.tier === "free" ? 50 : balance?.tier === "starter" ? 200 : balance?.tier === "pro" ? 500 : 1000;
   const creditPercentage = Math.min((totalCredits / maxCredits) * 100, 100);
   const isLowCredits = creditPercentage < 20;
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -71,32 +75,32 @@ const MainSidebar = ({
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Você saiu da sua conta");
+    toast.success("Sessão encerrada");
     navigate("/");
   };
 
   const mainNavItems = [
-    { id: "home", label: "Home", icon: Home, shortcut: "" },
+    { id: "home", label: "Início", icon: Home, shortcut: "" },
     { id: "search", label: "Buscar", icon: Search, shortcut: "Ctrl+K" },
   ];
 
   const projectItems = [
-    { id: "all-projects", label: "Todos os projetos", icon: FolderOpen },
+    { id: "all-projects", label: "Projetos", icon: FolderOpen },
     { id: "starred", label: "Favoritos", icon: Star },
-    { id: "shared", label: "Compartilhados comigo", icon: Users },
+    { id: "shared", label: "Compartilhados", icon: Users },
   ];
 
   const resourceItems = [
     { id: "discover", label: "Descobrir", icon: Compass },
     { id: "templates", label: "Templates", icon: LayoutTemplate, action: onOpenTemplates },
-    { id: "learn", label: "Aprender", icon: GraduationCap },
+    { id: "learn", label: "Documentação", icon: GraduationCap },
   ];
 
   const handleItemClick = (id: string, action?: () => void) => {
     if (action) {
       action();
     } else if (id === "search") {
-      toast.info("Busca em breve!");
+      toast.info("Busca disponível em breve");
     } else if (id === "discover") {
       navigate("/discover");
     } else if (id === "learn") {
@@ -272,14 +276,31 @@ const MainSidebar = ({
         </AnimatePresence>
       </div>
 
+      {/* My Company Section */}
+      {hasStore && (
+        <div className="px-3 mb-2">
+          <button
+            onClick={() => onNavigate?.("my-company")}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+              currentSection === "my-company"
+                ? "bg-primary/15 text-primary border border-primary/20"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            <span className="flex-1 text-left truncate">{store?.name || "Minha Empresa"}</span>
+          </button>
+        </div>
+      )}
+
       {/* Create New Project Button */}
       <div className="px-3 mb-2">
         <button
           onClick={onNewProject}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium transition-all shadow-lg shadow-orange-500/20"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-medium transition-all shadow-lg shadow-primary/20"
         >
           <Plus className="w-4 h-4" />
-          <span>Criar nova empresa</span>
+          <span>Novo projeto</span>
         </button>
       </div>
 
@@ -355,20 +376,22 @@ const MainSidebar = ({
 
       {/* Footer Actions */}
       <div className="p-3 border-t border-white/[0.04] space-y-1">
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/[0.04] transition-colors">
+        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors">
           <Share2 className="w-4 h-4" />
-          <span className="flex-1 text-left">Compartilhar Codia</span>
-          <span className="text-[10px] text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">+10</span>
+          <span className="flex-1 text-left">Indicar</span>
+          <span className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">+10</span>
         </button>
         
-        <button 
-          onClick={() => navigate("/pricing")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-gradient-to-r from-orange-500/10 to-amber-500/10 text-orange-400 hover:from-orange-500/20 hover:to-amber-500/20 transition-colors"
-        >
-          <Zap className="w-4 h-4" />
-          <span className="flex-1 text-left">Upgrade para Pro</span>
-          <span className="text-orange-300">→</span>
-        </button>
+        {balance?.tier !== "pro" && balance?.tier !== "enterprise" && (
+          <button 
+            onClick={() => navigate("/pricing")}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            <Zap className="w-4 h-4" />
+            <span className="flex-1 text-left">Assinar Pro</span>
+            <span className="text-primary/70">→</span>
+          </button>
+        )}
       </div>
     </motion.aside>
   );

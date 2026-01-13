@@ -8,10 +8,15 @@ import AllProjects from "@/components/AllProjects";
 import Footer from "@/components/Footer";
 import TemplatesModal from "@/components/templates/TemplatesModal";
 import SettingsModal from "@/components/SettingsModal";
+import TutorialModal from "@/components/onboarding/TutorialModal";
+import CreateStoreModal from "@/components/onboarding/CreateStoreModal";
 import { Template } from "@/components/templates/TemplatesData";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
+import { useStore } from "@/hooks/useStore";
+import { useTutorial } from "@/hooks/useTutorial";
+import { Loader2 } from "lucide-react";
 
 interface Project {
   id: string;
@@ -33,11 +38,16 @@ const Builder = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showCreateStore, setShowCreateStore] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const initialPromptProcessed = useRef(false);
+
+  const { store, loading: storeLoading, hasStore, refreshStore } = useStore();
+  const { shouldShowTutorial, completeTutorial, loading: tutorialLoading } = useTutorial();
 
   // Proper auth state management with session storage
   useEffect(() => {
@@ -64,6 +74,19 @@ const Builder = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Handle initialization and redirect logic
+  useEffect(() => {
+    if (storeLoading || tutorialLoading || !user) return;
+
+    // User is authenticated
+    // Check if needs to create store
+    if (!hasStore) {
+      setShowCreateStore(true);
+    }
+    
+    setIsInitializing(false);
+  }, [storeLoading, tutorialLoading, hasStore, user]);
 
   // Handle template selection from navigation state
   useEffect(() => {
@@ -112,7 +135,7 @@ const Builder = () => {
   };
 
   const handleSelectTemplate = (template: Template) => {
-    toast.success(`Template "${template.name}" selecionado!`);
+    toast.success(`Template "${template.name}" selecionado`);
     setShowTemplates(false);
     setSelectedTemplate(template);
     setInitialTool("website");
@@ -123,7 +146,16 @@ const Builder = () => {
     setCurrentSection(section);
     if (section === "home") {
       setViewMode("dashboard");
+    } else if (section === "my-company") {
+      // Navigate to company section
+      setCurrentSection("my-company");
     }
+  };
+
+  const handleStoreCreated = async () => {
+    setShowCreateStore(false);
+    await refreshStore();
+    toast.success("Empresa cadastrada com sucesso");
   };
 
   const handleSendMessage = async (message: string, toolId: string): Promise<string> => {
@@ -181,17 +213,29 @@ const Builder = () => {
           }
         }
         
-        return assistantContent || "Site gerado com sucesso!";
+        return assistantContent || "Site gerado com sucesso";
       } catch (error: any) {
         console.error("Error:", error);
         throw new Error(error.message || "Erro ao gerar site");
       }
     }
 
-    return `Esta funcionalidade está sendo desenvolvida. Em breve você poderá usar a IA de ${toolId} para criar conteúdo incrível.`;
+    return `Esta funcionalidade está sendo desenvolvida. Em breve você poderá usar a ferramenta de ${toolId}.`;
   };
 
   const userName = user?.email?.split("@")[0] || "você";
+
+  // Show loading while initializing
+  if (isInitializing || storeLoading || tutorialLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show Dashboard with Main Sidebar
   if (viewMode === "dashboard") {
@@ -199,55 +243,67 @@ const Builder = () => {
       <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
         <EmailVerificationBanner />
         <div className="flex-1 flex">
-        <MainSidebar
-          userName={userName}
-          onNavigate={handleSidebarNavigate}
-          onOpenTemplates={() => setShowTemplates(true)}
-          onOpenSettings={() => setShowSettings(true)}
-          currentSection={currentSection}
-          collapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-          onNewProject={handleNewProject}
-        />
-        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-          <div className="flex-1 overflow-y-auto">
-            {currentSection === "all-projects" || currentSection === "starred" || currentSection === "shared" ? (
-              <AllProjects 
-                onNewProject={handleNewProject}
-                onSelectProject={(project: any) => {
-                  handleSelectProject(project);
-                  setViewMode("studio");
-                }}
-              />
-            ) : (
-              <Dashboard 
-                onStartWebsite={() => {
-                  setInitialTool("website");
-                  setViewMode("studio");
-                }}
-                onOpenStudio={(toolId) => {
-                  if (toolId) setInitialTool(toolId);
-                  setViewMode("studio");
-                }}
-                projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
-                projects={projects}
-                userName={userName}
-              />
-            )}
+          <MainSidebar
+            userName={userName}
+            onNavigate={handleSidebarNavigate}
+            onOpenTemplates={() => setShowTemplates(true)}
+            onOpenSettings={() => setShowSettings(true)}
+            currentSection={currentSection}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onNewProject={handleNewProject}
+          />
+          <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              {currentSection === "all-projects" || currentSection === "starred" || currentSection === "shared" ? (
+                <AllProjects 
+                  onNewProject={handleNewProject}
+                  onSelectProject={(project: any) => {
+                    handleSelectProject(project);
+                    setViewMode("studio");
+                  }}
+                />
+              ) : (
+                <Dashboard 
+                  onStartWebsite={() => {
+                    setInitialTool("website");
+                    setViewMode("studio");
+                  }}
+                  onOpenStudio={(toolId) => {
+                    if (toolId) setInitialTool(toolId);
+                    setViewMode("studio");
+                  }}
+                  projectContext={currentProject ? { name: currentProject.name, hasWebsite: !!currentProject.code } : undefined}
+                  projects={projects}
+                  userName={userName}
+                />
+              )}
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
 
-        <TemplatesModal 
-          isOpen={showTemplates}
-          onClose={() => setShowTemplates(false)}
-          onSelectTemplate={handleSelectTemplate}
-        />
+          <TemplatesModal 
+            isOpen={showTemplates}
+            onClose={() => setShowTemplates(false)}
+            onSelectTemplate={handleSelectTemplate}
+          />
 
-        <SettingsModal
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-        />
+          <SettingsModal
+            isOpen={showSettings}
+            onClose={() => setShowSettings(false)}
+          />
+
+          {/* Tutorial Modal - Only for first-time users */}
+          <TutorialModal 
+            isOpen={shouldShowTutorial && !showCreateStore}
+            onComplete={completeTutorial}
+          />
+
+          {/* Create Store Modal - When user doesn't have a store */}
+          <CreateStoreModal
+            isOpen={showCreateStore}
+            onComplete={handleStoreCreated}
+          />
         </div>
       </div>
     );
@@ -255,20 +311,28 @@ const Builder = () => {
 
   // Show Studio Layout
   return (
-    <StudioLayout 
-      onGoHome={() => {
-        setViewMode("dashboard");
-        setSelectedTemplate(null);
-      }}
-      initialTool={initialTool}
-      onSendMessage={handleSendMessage}
-      user={user}
-      projects={projects}
-      onSelectProject={handleSelectProject}
-      currentProjectId={currentProject?.id}
-      onNewProject={handleNewProject}
-      selectedTemplate={selectedTemplate}
-    />
+    <>
+      <StudioLayout 
+        onGoHome={() => {
+          setViewMode("dashboard");
+          setSelectedTemplate(null);
+        }}
+        initialTool={initialTool}
+        onSendMessage={handleSendMessage}
+        user={user}
+        projects={projects}
+        onSelectProject={handleSelectProject}
+        currentProjectId={currentProject?.id}
+        onNewProject={handleNewProject}
+        selectedTemplate={selectedTemplate}
+      />
+      
+      {/* Tutorial Modal in Studio */}
+      <TutorialModal 
+        isOpen={shouldShowTutorial}
+        onComplete={completeTutorial}
+      />
+    </>
   );
 };
 
