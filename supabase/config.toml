@@ -26,3 +26,30 @@ verify_jwt = false
 
 [functions.copywriter]
 verify_jwt = false
+
+[functions.seo-pages]
+verify_jwt = false
+
+[functions.growth-engine]
+verify_jwt = false
+
+[functions.copy-thief]
+verify_jwt = false
+
+[functions.social-generator]
+verify_jwt = false
+
+[functions.site-cloner]
+verify_jwt = false
+
+[functions.migrator]
+verify_jwt = false
+
+[functions.store-status]
+verify_jwt = false
+
+[functions.zap-commerce]
+verify_jwt = false
+
+[functions.sales-recovery]
+verify_jwt = false
