@@ -107,6 +107,36 @@ export type Database = {
         }
         Relationships: []
       }
+      business_plans: {
+        Row: {
+          canvas_data: Json
+          created_at: string
+          id: string
+          initial_capital: number | null
+          niche: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canvas_data: Json
+          created_at?: string
+          id?: string
+          initial_capital?: number | null
+          niche: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canvas_data?: Json
+          created_at?: string
+          id?: string
+          initial_capital?: number | null
+          niche?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       credit_packages: {
         Row: {
           active: boolean | null
@@ -218,6 +248,36 @@ export type Database = {
           type?: string | null
           user_id?: string
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      generated_content: {
+        Row: {
+          content: string
+          content_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          content_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          title?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -497,6 +557,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stores: {
+        Row: {
+          brand_voice: Json | null
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          theme_config: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_voice?: Json | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          theme_config?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_voice?: Json | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          theme_config?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_achievements: {
         Row: {
