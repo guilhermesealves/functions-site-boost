@@ -160,12 +160,12 @@ const MainSidebar = ({
       <motion.aside
         initial={{ width: 72 }}
         animate={{ width: 72 }}
-        className="h-screen sticky top-0 bg-sidebar border-r border-sidebar-border flex flex-col"
+        className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
       >
         <div className="p-4 flex justify-center">
           <button
             onClick={onToggleCollapse}
-            className="p-2.5 rounded-xl hover:bg-sidebar-accent text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors"
+            className="p-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
           >
             <PanelLeft className="w-5 h-5" />
           </button>
@@ -176,8 +176,8 @@ const MainSidebar = ({
             onClick={() => handleItemClick("home")}
             className={`w-full p-3 rounded-xl flex items-center justify-center transition-colors ${
               currentSection === "home"
-                ? "bg-sidebar-primary/20 text-sidebar-primary"
-                : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
             title="Início"
           >
@@ -192,14 +192,14 @@ const MainSidebar = ({
     <motion.aside
       initial={{ width: 280 }}
       animate={{ width: 280 }}
-      className="h-screen sticky top-0 bg-sidebar border-r border-sidebar-border flex flex-col"
+      className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
     >
       {/* Header with Logo */}
       <div className="p-4 flex items-center justify-between">
         <CodiaLogo size="md" animated />
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-xl hover:bg-sidebar-accent text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors"
+          className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
         >
           <PanelLeftClose className="w-4 h-4" />
         </button>
@@ -209,15 +209,15 @@ const MainSidebar = ({
       <div className="px-3 pb-3 relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-sidebar-accent transition-colors group"
+          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-secondary/50 transition-colors group"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-sidebar-primary to-emerald-400 flex items-center justify-center text-sidebar-foreground text-sm font-bold">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center text-primary-foreground text-sm font-bold">
             {userName.charAt(0).toUpperCase()}
           </div>
-          <span className="flex-1 text-left text-sm text-sidebar-foreground font-medium truncate">
+          <span className="flex-1 text-left text-sm text-foreground font-medium truncate">
             {userName}'s Codia
           </span>
-          <ChevronDown className={`w-4 h-4 text-sidebar-foreground/60 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {/* User Dropdown */}
@@ -228,24 +228,24 @@ const MainSidebar = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.96 }}
               transition={{ duration: 0.12 }}
-              className="absolute left-3 right-3 top-full mt-1 bg-sidebar-accent border border-sidebar-border rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+              className="absolute left-3 right-3 top-full mt-1 bg-card border border-border rounded-xl shadow-2xl shadow-black/80 overflow-hidden z-50"
             >
               {/* Credits */}
-              <div className="p-4 border-b border-sidebar-border">
+              <div className="p-4 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-sidebar-primary"}`} />
-                    <span className="text-sm font-semibold text-sidebar-foreground">{totalCredits} créditos</span>
+                    <Zap className={`w-4 h-4 ${isLowCredits ? "text-destructive" : "text-primary"}`} />
+                    <span className="text-sm font-semibold text-foreground">{totalCredits} créditos</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {balance?.streak && balance.streak > 0 && (
-                      <div className="flex items-center gap-1 text-xs text-amber-400">
+                      <div className="flex items-center gap-1 text-xs text-orange-400">
                         <Flame className="w-3 h-3" />
                         <span>{balance.streak}</span>
                       </div>
                     )}
                     {balance?.level && (
-                      <div className="flex items-center gap-1 text-xs text-violet-400">
+                      <div className="flex items-center gap-1 text-xs text-purple-400">
                         <Crown className="w-3 h-3" />
                         <span>Lv.{balance.level}</span>
                       </div>
@@ -253,13 +253,13 @@ const MainSidebar = ({
                   </div>
                 </div>
                 
-                <div className="relative h-1.5 bg-sidebar-border rounded-full overflow-hidden">
+                <div className="relative h-1.5 bg-muted rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${creditPercentage}%` }}
                     transition={{ duration: 0.5 }}
                     className={`absolute inset-y-0 left-0 rounded-full ${
-                      isLowCredits ? "bg-red-500" : "bg-gradient-to-r from-sidebar-primary to-emerald-400"
+                      isLowCredits ? "bg-destructive" : "bg-gradient-to-r from-primary to-orange-400"
                     }`}
                   />
                 </div>
@@ -268,28 +268,28 @@ const MainSidebar = ({
               <div className="p-1.5">
                 <button
                   onClick={() => { setIsDropdownOpen(false); onOpenSettings?.(); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-border rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <Settings className="w-4 h-4" />
                   Configurações
                 </button>
                 <button
                   onClick={() => { setIsDropdownOpen(false); toast.info("Suporte em breve"); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-border rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <HelpCircle className="w-4 h-4" />
                   Suporte
                 </button>
                 <button
                   onClick={() => { setIsDropdownOpen(false); navigate("/pricing"); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-primary hover:bg-sidebar-border rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
                 >
                   <Zap className="w-4 h-4" />
                   Comprar Créditos
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-sidebar-border rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -300,13 +300,13 @@ const MainSidebar = ({
         </AnimatePresence>
       </div>
 
-      {/* New Project Button - Premium Green with subtle effect */}
+      {/* New Project Button - Premium Orange with Glow */}
       <div className="px-3 pb-4">
         <motion.button
           onClick={onNewProject}
-          whileHover={{ scale: 1.01 }}
+          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-gradient-to-r from-sidebar-primary to-emerald-500 text-sidebar-foreground font-semibold text-sm transition-all shadow-lg shadow-sidebar-primary/20 hover:shadow-sidebar-primary/30"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm transition-all glow-orange"
         >
           <Plus className="w-4 h-4" />
           <span>Novo Projeto / Criar Empresa</span>
@@ -320,7 +320,7 @@ const MainSidebar = ({
           <div className="mb-3">
             <button
               onClick={() => toggleSection("overview")}
-              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider hover:text-sidebar-foreground/70 transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground/70 transition-colors"
             >
               <div className="flex items-center gap-2">
                 <Home className="w-3.5 h-3.5" />
@@ -347,8 +347,8 @@ const MainSidebar = ({
                         onClick={() => handleItemClick(item.id)}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
                           currentSection === item.id
-                            ? "bg-sidebar-primary/20 text-sidebar-foreground font-medium"
-                            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                            ? "bg-primary/10 text-foreground font-medium"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                         }`}
                       >
                         <item.icon className="w-4 h-4" />
@@ -363,23 +363,23 @@ const MainSidebar = ({
         )}
 
         {/* AI Assistant Section */}
-        <div className="mb-3 p-3 rounded-xl bg-gradient-to-br from-sidebar-primary/15 to-transparent border border-sidebar-primary/20">
+        <div className="mb-3 p-3 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
           <div className="flex items-center gap-2 mb-2">
-            <Bot className="w-4 h-4 text-sidebar-primary" />
-            <span className="text-xs font-semibold text-sidebar-primary uppercase tracking-wider">IA Assistente</span>
+            <Bot className="w-4 h-4 text-primary" />
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">IA Assistente</span>
           </div>
-          <p className="text-xs text-sidebar-foreground/60 mb-3">
+          <p className="text-xs text-muted-foreground mb-3">
             Deixe a IA gerenciar sua loja automaticamente
           </p>
-          <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-sidebar-primary hover:bg-sidebar-primary/90 text-sidebar-foreground text-sm font-semibold transition-all shadow-md">
+          <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-all glow-orange">
             <Sparkles className="w-4 h-4" />
             Ativar IA
           </button>
         </div>
 
         {/* Resources Section */}
-        <div className="mt-6 pt-4 border-t border-sidebar-border">
-          <p className="px-3 py-2 text-[11px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+        <div className="mt-6 pt-4 border-t border-border">
+          <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
             RECURSOS
           </p>
           <div className="space-y-0.5">
@@ -387,12 +387,12 @@ const MainSidebar = ({
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.id, item.id === "templates" ? onOpenTemplates : undefined)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               >
                 <item.icon className="w-4 h-4" />
                 <span className="flex-1 text-left">{item.label}</span>
                 {item.id === "referral" && (
-                  <span className="text-[10px] font-semibold text-sidebar-primary bg-sidebar-primary/15 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
                     +10
                   </span>
                 )}
@@ -404,14 +404,14 @@ const MainSidebar = ({
 
       {/* Footer - Upgrade */}
       {balance?.tier !== "pro" && balance?.tier !== "enterprise" && (
-        <div className="p-3 border-t border-sidebar-border">
+        <div className="p-3 border-t border-border">
           <button 
             onClick={() => navigate("/pricing")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm bg-sidebar-primary/15 hover:bg-sidebar-primary/25 text-sidebar-primary font-medium transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors"
           >
             <Zap className="w-4 h-4" />
             <span className="flex-1 text-left">Assinar Pro</span>
-            <span className="text-sidebar-primary/60">→</span>
+            <span className="text-primary/60">→</span>
           </button>
         </div>
       )}

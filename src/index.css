@@ -4,60 +4,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Codia - Premium Design System - Verde Escuro + Bege Moderno */
+/* Codia - Ultra Premium Design System - Tesla/Grok/SpaceX Inspired */
 
 @layer base {
   :root {
-    --background: 40 30% 96%;
-    --foreground: 160 30% 15%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 40 25% 93%;
-    --card-foreground: 160 30% 15%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 40 25% 93%;
-    --popover-foreground: 160 30% 15%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 160 45% 30%;
-    --primary-foreground: 40 30% 96%;
+    --primary: 24 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 20% 88%;
-    --secondary-foreground: 160 30% 20%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 40 15% 85%;
-    --muted-foreground: 160 15% 45%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 160 45% 30%;
-    --accent-foreground: 40 30% 96%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 20% 85%;
-    --input: 40 20% 88%;
-    --ring: 160 45% 30%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 24 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Premium green */
-    --neon-green: 160 45% 30%;
-    --neon-green-glow: 0 0 30px hsl(160, 45%, 30% / 0.25);
-    --neon-green-glow-intense: 0 0 50px hsl(160, 45%, 30% / 0.35);
+    /* Premium neon orange */
+    --neon-orange: 24 100% 50%;
+    --neon-orange-glow: 0 0 40px hsl(24, 100%, 50% / 0.4);
+    --neon-orange-glow-intense: 0 0 80px hsl(24, 100%, 50% / 0.6);
 
     /* Gradient tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(160, 45%, 30%) 0%, hsl(150, 40%, 35%) 100%);
-    --gradient-primary-dark: linear-gradient(135deg, hsl(160, 45%, 25%) 0%, hsl(165, 50%, 20%) 100%);
-    --gradient-beige: linear-gradient(180deg, hsl(40, 30%, 96%) 0%, hsl(40, 25%, 92%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(40, 25%, 94%) 0%, hsl(40, 25%, 91%) 100%);
-    --gradient-border: linear-gradient(135deg, hsl(160, 45%, 30% / 0.2) 0%, transparent 50%, hsl(160, 45%, 30% / 0.1) 100%);
+    --gradient-orange: linear-gradient(135deg, hsl(24, 100%, 50%) 0%, hsl(32, 100%, 55%) 100%);
+    --gradient-orange-dark: linear-gradient(135deg, hsl(24, 100%, 45%) 0%, hsl(18, 100%, 40%) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(0, 0%, 0%) 0%, hsl(0, 0%, 4%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 5%) 0%, hsl(0, 0%, 3%) 100%);
+    --gradient-border: linear-gradient(135deg, hsl(24, 100%, 50% / 0.3) 0%, transparent 50%, hsl(24, 100%, 50% / 0.1) 100%);
 
-    --sidebar-background: 160 30% 18%;
-    --sidebar-foreground: 40 30% 96%;
-    --sidebar-primary: 160 45% 45%;
-    --sidebar-primary-foreground: 40 30% 96%;
-    --sidebar-accent: 160 25% 25%;
-    --sidebar-accent-foreground: 40 30% 96%;
-    --sidebar-border: 160 25% 25%;
-    --sidebar-ring: 160 45% 40%;
+    --sidebar-background: 0 0% 2%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 24 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 10%;
+    --sidebar-ring: 24 100% 50%;
   }
 }
 
@@ -69,44 +69,45 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    background-color: #000000;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
-  .text-gradient-primary {
+  .text-gradient-orange {
     @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-primary);
+    background-image: var(--gradient-orange);
   }
 
-  .bg-gradient-primary {
-    background-image: var(--gradient-primary);
+  .bg-gradient-orange {
+    background-image: var(--gradient-orange);
   }
 
-  .bg-gradient-beige {
-    background-image: var(--gradient-beige);
+  .bg-gradient-dark {
+    background-image: var(--gradient-dark);
   }
 
-  .glow-primary {
-    box-shadow: var(--neon-green-glow);
+  .glow-orange {
+    box-shadow: var(--neon-orange-glow);
   }
 
-  .glow-primary-intense {
-    box-shadow: var(--neon-green-glow-intense);
+  .glow-orange-intense {
+    box-shadow: var(--neon-orange-glow-intense);
   }
 
-  .border-gradient-primary {
+  .border-gradient-orange {
     border: 1px solid transparent;
-    background: linear-gradient(hsl(40, 30%, 96%), hsl(40, 30%, 96%)) padding-box,
-                var(--gradient-primary) border-box;
+    background: linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 0%)) padding-box,
+                var(--gradient-orange) border-box;
   }
 
-  /* Subtle texture */
+  /* Tesla-style grain texture */
   .bg-grain {
     position: relative;
   }
@@ -116,7 +117,7 @@
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.015;
+    opacity: 0.02;
     pointer-events: none;
   }
 
@@ -136,33 +137,33 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(160, 20%, 70%);
+    background: hsl(0 0% 20%);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(160, 45%, 30%);
+    background: hsl(24, 100%, 50%);
   }
 
   /* Focus styles */
   *:focus-visible {
-    outline: 2px solid hsl(160, 45%, 30%);
+    outline: 2px solid hsl(24, 100%, 50%);
     outline-offset: 2px;
   }
 
   /* Selection */
   ::selection {
-    background: hsl(160, 45%, 30% / 0.2);
+    background: hsl(24, 100%, 50% / 0.3);
     color: inherit;
   }
 
   /* Premium animations */
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 15px hsl(160, 45%, 30% / 0.2);
+      box-shadow: 0 0 20px hsl(24, 100%, 50% / 0.3);
     }
     50% {
-      box-shadow: 0 0 25px hsl(160, 45%, 30% / 0.3);
+      box-shadow: 0 0 40px hsl(24, 100%, 50% / 0.5);
     }
   }
 
@@ -181,22 +182,5 @@
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
-  }
-
-  /* Legacy orange classes for compatibility - now map to green */
-  .text-gradient-orange {
-    @apply text-gradient-primary;
-  }
-
-  .bg-gradient-orange {
-    @apply bg-gradient-primary;
-  }
-
-  .glow-orange {
-    @apply glow-primary;
-  }
-
-  .glow-orange-intense {
-    @apply glow-primary-intense;
   }
 }

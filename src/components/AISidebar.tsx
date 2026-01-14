@@ -5,7 +5,7 @@ import {
   ChevronLeft, ChevronRight, Code2, ChevronDown, Settings, HelpCircle, 
   LogOut, Zap, Flame, Crown, Copy, MessageSquare, Search, Rocket, ArrowRightLeft,
   FileEdit, Store, GitBranch, RotateCcw, Share2, CheckSquare, HelpCircle as HelpIcon,
-  Sparkles, TrendingUp, ShoppingCart, LayoutDashboard, PanelLeftClose, ArrowLeft
+  Sparkles, TrendingUp, ShoppingCart, LayoutDashboard, PanelLeftClose
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -82,9 +82,9 @@ const toolCategories = {
 };
 
 const planBadges = {
-  starter: { label: "Free", color: "bg-emerald-600/20 text-emerald-300 border-emerald-500/30" },
-  pro: { label: "Pro", color: "bg-amber-500/20 text-amber-300 border-amber-500/30" },
-  enterprise: { label: "Business", color: "bg-violet-500/20 text-violet-300 border-violet-500/30" },
+  starter: { label: "Free", color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" },
+  pro: { label: "Pro", color: "bg-primary/20 text-primary border-primary/30" },
+  enterprise: { label: "Business", color: "bg-violet-500/20 text-violet-400 border-violet-500/30" },
 };
 
 interface AISidebarProps {
@@ -112,6 +112,7 @@ const AISidebar = ({
 }: AISidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // All sections expanded by default - no collapsible behavior
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
@@ -145,43 +146,30 @@ const AISidebar = ({
       initial={{ x: -300 }}
       animate={{ x: 0, width: collapsed ? 56 : 260 }}
       transition={{ duration: 0.2 }}
-      className="h-full min-h-0 bg-sidebar border-r border-sidebar-border flex flex-col shrink-0"
+      className="h-full min-h-0 bg-[hsl(0,0%,4%)] border-r border-border/50 flex flex-col shrink-0"
     >
-      {/* Back Button */}
-      {!collapsed && (
-        <div className="p-3 border-b border-sidebar-border">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-colors w-full"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Voltar</span>
-          </button>
-        </div>
-      )}
-
       {/* User/Workspace Selector with Dropdown */}
       {!collapsed && (
-        <div className="p-3 border-b border-sidebar-border relative" ref={dropdownRef}>
+        <div className="p-3 border-b border-border/50 relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-accent transition-colors group"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary/50 transition-colors group"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sidebar-primary to-emerald-400 flex items-center justify-center text-sidebar-foreground text-sm font-bold shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 text-left min-w-0">
-              <span className="text-sm text-sidebar-foreground font-medium truncate block">
+              <span className="text-sm text-foreground font-medium truncate block">
                 {userName}'s Codia
               </span>
               <div className="flex items-center gap-1">
-                <span className="text-[10px] text-sidebar-foreground/60 capitalize">{userPlan}</span>
+                <span className="text-[10px] text-muted-foreground capitalize">{userPlan}</span>
                 {isAdmin && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">Admin</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-destructive/20 text-destructive border border-destructive/30">Admin</span>
                 )}
               </div>
             </div>
-            <ChevronDown className={`w-4 h-4 text-sidebar-foreground/60 transition-transform shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* User Dropdown */}
@@ -192,14 +180,14 @@ const AISidebar = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute left-3 right-3 top-full mt-1 bg-sidebar-accent border border-sidebar-border rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+                className="absolute left-3 right-3 top-full mt-1 bg-card border border-border rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
               >
                 {/* Credit Bar Section */}
-                <div className="p-3 border-b border-sidebar-border">
+                <div className="p-3 border-b border-border">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-sidebar-primary"}`} />
-                      <span className="text-sm font-medium text-sidebar-foreground">{totalCredits} créditos</span>
+                      <Zap className={`w-4 h-4 ${isLowCredits ? "text-destructive" : "text-primary"}`} />
+                      <span className="text-sm font-medium text-foreground">{totalCredits} créditos</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       {balance?.streak && balance.streak > 0 && (
@@ -218,18 +206,18 @@ const AISidebar = ({
                   </div>
                   
                   {/* Progress Bar */}
-                  <div className="relative h-2 bg-sidebar-border rounded-full overflow-hidden">
+                  <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${creditPercentage}%` }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
-                      className={`absolute inset-y-0 left-0 rounded-full ${isLowCredits ? "bg-red-500" : "bg-gradient-to-r from-sidebar-primary to-emerald-400"}`}
+                      className={`absolute inset-y-0 left-0 rounded-full ${isLowCredits ? "bg-destructive" : "bg-gradient-to-r from-primary to-amber-400"}`}
                     />
                   </div>
                   
                   <div className="flex justify-between mt-1.5">
-                    <span className="text-[10px] text-sidebar-foreground/50">{balance?.daily?.used || 0} usado hoje</span>
-                    <span className="text-[10px] text-sidebar-foreground/50 capitalize">{userPlan}</span>
+                    <span className="text-[10px] text-muted-foreground">{balance?.daily?.used || 0} usado hoje</span>
+                    <span className="text-[10px] text-muted-foreground capitalize">{userPlan}</span>
                   </div>
                 </div>
                 
@@ -239,7 +227,7 @@ const AISidebar = ({
                       setIsDropdownOpen(false);
                       if (onOpenSettings) onOpenSettings();
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-border rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
                   >
                     <Settings className="w-4 h-4" />
                     Configurações
@@ -249,7 +237,7 @@ const AISidebar = ({
                       setIsDropdownOpen(false);
                       toast.info("Suporte em breve!");
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-border rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
                   >
                     <HelpCircle className="w-4 h-4" />
                     Suporte
@@ -259,14 +247,14 @@ const AISidebar = ({
                       setIsDropdownOpen(false);
                       navigate("/pricing");
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-primary hover:bg-sidebar-border rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
                   >
                     <Zap className="w-4 h-4" />
                     Comprar Créditos
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-sidebar-border rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     Sair
@@ -285,7 +273,7 @@ const AISidebar = ({
             <div key={categoryId} className="mb-2">
               {/* Category Header - Static, no dropdown */}
               {!collapsed && (
-                <div className="flex items-center gap-2 px-3 py-2 text-[11px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+                <div className="flex items-center gap-2 px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   <category.icon className="w-3.5 h-3.5" />
                   <span className="flex-1 text-left">{category.label}</span>
                   <ChevronRight className="w-3 h-3 rotate-90" />
@@ -304,11 +292,11 @@ const AISidebar = ({
                       onClick={() => onSelectTool(tool.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all group ${collapsed ? 'justify-center' : ''} ${
                         isSelected 
-                          ? "bg-sidebar-primary/20 text-sidebar-primary border border-sidebar-primary/30" 
-                          : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent border border-transparent"
+                          ? "bg-primary/15 text-primary border border-primary/20" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
                       }`}
                     >
-                      <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-sidebar-primary' : ''}`} />
+                      <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-primary' : ''}`} />
                       {!collapsed && (
                         <>
                           <div className="flex-1 text-left min-w-0">
@@ -329,18 +317,18 @@ const AISidebar = ({
           ))}
 
           {/* Divider */}
-          <div className="my-3 mx-3 border-t border-sidebar-border" />
+          <div className="my-3 mx-3 border-t border-border/50" />
 
           {/* Existing Business */}
           <button
             onClick={() => onSelectTool("existing")}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${collapsed ? 'justify-center' : ''} ${
               selectedTool === "existing"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent border border-transparent"
+                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
             }`}
           >
-            <Building2 className={`w-4 h-4 shrink-0 ${selectedTool === "existing" ? 'text-emerald-300' : ''}`} />
+            <Building2 className={`w-4 h-4 shrink-0 ${selectedTool === "existing" ? 'text-emerald-400' : ''}`} />
             {!collapsed && <span>Já tenho empresa</span>}
           </button>
         </div>
@@ -348,10 +336,10 @@ const AISidebar = ({
 
       {/* Upgrade Button - Fixed at bottom */}
       {!collapsed && userPlan !== "pro" && userPlan !== "enterprise" && !isAdmin && (
-        <div className="p-3 border-t border-sidebar-border">
+        <div className="p-3 border-t border-border/50">
           <button
             onClick={() => navigate("/pricing")}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-sidebar-primary to-emerald-500 text-sidebar-foreground font-medium text-sm hover:opacity-90 transition-opacity shadow-lg shadow-sidebar-primary/25"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-amber-500 text-white font-medium text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
           >
             <Crown className="w-4 h-4" />
             Upgrade para PRO
@@ -360,10 +348,10 @@ const AISidebar = ({
       )}
 
       {/* Collapse Button */}
-      <div className="p-2 border-t border-sidebar-border">
+      <div className="p-2 border-t border-border/50">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors ${collapsed ? 'justify-center' : ''}`}
+          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors ${collapsed ? 'justify-center' : ''}`}
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
