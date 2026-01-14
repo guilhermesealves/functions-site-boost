@@ -254,67 +254,22 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             ))}
           </motion.div>
 
-          {/* Tools Grid */}
+          {/* Create Button */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="w-full max-w-6xl mb-16"
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="w-full max-w-3xl mb-16"
           >
-            <h2 className="text-xl font-bold text-foreground mb-6">Ferramentas de Criação</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {mainTools.map((tool, index) => (
-                <motion.button
-                  key={tool.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 + index * 0.05 }}
-                  onClick={() => !tool.locked && onOpenStudio(tool.id)}
-                  whileHover={{ scale: 1.02, y: -4 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`relative group p-6 rounded-2xl border transition-all duration-300 text-left ${
-                    tool.locked 
-                      ? "bg-card/50 border-border/50 cursor-default" 
-                      : "bg-card border-border hover:border-primary/40 hover:glow-orange"
-                  }`}
-                >
-                  {/* Lock badge */}
-                  {tool.locked && tool.tier && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                      <Lock className="w-3 h-3 text-primary" />
-                      <span className="text-xs font-semibold text-primary">{tool.tier}</span>
-                    </div>
-                  )}
-
-                  {/* Icon */}
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${
-                    tool.locked 
-                      ? "bg-muted" 
-                      : "bg-primary/10 group-hover:bg-primary/20 group-hover:glow-orange"
-                  }`}>
-                    <tool.icon className={`w-6 h-6 ${tool.locked ? "text-muted-foreground/50" : "text-primary"}`} />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className={`text-lg font-bold mb-1.5 ${tool.locked ? "text-muted-foreground/50" : "text-foreground"}`}>
-                    {tool.name}
-                  </h3>
-
-                  {/* Description */}
-                  <p className={`text-sm ${tool.locked ? "text-muted-foreground/30" : "text-muted-foreground"}`}>
-                    {tool.description}
-                  </p>
-
-                  {/* Hover action */}
-                  {!tool.locked && (
-                    <div className="mt-4 flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-semibold">Iniciar</span>
-                      <ArrowUp className="w-4 h-4 rotate-45" />
-                    </div>
-                  )}
-                </motion.button>
-              ))}
-            </div>
+            <motion.button
+              onClick={() => onOpenStudio("business")}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg transition-all glow-orange flex items-center justify-center gap-3"
+            >
+              <Plus className="w-5 h-5" />
+              Criar Nova Empresa
+            </motion.button>
           </motion.div>
         </div>
 

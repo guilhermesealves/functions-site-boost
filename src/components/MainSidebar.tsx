@@ -195,11 +195,27 @@ const MainSidebar = ({
     } else if (id === "templates") {
       onOpenTemplates?.();
     } else if (id === "settings") {
-      onOpenSettings?.();
+      navigate("/settings");
     } else if (id === "plan") {
-      navigate("/pricing");
+      navigate("/plan");
+    } else if (id === "my-site") {
+      navigate("/my-site");
+    } else if (id === "my-store") {
+      navigate("/my-store");
+    } else if (id === "products") {
+      navigate("/store/products");
+    } else if (id === "orders") {
+      navigate("/store/orders");
+    } else if (id === "customers") {
+      navigate("/store/customers");
+    } else if (id === "discounts") {
+      navigate("/store/discounts");
+    } else if (id === "analytics") {
+      navigate("/analytics");
+    } else if (id === "customize") {
+      navigate("/customize");
     } else {
-      onNavigate?.(id);
+      navigate(`/tools/${id}`);
     }
   };
 
