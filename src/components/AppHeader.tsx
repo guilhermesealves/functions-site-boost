@@ -1,23 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { 
-  User, 
   LogOut, 
   Settings, 
   ChevronDown,
-  Bell,
-  Search,
-  Plus,
   Zap,
-  Flame,
-  Crown
+  User
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import CodiaLogo from "./CodiaLogo";
-import { useCredits } from "@/hooks/useCredits";
 
 interface AppHeaderProps {
   user?: any;
@@ -28,7 +21,6 @@ interface AppHeaderProps {
 const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate();
-  const { balance } = useCredits();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -38,64 +30,28 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
 
   const userName = user?.email?.split("@")[0] || "Usuário";
   const userInitial = userName.charAt(0).toUpperCase();
-  
-  // Credit bar calculations
-  const totalCredits = balance?.total || 0;
-  const maxCredits = balance?.tier === "free" ? 50 : balance?.tier === "starter" ? 200 : balance?.tier === "pro" ? 500 : 1000;
-  const creditPercentage = Math.min((totalCredits / maxCredits) * 100, 100);
-  const isLowCredits = creditPercentage < 20;
 
   return (
-    <header className="h-16 border-b border-white/[0.06] bg-[hsl(0,0%,4%)] sticky top-0 z-50">
-      <div className="h-full px-4 flex items-center justify-between">
-        {/* Left - Logo */}
-        <div className="flex items-center gap-6">
-          <CodiaLogo />
-          
-          {/* Search */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl w-64">
-            <Search className="w-4 h-4 text-white/30" />
-            <input 
-              type="text" 
-              placeholder="Buscar projetos..." 
-              className="bg-transparent text-sm text-white placeholder:text-white/30 outline-none flex-1"
-            />
-            <kbd className="hidden lg:flex text-[10px] text-white/20 bg-white/[0.04] px-1.5 py-0.5 rounded">⌘K</kbd>
-          </div>
-        </div>
+    <header className="h-16 border-b border-white/[0.04] bg-black sticky top-0 z-50">
+      <div className="h-full px-6 flex items-center justify-between">
+        {/* Left - Logo only - ultra minimal */}
+        <CodiaLogo size="md" />
 
-        {/* Right - Actions */}
-        <div className="flex items-center gap-3">
-          {showNewButton && onNewProject && (
-            <Button 
-              onClick={onNewProject}
-              size="sm"
-              className="h-9 gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-lg shadow-lg shadow-orange-500/20"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Novo Projeto</span>
-            </Button>
-          )}
-
-          {/* Notifications */}
-          <button className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors">
-            <Bell className="w-4 h-4" />
-          </button>
-
-          {/* User Menu */}
+        {/* Right - User only */}
+        <div className="flex items-center">
           {user ? (
             <div className="relative">
               <button 
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white/[0.03] transition-colors"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-semibold text-sm">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center text-black font-bold text-sm">
                   {userInitial}
                 </div>
-                <span className="hidden md:block text-sm text-white/80 max-w-[100px] truncate">
+                <span className="hidden md:block text-sm text-white/70 font-medium max-w-[120px] truncate">
                   {userName}
                 </span>
-                <ChevronDown className="w-4 h-4 text-white/40" />
+                <ChevronDown className="w-4 h-4 text-white/30" />
               </button>
 
               {showUserMenu && (
@@ -107,80 +63,35 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
                   <motion.div
                     initial={{ opacity: 0, y: 8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="absolute right-0 top-12 w-72 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden"
+                    className="absolute right-0 top-14 w-56 bg-[#0a0a0a] border border-white/[0.06] rounded-xl shadow-2xl shadow-black/80 z-50 overflow-hidden"
                   >
-                    {/* User Info */}
-                    <div className="p-3 border-b border-white/[0.06]">
+                    <div className="p-3 border-b border-white/[0.04]">
                       <p className="text-sm font-medium text-white truncate">{userName}</p>
-                      <p className="text-xs text-white/40 truncate">{user.email}</p>
+                      <p className="text-xs text-white/30 truncate">{user.email}</p>
                     </div>
                     
-                    {/* Credit Bar Section */}
-                    <div className="p-3 border-b border-white/[0.06]">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-primary"}`} />
-                          <span className="text-sm font-medium text-white">{totalCredits} créditos</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          {balance?.streak && balance.streak > 0 && (
-                            <div className="flex items-center gap-1 text-xs text-amber-400">
-                              <Flame className="w-3 h-3" />
-                              <span>{balance.streak}</span>
-                            </div>
-                          )}
-                          {balance?.level && (
-                            <div className="flex items-center gap-1 text-xs text-violet-400">
-                              <Crown className="w-3 h-3" />
-                              <span>Nv.{balance.level}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      {/* Progress Bar */}
-                      <div className="relative h-2 bg-white/[0.06] rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${creditPercentage}%` }}
-                          transition={{ duration: 0.5, ease: "easeOut" }}
-                          className={`absolute inset-y-0 left-0 rounded-full ${
-                            isLowCredits 
-                              ? "bg-gradient-to-r from-red-500 to-red-400" 
-                              : "bg-gradient-to-r from-primary to-amber-400"
-                          }`}
-                        />
-                      </div>
-                      
-                      <div className="flex justify-between mt-1.5">
-                        <span className="text-[10px] text-white/30">{balance?.daily?.used || 0} usado hoje</span>
-                        <span className="text-[10px] text-white/30 capitalize">{balance?.tier || "free"}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Menu Items */}
                     <div className="p-1.5">
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors">
+                      <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.03] rounded-lg transition-colors">
                         <User className="w-4 h-4" />
-                        Meu Perfil
+                        Perfil
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors">
+                      <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.03] rounded-lg transition-colors">
                         <Settings className="w-4 h-4" />
                         Configurações
                       </button>
                       <button 
                         onClick={() => { setShowUserMenu(false); navigate("/pricing"); }}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
                       >
                         <Zap className="w-4 h-4" />
                         Comprar Créditos
                       </button>
                     </div>
                     
-                    <div className="p-1.5 border-t border-white/[0.06]">
+                    <div className="p-1.5 border-t border-white/[0.04]">
                       <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
                         Sair
@@ -191,13 +102,12 @@ const AppHeader = ({ user, onNewProject, showNewButton = true }: AppHeaderProps)
               )}
             </div>
           ) : (
-            <Button 
+            <button 
               onClick={() => navigate("/auth")}
-              size="sm"
-              className="h-9 bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.08] rounded-lg"
+              className="px-4 py-2 text-sm text-white/70 hover:text-white font-medium transition-colors"
             >
               Entrar
-            </Button>
+            </button>
           )}
         </div>
       </div>
