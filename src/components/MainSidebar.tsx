@@ -32,7 +32,16 @@ import {
   LayoutTemplate,
   GraduationCap,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Store,
+  Package,
+  ClipboardList,
+  Users,
+  Percent,
+  BarChart3,
+  Paintbrush,
+  CreditCard,
+  Bot
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,18 +61,35 @@ interface MainSidebarProps {
   onNewProject?: () => void;
 }
 
+interface NavItem {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  locked?: boolean;
+  tier?: "Pro" | "Business";
+}
+
 interface NavSection {
   id: string;
   label: string;
-  items: {
-    id: string;
-    label: string;
-    icon: React.ElementType;
-    locked?: boolean;
-    tier?: "Pro" | "Business";
-  }[];
+  items: NavItem[];
 }
 
+// Overview items - Shopify style
+const overviewItems: NavItem[] = [
+  { id: "my-site", label: "Meu Site", icon: Globe },
+  { id: "my-store", label: "Minha Loja", icon: Store },
+  { id: "products", label: "Produtos", icon: Package },
+  { id: "orders", label: "Pedidos", icon: ClipboardList },
+  { id: "customers", label: "Clientes", icon: Users },
+  { id: "discounts", label: "Descontos", icon: Percent },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "customize", label: "Personalizar", icon: Paintbrush },
+  { id: "plan", label: "Plano", icon: CreditCard },
+  { id: "settings", label: "Configurações", icon: Settings },
+];
+
+// Tool sections
 const toolSections: NavSection[] = [
   {
     id: "creation",
@@ -106,11 +132,11 @@ const toolSections: NavSection[] = [
   }
 ];
 
-const resourceItems = [
+const resourceItems: NavItem[] = [
   { id: "discover", label: "Descobrir", icon: Compass },
   { id: "templates", label: "Templates", icon: LayoutTemplate },
   { id: "docs", label: "Documentação", icon: GraduationCap },
-  { id: "referral", label: "Indicar", icon: Share2, badge: "+10" },
+  { id: "referral", label: "Indicar", icon: Share2 },
 ];
 
 const MainSidebar = ({ 
@@ -124,7 +150,7 @@ const MainSidebar = ({
   onNewProject
 }: MainSidebarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>(["creation"]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(["overview", "creation"]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
@@ -168,22 +194,27 @@ const MainSidebar = ({
       navigate("/learn");
     } else if (id === "templates") {
       onOpenTemplates?.();
+    } else if (id === "settings") {
+      onOpenSettings?.();
+    } else if (id === "plan") {
+      navigate("/pricing");
     } else {
       onNavigate?.(id);
     }
   };
 
+  // Collapsed state
   if (collapsed) {
     return (
       <motion.aside
         initial={{ width: 72 }}
         animate={{ width: 72 }}
-        className="h-screen sticky top-0 bg-[#020202] border-r border-white/[0.04] flex flex-col"
+        className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
       >
         <div className="p-4 flex justify-center">
           <button
             onClick={onToggleCollapse}
-            className="p-2.5 rounded-xl hover:bg-white/[0.04] text-white/40 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
           >
             <PanelLeft className="w-5 h-5" />
           </button>
@@ -195,7 +226,7 @@ const MainSidebar = ({
             className={`w-full p-3 rounded-xl flex items-center justify-center transition-colors ${
               currentSection === "home"
                 ? "bg-primary/10 text-primary"
-                : "text-white/40 hover:text-white hover:bg-white/[0.04]"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
             title="Início"
           >
@@ -210,14 +241,14 @@ const MainSidebar = ({
     <motion.aside
       initial={{ width: 280 }}
       animate={{ width: 280 }}
-      className="h-screen sticky top-0 bg-[#020202] border-r border-white/[0.04] flex flex-col"
+      className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
     >
       {/* Header with Logo */}
       <div className="p-4 flex items-center justify-between">
         <CodiaLogo size="md" animated />
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-xl hover:bg-white/[0.04] text-white/30 hover:text-white transition-colors"
+          className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
         >
           <PanelLeftClose className="w-4 h-4" />
         </button>
@@ -227,15 +258,15 @@ const MainSidebar = ({
       <div className="px-3 pb-3 relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/[0.03] transition-colors group"
+          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-secondary/50 transition-colors group"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center text-black text-sm font-bold">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center text-primary-foreground text-sm font-bold">
             {userName.charAt(0).toUpperCase()}
           </div>
-          <span className="flex-1 text-left text-sm text-white font-medium truncate">
+          <span className="flex-1 text-left text-sm text-foreground font-medium truncate">
             {userName}'s Codia
           </span>
-          <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {/* User Dropdown */}
@@ -246,14 +277,14 @@ const MainSidebar = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.96 }}
               transition={{ duration: 0.12 }}
-              className="absolute left-3 right-3 top-full mt-1 bg-[#0a0a0a] border border-white/[0.06] rounded-xl shadow-2xl shadow-black/80 overflow-hidden z-50"
+              className="absolute left-3 right-3 top-full mt-1 bg-card border border-border rounded-xl shadow-2xl shadow-black/80 overflow-hidden z-50"
             >
               {/* Credits */}
-              <div className="p-4 border-b border-white/[0.04]">
+              <div className="p-4 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Zap className={`w-4 h-4 ${isLowCredits ? "text-red-400" : "text-primary"}`} />
-                    <span className="text-sm font-semibold text-white">{totalCredits} créditos</span>
+                    <Zap className={`w-4 h-4 ${isLowCredits ? "text-destructive" : "text-primary"}`} />
+                    <span className="text-sm font-semibold text-foreground">{totalCredits} créditos</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {balance?.streak && balance.streak > 0 && (
@@ -271,13 +302,13 @@ const MainSidebar = ({
                   </div>
                 </div>
                 
-                <div className="relative h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                <div className="relative h-1.5 bg-muted rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${creditPercentage}%` }}
                     transition={{ duration: 0.5 }}
                     className={`absolute inset-y-0 left-0 rounded-full ${
-                      isLowCredits ? "bg-red-500" : "bg-gradient-to-r from-primary to-orange-400"
+                      isLowCredits ? "bg-destructive" : "bg-gradient-to-r from-primary to-orange-400"
                     }`}
                   />
                 </div>
@@ -286,14 +317,14 @@ const MainSidebar = ({
               <div className="p-1.5">
                 <button
                   onClick={() => { setIsDropdownOpen(false); onOpenSettings?.(); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.03] rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <Settings className="w-4 h-4" />
                   Configurações
                 </button>
                 <button
                   onClick={() => { setIsDropdownOpen(false); toast.info("Suporte em breve"); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.03] rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <HelpCircle className="w-4 h-4" />
                   Suporte
@@ -307,7 +338,7 @@ const MainSidebar = ({
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -318,57 +349,74 @@ const MainSidebar = ({
         </AnimatePresence>
       </div>
 
-      {/* New Project Button - Premium Orange */}
+      {/* New Project Button - Premium Orange with Glow */}
       <div className="px-3 pb-4">
         <motion.button
           onClick={onNewProject}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-black font-bold text-sm transition-all glow-orange"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm transition-all glow-orange"
         >
           <Plus className="w-4 h-4" />
-          <span>Novo Projeto</span>
+          <span>Novo Projeto / Criar Empresa</span>
         </motion.button>
       </div>
 
-      {/* My Company */}
-      {hasStore && (
-        <div className="px-3 pb-3">
-          <button
-            onClick={() => onNavigate?.("my-company")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
-              currentSection === "my-company"
-                ? "bg-primary/10 text-primary border border-primary/20"
-                : "text-white/50 hover:text-white hover:bg-white/[0.03]"
-            }`}
-          >
-            <Building2 className="w-4 h-4" />
-            <span className="truncate">{store?.name || "Minha Empresa"}</span>
-          </button>
-        </div>
-      )}
-
       {/* Scrollable Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3">
-        {/* Home */}
-        <button
-          onClick={() => handleItemClick("home")}
-          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-4 transition-colors ${
-            currentSection === "home"
-              ? "bg-primary/10 text-white font-semibold"
-              : "text-white/50 hover:text-white hover:bg-white/[0.03]"
-          }`}
-        >
-          <Home className="w-4 h-4" />
-          <span>Início</span>
-        </button>
+        {/* Overview Section - Shopify style */}
+        {hasStore && (
+          <div className="mb-3">
+            <button
+              onClick={() => toggleSection("overview")}
+              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground/70 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <Home className="w-3.5 h-3.5" />
+                <span>VISÃO GERAL</span>
+              </div>
+              <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
+                expandedSections.includes("overview") ? 'rotate-90' : ''
+              }`} />
+            </button>
+            
+            <AnimatePresence>
+              {expandedSections.includes("overview") && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-0.5 mt-1">
+                    {overviewItems.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleItemClick(item.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
+                          currentSection === item.id
+                            ? "bg-primary/10 text-foreground font-medium"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span className="flex-1 text-left truncate">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
 
         {/* Tool Sections - Collapsible */}
         {toolSections.map((section) => (
           <div key={section.id} className="mb-3">
             <button
               onClick={() => toggleSection(section.id)}
-              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-white/30 uppercase tracking-wider hover:text-white/50 transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground/70 transition-colors"
             >
               <span>{section.label}</span>
               <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
@@ -392,10 +440,10 @@ const MainSidebar = ({
                         onClick={() => !item.locked && handleItemClick(item.id)}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
                           item.locked 
-                            ? "text-white/20 cursor-default"
+                            ? "text-muted-foreground/40 cursor-default"
                             : currentSection === item.id
-                              ? "bg-primary/10 text-white font-medium"
-                              : "text-white/50 hover:text-white hover:bg-white/[0.03]"
+                              ? "bg-primary/10 text-foreground font-medium"
+                              : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                         }`}
                       >
                         <item.icon className="w-4 h-4" />
@@ -415,9 +463,24 @@ const MainSidebar = ({
           </div>
         ))}
 
+        {/* AI Assistant Section */}
+        <div className="mb-3 p-3 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+          <div className="flex items-center gap-2 mb-2">
+            <Bot className="w-4 h-4 text-primary" />
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">IA Assistente</span>
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            Deixe a IA gerenciar sua loja automaticamente
+          </p>
+          <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-all glow-orange">
+            <Sparkles className="w-4 h-4" />
+            Ativar IA
+          </button>
+        </div>
+
         {/* Resources Section */}
-        <div className="mt-6 pt-4 border-t border-white/[0.04]">
-          <p className="px-3 py-2 text-[11px] font-semibold text-white/30 uppercase tracking-wider">
+        <div className="mt-6 pt-4 border-t border-border">
+          <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
             RECURSOS
           </p>
           <div className="space-y-0.5">
@@ -425,13 +488,13 @@ const MainSidebar = ({
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.id, item.id === "templates" ? onOpenTemplates : undefined)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/[0.03] transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               >
                 <item.icon className="w-4 h-4" />
                 <span className="flex-1 text-left">{item.label}</span>
-                {item.badge && (
+                {item.id === "referral" && (
                   <span className="text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                    {item.badge}
+                    +10
                   </span>
                 )}
               </button>
@@ -442,7 +505,7 @@ const MainSidebar = ({
 
       {/* Footer - Upgrade */}
       {balance?.tier !== "pro" && balance?.tier !== "enterprise" && (
-        <div className="p-3 border-t border-white/[0.04]">
+        <div className="p-3 border-t border-border">
           <button 
             onClick={() => navigate("/pricing")}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors"
