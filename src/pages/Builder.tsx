@@ -240,7 +240,7 @@ const Builder = () => {
   // Show Dashboard with Main Sidebar
   if (viewMode === "dashboard") {
     return (
-      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
+      <div className="min-h-screen flex flex-col bg-background">
         <EmailVerificationBanner />
         <div className="flex-1 flex">
           <MainSidebar
