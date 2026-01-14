@@ -12,21 +12,6 @@ import {
   Flame,
   Crown,
   Building2,
-  Briefcase,
-  Palette,
-  PenTool,
-  Globe,
-  FileText,
-  Code,
-  MessageSquare,
-  TrendingUp,
-  Search as SearchIcon,
-  Link as LinkIcon,
-  ShoppingCart,
-  Target,
-  Sparkles,
-  Copy,
-  Share2,
   Lock,
   Compass,
   LayoutTemplate,
@@ -41,7 +26,10 @@ import {
   BarChart3,
   Paintbrush,
   CreditCard,
-  Bot
+  Bot,
+  Globe,
+  Sparkles,
+  Share2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,14 +53,6 @@ interface NavItem {
   id: string;
   label: string;
   icon: React.ElementType;
-  locked?: boolean;
-  tier?: "Pro" | "Business";
-}
-
-interface NavSection {
-  id: string;
-  label: string;
-  items: NavItem[];
 }
 
 // Overview items - Shopify style
@@ -87,49 +67,6 @@ const overviewItems: NavItem[] = [
   { id: "customize", label: "Personalizar", icon: Paintbrush },
   { id: "plan", label: "Plano", icon: CreditCard },
   { id: "settings", label: "Configurações", icon: Settings },
-];
-
-// Tool sections
-const toolSections: NavSection[] = [
-  {
-    id: "creation",
-    label: "CRIAÇÃO",
-    items: [
-      { id: "business", label: "Plano de Negócio", icon: Briefcase },
-      { id: "branding", label: "Branding", icon: Palette },
-      { id: "logo", label: "Logo & Visual", icon: PenTool },
-      { id: "website", label: "Website", icon: Globe },
-      { id: "copywriter", label: "Copywriter", icon: FileText },
-      { id: "development", label: "Desenvolvimento", icon: Code, locked: true, tier: "Pro" },
-    ]
-  },
-  {
-    id: "sales",
-    label: "VENDAS",
-    items: [
-      { id: "zap-commerce", label: "Zap Commerce + CRM", icon: MessageSquare, locked: true, tier: "Pro" },
-      { id: "sales-recovery", label: "Recuperador de Vendas", icon: TrendingUp, locked: true, tier: "Pro" },
-      { id: "marketplace", label: "Hub Marketplace", icon: ShoppingCart, locked: true, tier: "Business" },
-    ]
-  },
-  {
-    id: "marketing",
-    label: "MARKETING",
-    items: [
-      { id: "seo", label: "SEO Programático", icon: SearchIcon, locked: true, tier: "Pro" },
-      { id: "growth", label: "Growth Engine", icon: Target, locked: true, tier: "Pro" },
-      { id: "copy-thief", label: "Ladrão de Copy", icon: Copy, locked: true, tier: "Pro" },
-      { id: "social", label: "Gerador Social", icon: Share2, locked: true, tier: "Pro" },
-    ]
-  },
-  {
-    id: "management",
-    label: "GESTÃO",
-    items: [
-      { id: "cloner", label: "Clonador de Site", icon: LinkIcon, locked: true, tier: "Pro" },
-      { id: "migrator", label: "Migrador", icon: Sparkles, locked: true, tier: "Pro" },
-    ]
-  }
 ];
 
 const resourceItems: NavItem[] = [
@@ -150,7 +87,7 @@ const MainSidebar = ({
   onNewProject
 }: MainSidebarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>(["overview", "creation"]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(["overview"]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
@@ -214,8 +151,6 @@ const MainSidebar = ({
       navigate("/analytics");
     } else if (id === "customize") {
       navigate("/customize");
-    } else {
-      navigate(`/tools/${id}`);
     }
   };
 
@@ -380,7 +315,7 @@ const MainSidebar = ({
 
       {/* Scrollable Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3">
-        {/* Overview Section - Shopify style */}
+        {/* Overview Section - Shopify style - only when user has store */}
         {hasStore && (
           <div className="mb-3">
             <button
@@ -426,58 +361,6 @@ const MainSidebar = ({
             </AnimatePresence>
           </div>
         )}
-
-        {/* Tool Sections - Collapsible */}
-        {toolSections.map((section) => (
-          <div key={section.id} className="mb-3">
-            <button
-              onClick={() => toggleSection(section.id)}
-              className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground/70 transition-colors"
-            >
-              <span>{section.label}</span>
-              <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
-                expandedSections.includes(section.id) ? 'rotate-90' : ''
-              }`} />
-            </button>
-            
-            <AnimatePresence>
-              {expandedSections.includes(section.id) && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="space-y-0.5 mt-1">
-                    {section.items.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => !item.locked && handleItemClick(item.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
-                          item.locked 
-                            ? "text-muted-foreground/40 cursor-default"
-                            : currentSection === item.id
-                              ? "bg-primary/10 text-foreground font-medium"
-                              : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                        }`}
-                      >
-                        <item.icon className="w-4 h-4" />
-                        <span className="flex-1 text-left truncate">{item.label}</span>
-                        {item.locked && item.tier && (
-                          <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-semibold">
-                            <Lock className="w-2.5 h-2.5" />
-                            {item.tier}
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
 
         {/* AI Assistant Section */}
         <div className="mb-3 p-3 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
