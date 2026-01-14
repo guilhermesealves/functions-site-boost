@@ -5,7 +5,7 @@ import {
   ChevronLeft, ChevronRight, Code2, ChevronDown, Settings, HelpCircle, 
   LogOut, Zap, Flame, Crown, Copy, MessageSquare, Search, Rocket, ArrowRightLeft,
   FileEdit, Store, GitBranch, RotateCcw, Share2, CheckSquare, HelpCircle as HelpIcon,
-  Sparkles, Lock, TrendingUp, ShoppingCart, LayoutDashboard
+  Sparkles, TrendingUp, ShoppingCart, LayoutDashboard, PanelLeftClose
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,10 +31,10 @@ interface Project {
   created_at: string;
 }
 
-// Ferramentas organizadas por categoria
+// Ferramentas organizadas por categoria - Todas visíveis sem lock
 const toolCategories = {
   creation: {
-    label: "Criação",
+    label: "CRIAÇÃO",
     icon: Sparkles,
     description: "Crie seu negócio do zero",
     tools: [
@@ -47,7 +47,7 @@ const toolCategories = {
     ]
   },
   sales: {
-    label: "Vendas",
+    label: "VENDAS",
     icon: ShoppingCart,
     description: "Aumente suas vendas",
     tools: [
@@ -57,7 +57,7 @@ const toolCategories = {
     ]
   },
   marketing: {
-    label: "Marketing",
+    label: "MARKETING",
     icon: TrendingUp,
     description: "Cresça seu alcance",
     tools: [
@@ -68,7 +68,7 @@ const toolCategories = {
     ]
   },
   management: {
-    label: "Gestão",
+    label: "GESTÃO",
     icon: LayoutDashboard,
     description: "Gerencie tudo",
     tools: [
@@ -112,7 +112,7 @@ const AISidebar = ({
 }: AISidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(["creation"]);
+  // All sections expanded by default - no collapsible behavior
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { balance } = useCredits();
@@ -141,29 +141,12 @@ const AISidebar = ({
     navigate("/");
   };
 
-  const toggleCategory = (categoryId: string) => {
-    setExpandedCategories(prev => 
-      prev.includes(categoryId) 
-        ? prev.filter(c => c !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-
-  // Admin tem acesso a tudo, senão verifica o plano
-  const canAccessTool = (toolPlan: string) => {
-    if (isAdmin) return true;
-    const planOrder = ["free", "starter", "pro", "enterprise"];
-    const userPlanIndex = planOrder.indexOf(userPlan);
-    const toolPlanIndex = planOrder.indexOf(toolPlan);
-    return userPlanIndex >= toolPlanIndex || toolPlan === "starter";
-  };
-
   return (
     <motion.div
       initial={{ x: -300 }}
       animate={{ x: 0, width: collapsed ? 56 : 260 }}
       transition={{ duration: 0.2 }}
-      className="h-full min-h-0 bg-[hsl(0,0%,4%)] border-r border-border/50 flex flex-col shrink-0 overflow-hidden"
+      className="h-full min-h-0 bg-[hsl(0,0%,4%)] border-r border-border/50 flex flex-col shrink-0"
     >
       {/* User/Workspace Selector with Dropdown */}
       {!collapsed && (
@@ -172,10 +155,10 @@ const AISidebar = ({
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary/50 transition-colors group"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
               {userName.charAt(0).toUpperCase()}
             </div>
-            <div className="flex-1 text-left">
+            <div className="flex-1 text-left min-w-0">
               <span className="text-sm text-foreground font-medium truncate block">
                 {userName}'s Codia
               </span>
@@ -186,7 +169,7 @@ const AISidebar = ({
                 )}
               </div>
             </div>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* User Dropdown */}
@@ -283,73 +266,53 @@ const AISidebar = ({
         </div>
       )}
 
-      {/* Tools by Category */}
+      {/* Tools by Category - All expanded, no collapsible */}
       <div className="flex-1 overflow-y-auto py-3">
         <div className="px-2 space-y-1">
           {Object.entries(toolCategories).map(([categoryId, category]) => (
             <div key={categoryId} className="mb-2">
-              {/* Category Header */}
+              {/* Category Header - Static, no dropdown */}
               {!collapsed && (
-                <button
-                  onClick={() => toggleCategory(categoryId)}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-                >
+                <div className="flex items-center gap-2 px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   <category.icon className="w-3.5 h-3.5" />
                   <span className="flex-1 text-left">{category.label}</span>
-                  <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategories.includes(categoryId) ? '' : '-rotate-90'}`} />
-                </button>
+                  <ChevronRight className="w-3 h-3 rotate-90" />
+                </div>
               )}
 
-              {/* Category Tools */}
-              <AnimatePresence>
-                {(collapsed || expandedCategories.includes(categoryId)) && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    {category.tools.map(tool => {
-                      const isSelected = selectedTool === tool.id;
-                      const hasAccess = canAccessTool(tool.plan);
-                      const badge = planBadges[tool.plan];
-                      
-                      return (
-                        <button
-                          key={tool.id}
-                          onClick={() => {
-                            // Sempre permite abrir a ferramenta para ver
-                            onSelectTool(tool.id);
-                          }}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all group ${collapsed ? 'justify-center' : ''} ${
-                            isSelected 
-                              ? "bg-primary/15 text-primary border border-primary/20" 
-                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
-                          }`}
-                        >
-                          <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-primary' : ''}`} />
-                          {!collapsed && (
-                            <>
-                              <div className="flex-1 text-left">
-                                <span className="block text-sm">{tool.name}</span>
-                              </div>
-                              {!hasAccess && (
-                                <Lock className="w-3 h-3 text-muted-foreground/50" />
-                              )}
-                              {tool.plan !== "starter" && (
-                                <span className={`px-1.5 py-0.5 text-[9px] rounded border ${badge.color}`}>
-                                  {badge.label}
-                                </span>
-                              )}
-                            </>
+              {/* Category Tools - Always visible */}
+              <div className="space-y-0.5">
+                {category.tools.map(tool => {
+                  const isSelected = selectedTool === tool.id;
+                  const badge = planBadges[tool.plan];
+                  
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => onSelectTool(tool.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all group ${collapsed ? 'justify-center' : ''} ${
+                        isSelected 
+                          ? "bg-primary/15 text-primary border border-primary/20" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent"
+                      }`}
+                    >
+                      <tool.icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-primary' : ''}`} />
+                      {!collapsed && (
+                        <>
+                          <div className="flex-1 text-left min-w-0">
+                            <span className="block text-sm truncate">{tool.name}</span>
+                          </div>
+                          {tool.plan !== "starter" && (
+                            <span className={`px-1.5 py-0.5 text-[9px] rounded border shrink-0 ${badge.color}`}>
+                              {badge.label}
+                            </span>
                           )}
-                        </button>
-                      );
-                    })}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           ))}
 
@@ -388,10 +351,16 @@ const AISidebar = ({
       <div className="p-2 border-t border-border/50">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
+          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors ${collapsed ? 'justify-center' : ''}`}
         >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          {!collapsed && <span className="text-xs">Recolher</span>}
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <>
+              <PanelLeftClose className="w-4 h-4" />
+              <span>Recolher</span>
+            </>
+          )}
         </button>
       </div>
     </motion.div>
