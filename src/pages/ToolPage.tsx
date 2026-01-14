@@ -199,8 +199,8 @@ const ToolPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Header - Tesla style minimal */}
-      <header className="h-14 border-b border-border/50 flex items-center px-4 gap-4 bg-background shrink-0">
+      {/* Header - Clean minimal */}
+      <header className="h-14 border-b border-border flex items-center px-4 gap-4 bg-background shrink-0">
         <button
           onClick={() => navigate("/builder")}
           className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
@@ -275,13 +275,13 @@ const ToolPage = () => {
                   </div>
                 </div>
 
-                {/* Quick Actions */}
+                {/* Quick Actions - Softer buttons */}
                 <div className="flex flex-wrap gap-2">
                   {tool.actions.map((action, index) => (
                     <button
                       key={index}
                       onClick={() => setMessage(action)}
-                      className="px-4 py-2 rounded-lg border border-border bg-secondary/50 hover:bg-secondary text-sm text-foreground transition-colors"
+                      className="px-4 py-2.5 rounded-xl border border-border bg-secondary/30 hover:bg-secondary/60 text-sm text-foreground transition-all hover:border-primary/30"
                     >
                       {action}
                     </button>
@@ -342,7 +342,7 @@ const ToolPage = () => {
                   <button
                     onClick={handleSendMessage}
                     disabled={!message.trim()}
-                    className="p-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-orange"
+                    className="p-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-primary"
                   >
                     <ArrowUp className="w-4 h-4" />
                   </button>
