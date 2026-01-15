@@ -36,14 +36,14 @@ const CodiaLogo = ({ size = "md", onClick, animated = true }: CodiaLogoProps) =>
         Codia
       </span>
       
-      {/* Infinity Symbol with subtle pulse glow */}
+      {/* Infinity Symbol with subtle pulse glow - Green theme */}
       <motion.span 
         className={`${sizes[size].symbol} text-primary font-light`}
         animate={animated ? {
           textShadow: [
-            "0 0 8px hsl(24, 100%, 55%), 0 0 16px hsl(24, 100%, 55%)",
-            "0 0 20px hsl(24, 100%, 55%), 0 0 40px hsl(24, 100%, 55%)",
-            "0 0 8px hsl(24, 100%, 55%), 0 0 16px hsl(24, 100%, 55%)"
+            "0 0 8px rgba(19, 82, 21, 0.6), 0 0 16px rgba(19, 82, 21, 0.4)",
+            "0 0 20px rgba(19, 82, 21, 0.8), 0 0 40px rgba(19, 82, 21, 0.5)",
+            "0 0 8px rgba(19, 82, 21, 0.6), 0 0 16px rgba(19, 82, 21, 0.4)"
           ],
           opacity: [0.9, 1, 0.9]
         } : {}}
