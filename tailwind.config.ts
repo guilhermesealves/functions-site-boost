@@ -57,15 +57,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        /* Codia Premium Palette - Green Theme */
-        codia: {
-          bg: "#ebe7d8",
-          green: "#135215",
-          "green-dark": "#0f4010",
-          card: "#f0ede0",
-          muted: "#e8e4d5",
-          sidebar: "#f9f8f4",
-          "sidebar-active": "rgba(19, 82, 21, 0.08)",
+        orange: {
+          50: "hsl(35, 100%, 95%)",
+          100: "hsl(35, 100%, 90%)",
+          200: "hsl(32, 100%, 80%)",
+          300: "hsl(28, 100%, 70%)",
+          400: "hsl(26, 100%, 60%)",
+          500: "hsl(24, 100%, 50%)",
+          600: "hsl(22, 100%, 45%)",
+          700: "hsl(20, 100%, 40%)",
+          800: "hsl(18, 100%, 35%)",
+          900: "hsl(15, 100%, 25%)",
         },
       },
       fontFamily: {
@@ -76,10 +78,6 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      boxShadow: {
-        'glow-green': '0 0 10px rgba(19, 82, 21, 0.25)',
-        'glow-green-intense': '0 0 20px rgba(19, 82, 21, 0.35)',
       },
       keyframes: {
         "accordion-down": {

@@ -60,8 +60,8 @@ const Header = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 z-50"
     >
-      {/* Background - Cream with subtle green glow */}
-      <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-b border-primary/10" />
+      {/* Background */}
+      <div className="absolute inset-0 bg-[hsl(0,0%,4%)]/90 backdrop-blur-xl border-b border-white/[0.06]" />
       
       <div className="container mx-auto px-6 py-4 relative">
         <div className="flex items-center justify-between">
@@ -74,7 +74,7 @@ const Header = () => {
               <motion.a
                 key={link.label}
                 href={link.href}
-                className="px-4 py-2 text-sm text-foreground/70 hover:text-foreground transition-colors rounded-lg hover:bg-primary/5"
+                className="px-4 py-2 text-sm text-white/60 hover:text-white transition-colors rounded-lg hover:bg-white/[0.04]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -89,12 +89,12 @@ const Header = () => {
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-semibold text-sm">
                     {userInitial}
                   </div>
-                  <span className="text-sm text-foreground/80">{userName}</span>
+                  <span className="text-sm text-white/80">{userName}</span>
                 </button>
 
                 {/* User Dropdown Menu */}
@@ -105,11 +105,11 @@ const Header = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-2xl shadow-primary/10 overflow-hidden z-50"
+                      className="absolute right-0 top-full mt-2 w-56 bg-[hsl(0,0%,8%)] border border-white/[0.08] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50"
                     >
-                      <div className="p-3 border-b border-border">
-                        <p className="text-sm text-foreground font-medium">{userName}</p>
-                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      <div className="p-3 border-b border-white/[0.06]">
+                        <p className="text-sm text-white font-medium">{userName}</p>
+                        <p className="text-xs text-white/40">{user?.email}</p>
                       </div>
                       <div className="p-1.5">
                         <button
@@ -117,7 +117,7 @@ const Header = () => {
                             setShowUserMenu(false);
                             navigate("/builder");
                           }}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-foreground/70 hover:text-foreground hover:bg-primary/5 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
                         >
                           <User className="w-4 h-4" />
                           Dashboard
@@ -127,14 +127,14 @@ const Header = () => {
                             setShowUserMenu(false);
                             toast.info("Configurações em breve!");
                           }}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-foreground/70 hover:text-foreground hover:bg-primary/5 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
                         >
                           <Settings className="w-4 h-4" />
                           Configurações
                         </button>
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
                           Sair
@@ -149,14 +149,14 @@ const Header = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-foreground/70 hover:text-foreground hover:bg-primary/5"
+                  className="text-white/60 hover:text-white hover:bg-white/[0.04]"
                   onClick={() => navigate("/auth")}
                 >
                   Entrar
                 </Button>
                 <Button 
                   size="sm" 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl shadow-lg glow-green"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-xl shadow-lg shadow-orange-500/20"
                   onClick={() => navigate("/auth")}
                 >
                   Começar Grátis
@@ -168,7 +168,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-primary/5 text-foreground border border-primary/10"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] text-white border border-white/[0.08]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -184,7 +184,7 @@ const Header = () => {
           opacity: isMenuOpen ? 1 : 0
         }}
         transition={{ duration: 0.3 }}
-        className="md:hidden overflow-hidden bg-background/95 backdrop-blur-xl border-b border-primary/10"
+        className="md:hidden overflow-hidden bg-[hsl(0,0%,4%)]/95 backdrop-blur-xl border-b border-white/[0.06]"
       >
         <nav className="flex flex-col gap-1 px-6 py-4">
           {navLinks.map((link, index) => (
@@ -194,24 +194,24 @@ const Header = () => {
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: isMenuOpen ? 0 : -20, opacity: isMenuOpen ? 1 : 0 }}
               transition={{ delay: index * 0.1 }}
-              className="px-4 py-3 text-foreground/70 hover:text-foreground hover:bg-primary/5 rounded-xl transition-colors"
+              className="px-4 py-3 text-white/60 hover:text-white hover:bg-white/[0.04] rounded-xl transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               {link.label}
             </motion.a>
           ))}
-          <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-primary/10">
+          <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-white/[0.06]">
             {user ? (
               <>
                 <Button 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
                   onClick={() => navigate("/builder")}
                 >
                   Dashboard
                 </Button>
                 <Button 
                   variant="ghost"
-                  className="w-full text-destructive hover:bg-destructive/10"
+                  className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
                   onClick={handleLogout}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
@@ -222,13 +222,13 @@ const Header = () => {
               <>
                 <Button 
                   variant="ghost" 
-                  className="flex-1 text-foreground/70 hover:text-foreground hover:bg-primary/5"
+                  className="flex-1 text-white/60 hover:text-white hover:bg-white/[0.04]"
                   onClick={() => navigate("/auth")}
                 >
                   Entrar
                 </Button>
                 <Button 
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
                   onClick={() => navigate("/auth")}
                 >
                   Começar Grátis

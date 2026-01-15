@@ -228,10 +228,10 @@ const Builder = () => {
   // Show loading while initializing
   if (isInitializing || storeLoading || tutorialLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#ebe7d8]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 text-[#135215] animate-spin" />
-          <p className="text-sm text-[#135215]/60">Carregando...</p>
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">Carregando...</p>
         </div>
       </div>
     );
@@ -240,7 +240,7 @@ const Builder = () => {
   // Show Dashboard with Main Sidebar
   if (viewMode === "dashboard") {
     return (
-      <div className="min-h-screen flex flex-col bg-[#ebe7d8]">
+      <div className="min-h-screen flex flex-col bg-[hsl(0,0%,4%)]">
         <EmailVerificationBanner />
         <div className="flex-1 flex">
           <MainSidebar

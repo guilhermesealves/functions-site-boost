@@ -4,69 +4,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Codia - Ultra Premium Design System - Green Theme */
+/* Codia - Ultra Premium Design System - Tesla/Grok/SpaceX Inspired */
 
 @layer base {
   :root {
-    /* Main Background - Warm Cream */
-    --background: 45 30% 90%;
-    --foreground: 122 62% 20%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    /* Card and secondary surfaces */
-    --card: 45 25% 92%;
-    --card-foreground: 122 62% 20%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 45 25% 95%;
-    --popover-foreground: 122 62% 20%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
 
-    /* Primary - Green */
-    --primary: 122 62% 20%;
-    --primary-foreground: 45 30% 95%;
+    --primary: 24 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Muted surfaces */
-    --secondary: 45 20% 88%;
-    --secondary-foreground: 122 62% 20%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Muted elements */
-    --muted: 45 18% 85%;
-    --muted-foreground: 122 30% 40%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
 
-    /* Accent - Green based */
-    --accent: 122 62% 20%;
-    --accent-foreground: 45 30% 95%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Destructive */
-    --destructive: 0 84% 60%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 45 15% 80%;
-    --input: 45 20% 88%;
-    --ring: 122 62% 20%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 24 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Premium green glow */
-    --glow-green: 0 0 15px rgba(19, 82, 21, 0.25);
-    --glow-green-intense: 0 0 30px rgba(19, 82, 21, 0.4);
-    --glow-green-soft: 0 0 60px rgba(19, 82, 21, 0.15);
+    /* Premium neon orange */
+    --neon-orange: 24 100% 50%;
+    --neon-orange-glow: 0 0 40px hsl(24, 100%, 50% / 0.4);
+    --neon-orange-glow-intense: 0 0 80px hsl(24, 100%, 50% / 0.6);
 
     /* Gradient tokens */
-    --gradient-green: linear-gradient(135deg, hsl(122, 62%, 20%) 0%, hsl(122, 50%, 30%) 100%);
-    --gradient-green-dark: linear-gradient(135deg, hsl(122, 62%, 18%) 0%, hsl(122, 70%, 15%) 100%);
-    --gradient-cream: linear-gradient(180deg, hsl(45, 30%, 90%) 0%, hsl(45, 25%, 88%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(45, 25%, 92%) 0%, hsl(45, 20%, 90%) 100%);
-    --gradient-hero: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(19, 82, 21, 0.15) 0%, transparent 60%);
+    --gradient-orange: linear-gradient(135deg, hsl(24, 100%, 50%) 0%, hsl(32, 100%, 55%) 100%);
+    --gradient-orange-dark: linear-gradient(135deg, hsl(24, 100%, 45%) 0%, hsl(18, 100%, 40%) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(0, 0%, 0%) 0%, hsl(0, 0%, 4%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 5%) 0%, hsl(0, 0%, 3%) 100%);
+    --gradient-border: linear-gradient(135deg, hsl(24, 100%, 50% / 0.3) 0%, transparent 50%, hsl(24, 100%, 50% / 0.1) 100%);
 
-    /* Sidebar */
-    --sidebar-background: 45 30% 97%;
-    --sidebar-foreground: 122 62% 20%;
-    --sidebar-primary: 122 62% 20%;
-    --sidebar-primary-foreground: 45 30% 95%;
-    --sidebar-accent: 122 62% 20%;
-    --sidebar-accent-foreground: 45 30% 95%;
-    --sidebar-border: 45 15% 85%;
-    --sidebar-ring: 122 62% 20%;
+    --sidebar-background: 0 0% 2%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 24 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 10%;
+    --sidebar-ring: 24 100% 50%;
   }
 }
 
@@ -75,93 +66,48 @@
     @apply border-border;
   }
 
-  html, body {
+  body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #ebe7d8;
-    color: #135215;
+    background-color: #000000;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #135215;
   }
 }
 
 @layer utilities {
-  .text-gradient-green {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-green);
-  }
-  
-  /* Alias for backwards compatibility */
   .text-gradient-orange {
     @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-green);
+    background-image: var(--gradient-orange);
   }
 
-  .bg-gradient-green {
-    background-image: var(--gradient-green);
-  }
-  
   .bg-gradient-orange {
-    background-image: var(--gradient-green);
+    background-image: var(--gradient-orange);
   }
 
-  .bg-gradient-cream {
-    background-image: var(--gradient-cream);
-  }
-  
-  .bg-gradient-hero {
-    background-image: var(--gradient-hero);
+  .bg-gradient-dark {
+    background-image: var(--gradient-dark);
   }
 
-  .glow-green {
-    box-shadow: var(--glow-green);
+  .glow-orange {
+    box-shadow: var(--neon-orange-glow);
   }
 
-  .glow-green-intense {
-    box-shadow: var(--glow-green-intense);
+  .glow-orange-intense {
+    box-shadow: var(--neon-orange-glow-intense);
   }
 
-  .border-gradient-green {
+  .border-gradient-orange {
     border: 1px solid transparent;
-    background: linear-gradient(#ebe7d8, #ebe7d8) padding-box,
-                var(--gradient-green) border-box;
+    background: linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 0%)) padding-box,
+                var(--gradient-orange) border-box;
   }
 
-  /* Codia background classes */
-  .bg-codia {
-    background-color: #ebe7d8;
-  }
-
-  .bg-codia-card {
-    background-color: #f0ede0;
-  }
-
-  .bg-codia-muted {
-    background-color: #e8e4d5;
-  }
-
-  .bg-codia-sidebar {
-    background-color: #f9f8f4;
-  }
-
-  .text-codia-green {
-    color: #135215;
-  }
-
-  .bg-codia-green {
-    background-color: #135215;
-  }
-
-  .border-codia-green {
-    border-color: #135215;
-  }
-
-  /* Premium grain texture */
+  /* Tesla-style grain texture */
   .bg-grain {
     position: relative;
   }
@@ -171,7 +117,7 @@
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.015;
+    opacity: 0.02;
     pointer-events: none;
   }
 
@@ -180,49 +126,49 @@
     scroll-behavior: smooth;
   }
 
-  /* Premium scrollbar - Light theme */
+  /* Premium scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #e8e4d5;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #c5c1b3;
+    background: hsl(0 0% 20%);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #135215;
+    background: hsl(24, 100%, 50%);
   }
 
-  /* Focus styles - Green */
+  /* Focus styles */
   *:focus-visible {
-    outline: 2px solid #135215;
+    outline: 2px solid hsl(24, 100%, 50%);
     outline-offset: 2px;
   }
 
-  /* Selection - Green */
+  /* Selection */
   ::selection {
-    background: rgba(19, 82, 21, 0.2);
-    color: #135215;
+    background: hsl(24, 100%, 50% / 0.3);
+    color: inherit;
   }
 
   /* Premium animations */
-  @keyframes pulse-glow-green {
+  @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 10px rgba(19, 82, 21, 0.2);
+      box-shadow: 0 0 20px hsl(24, 100%, 50% / 0.3);
     }
     50% {
-      box-shadow: 0 0 20px rgba(19, 82, 21, 0.4);
+      box-shadow: 0 0 40px hsl(24, 100%, 50% / 0.5);
     }
   }
 
   .animate-pulse-glow {
-    animation: pulse-glow-green 2s ease-in-out infinite;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
   @keyframes float {
@@ -236,15 +182,5 @@
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
-  }
-
-  /* Button hover glow */
-  .btn-glow:hover {
-    box-shadow: 0 0 15px rgba(19, 82, 21, 0.3);
-  }
-
-  /* Input focus glow */
-  .input-glow:focus {
-    box-shadow: 0 0 10px rgba(19, 82, 21, 0.25);
   }
 }

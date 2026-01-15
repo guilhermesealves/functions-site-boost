@@ -196,7 +196,7 @@ const Auth = () => {
               type="button"
               variant="outline"
               onClick={handleGoogleLogin}
-              className="w-full justify-center gap-3 h-12 bg-card border-border hover:bg-secondary hover:border-primary/30 transition-all"
+              className="w-full justify-center gap-3 h-12 bg-secondary/30 border-border hover:bg-secondary hover:border-primary/30 transition-all"
             >
               <Chrome className="w-5 h-5" />
               Continuar com Google
@@ -205,7 +205,7 @@ const Auth = () => {
               type="button"
               variant="outline"
               onClick={handleGithubLogin}
-              className="w-full justify-center gap-3 h-12 bg-card border-border hover:bg-secondary hover:border-primary/30 transition-all"
+              className="w-full justify-center gap-3 h-12 bg-secondary/30 border-border hover:bg-secondary hover:border-primary/30 transition-all"
             >
               <Github className="w-5 h-5" />
               Continuar com GitHub
@@ -246,7 +246,7 @@ const Auth = () => {
                     placeholder="Seu nome"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-11 h-12 bg-card border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
+                    className="pl-11 h-12 bg-secondary/30 border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
                     required={!isLogin}
                   />
                 </div>
@@ -263,7 +263,7 @@ const Auth = () => {
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11 h-12 bg-card border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
+                  className="pl-11 h-12 bg-secondary/30 border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
                   required
                 />
               </div>
@@ -279,7 +279,7 @@ const Auth = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-11 pr-11 h-12 bg-card border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
+                  className="pl-11 pr-11 h-12 bg-secondary/30 border-border focus:border-primary/50 focus:bg-secondary/50 transition-all"
                   required
                   minLength={6}
                 />
@@ -304,7 +304,7 @@ const Auth = () => {
             <Button 
               type="submit" 
               disabled={loading}
-              className="w-full h-12 gap-2 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground transition-opacity shadow-lg glow-green"
+              className="w-full h-12 gap-2 text-base font-semibold bg-gradient-orange hover:opacity-90 transition-opacity shadow-lg shadow-primary/30"
             >
               {loading ? "Carregando..." : (isLogin ? "Entrar" : "Criar Conta")}
               <ArrowRight className="w-4 h-4" />
@@ -332,18 +332,17 @@ const Auth = () => {
 
       {/* Right side - Visual Content (60%) */}
       <div className="hidden lg:flex w-[60%] relative items-center justify-center overflow-hidden">
-        {/* Gradient Background - Green theme */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/15" />
+        {/* Gradient Background - same style as Home */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/20" />
         
-        {/* Animated glow orbs - Green */}
+        {/* Animated glow orbs */}
         <motion.div
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.15, 0.25, 0.15],
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'radial-gradient(circle, rgba(19, 82, 21, 0.4) 0%, transparent 70%)' }}
+          className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-primary/40 blur-[120px]"
         />
         <motion.div
           animate={{
@@ -351,17 +350,16 @@ const Auth = () => {
             opacity: [0.1, 0.2, 0.1],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'radial-gradient(circle, rgba(19, 82, 21, 0.3) 0%, transparent 70%)' }}
+          className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-orange-500/30 blur-[100px]"
         />
 
-        {/* Grid pattern - Green tinted */}
+        {/* Grid pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `
-              linear-gradient(to right, hsl(122, 62%, 20%) 1px, transparent 1px),
-              linear-gradient(to bottom, hsl(122, 62%, 20%) 1px, transparent 1px)
+              linear-gradient(to right, hsl(24, 100%, 50%) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(24, 100%, 50%) 1px, transparent 1px)
             `,
             backgroundSize: '60px 60px'
           }}
@@ -388,7 +386,7 @@ const Auth = () => {
             className="text-4xl font-bold text-foreground mb-4"
           >
             Crie empresas{" "}
-            <span className="text-gradient-green">incríveis</span>
+            <span className="text-gradient-orange">incríveis</span>
           </motion.h2>
 
           <motion.p
@@ -405,7 +403,7 @@ const Auth = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 shadow-2xl glow-green"
+            className="bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 shadow-2xl"
           >
             <div className="flex items-center gap-3">
               <div className="flex-1 text-left">
@@ -418,7 +416,7 @@ const Auth = () => {
                   />
                 </span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gradient-orange flex items-center justify-center text-white shrink-0">
                 <ArrowUp className="w-5 h-5" />
               </div>
             </div>
@@ -437,7 +435,7 @@ const Auth = () => {
               { value: "99%", label: "Satisfação" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-2xl font-bold text-gradient-green">{stat.value}</div>
+                <div className="text-2xl font-bold text-gradient-orange">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
