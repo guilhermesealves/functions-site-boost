@@ -25,10 +25,64 @@ interface ConsumeResult {
   streak: number;
 }
 
+const DEFAULT_BALANCE: CreditBalance = {
+  daily: { used: 0, limit: 5, remaining: 5 },
+  purchased: 0,
+  total: 5,
+  tier: "free",
+  level: 1,
+  xp: 0,
+  streak: 0
+};
+
 export function useCredits() {
   const [balance, setBalance] = useState<CreditBalance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const getBalanceFromProfile = useCallback(async (userId: string): Promise<CreditBalance> => {
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("Profile fetch error:", profileError);
+        return DEFAULT_BALANCE;
+      }
+
+      if (!profile) {
+        // Profile doesn't exist yet - return defaults
+        console.log("No profile found for user, using defaults");
+        return DEFAULT_BALANCE;
+      }
+
+      const dailyLimit = profile.subscription_tier === "pro" ? 30 : 
+                        profile.subscription_tier === "starter" ? 15 : 
+                        profile.subscription_tier === "enterprise" ? 100 : 5;
+      const dailyUsed = profile.daily_credits_used || 0;
+      const dailyRemaining = Math.max(0, dailyLimit - dailyUsed);
+      
+      return {
+        daily: { 
+          used: dailyUsed, 
+          limit: dailyLimit, 
+          remaining: dailyRemaining 
+        },
+        purchased: profile.total_credits || 0,
+        total: dailyRemaining + (profile.total_credits || 0),
+        tier: profile.subscription_tier || "free",
+        level: profile.level || 1,
+        xp: profile.experience_points || 0,
+        streak: profile.current_streak || 0
+      };
+    } catch (err) {
+      console.error("Error getting balance from profile:", err);
+      return DEFAULT_BALANCE;
+    }
+  }, []);
 
   const fetchBalance = useCallback(async () => {
     try {
@@ -58,67 +112,28 @@ export function useCredits() {
           setLoading(false);
           return;
         }
+
+        // If 404 (profile not found), try direct query
+        if (response.status === 404) {
+          console.log("Profile not found via edge function, trying direct query");
+        }
       } catch (fetchErr) {
         console.log("Edge function not available, falling back to direct query");
       }
 
       // Fallback: fetch directly from profiles table
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .single();
-
-      if (profileError || !profile) {
-        // Create default balance for new users
-        setBalance({
-          daily: { used: 0, limit: 5, remaining: 5 },
-          purchased: 0,
-          total: 5,
-          tier: "free",
-          level: 1,
-          xp: 0,
-          streak: 0
-        });
-      } else {
-        const dailyLimit = profile.subscription_tier === "pro" ? 30 : 
-                          profile.subscription_tier === "starter" ? 15 : 
-                          profile.subscription_tier === "enterprise" ? 100 : 5;
-        const dailyUsed = profile.daily_credits_used || 0;
-        const dailyRemaining = Math.max(0, dailyLimit - dailyUsed);
-        
-        setBalance({
-          daily: { 
-            used: dailyUsed, 
-            limit: dailyLimit, 
-            remaining: dailyRemaining 
-          },
-          purchased: profile.total_credits || 0,
-          total: dailyRemaining + (profile.total_credits || 0),
-          tier: profile.subscription_tier || "free",
-          level: profile.level || 1,
-          xp: profile.experience_points || 0,
-          streak: profile.current_streak || 0
-        });
-      }
+      const balanceData = await getBalanceFromProfile(session.user.id);
+      setBalance(balanceData);
       setError(null);
     } catch (err: any) {
       console.error("Error fetching credits:", err);
       setError(err.message);
       // Set default balance even on error
-      setBalance({
-        daily: { used: 0, limit: 5, remaining: 5 },
-        purchased: 0,
-        total: 5,
-        tier: "free",
-        level: 1,
-        xp: 0,
-        streak: 0
-      });
+      setBalance(DEFAULT_BALANCE);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getBalanceFromProfile]);
 
   useEffect(() => {
     fetchBalance();
