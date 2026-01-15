@@ -105,8 +105,8 @@ const ChatInput = ({ onSubmit, placeholder }: ChatInputProps) => {
         <motion.div
           animate={{
             boxShadow: isFocused 
-              ? "0 0 0 2px hsl(24, 100%, 50%), 0 25px 50px -12px rgba(255, 120, 0, 0.25)" 
-              : "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+              ? "0 0 0 2px hsl(122, 62%, 20%), 0 25px 50px -12px rgba(19, 82, 21, 0.25)" 
+              : "0 25px 50px -12px rgba(19, 82, 21, 0.1)"
           }}
           transition={{ duration: 0.2 }}
           className="relative bg-card rounded-2xl border border-border overflow-hidden"
@@ -155,10 +155,9 @@ const ChatInput = ({ onSubmit, placeholder }: ChatInputProps) => {
             </div>
             <Button 
               type="submit" 
-              variant="hero" 
               size="sm"
               disabled={!message.trim()}
-              className="gap-2"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground glow-green"
             >
               Criar Site
               <Send className="w-4 h-4" />

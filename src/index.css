@@ -47,14 +47,16 @@
     --radius: 0.75rem;
 
     /* Premium green glow */
-    --glow-green: 0 0 10px rgba(19, 82, 21, 0.25);
-    --glow-green-intense: 0 0 20px rgba(19, 82, 21, 0.35);
+    --glow-green: 0 0 15px rgba(19, 82, 21, 0.25);
+    --glow-green-intense: 0 0 30px rgba(19, 82, 21, 0.4);
+    --glow-green-soft: 0 0 60px rgba(19, 82, 21, 0.15);
 
     /* Gradient tokens */
     --gradient-green: linear-gradient(135deg, hsl(122, 62%, 20%) 0%, hsl(122, 50%, 30%) 100%);
     --gradient-green-dark: linear-gradient(135deg, hsl(122, 62%, 18%) 0%, hsl(122, 70%, 15%) 100%);
     --gradient-cream: linear-gradient(180deg, hsl(45, 30%, 90%) 0%, hsl(45, 25%, 88%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(45, 25%, 92%) 0%, hsl(45, 20%, 90%) 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(19, 82, 21, 0.15) 0%, transparent 60%);
 
     /* Sidebar */
     --sidebar-background: 45 30% 97%;
@@ -93,13 +95,27 @@
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-green);
   }
+  
+  /* Alias for backwards compatibility */
+  .text-gradient-orange {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-green);
+  }
 
   .bg-gradient-green {
+    background-image: var(--gradient-green);
+  }
+  
+  .bg-gradient-orange {
     background-image: var(--gradient-green);
   }
 
   .bg-gradient-cream {
     background-image: var(--gradient-cream);
+  }
+  
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
   }
 
   .glow-green {

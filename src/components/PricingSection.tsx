@@ -36,7 +36,7 @@ const plans = [
       "Exportar código fonte",
     ],
     cta: "Assinar Pro",
-    variant: "hero" as const,
+    variant: "default" as const,
     popular: true,
   },
   {
@@ -62,13 +62,14 @@ const plans = [
 
 const PricingSection = () => {
   return (
-    <section id="precos" className="py-24 relative overflow-hidden">
+    <section id="precos" className="py-24 relative overflow-hidden bg-background">
       {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
       <motion.div
-        animate={{ opacity: [0.03, 0.06, 0.03] }}
+        animate={{ opacity: [0.03, 0.08, 0.03] }}
         transition={{ duration: 5, repeat: Infinity }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary/10 blur-[150px]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[150px]"
+        style={{ background: 'radial-gradient(circle, rgba(19, 82, 21, 0.15) 0%, transparent 70%)' }}
       />
 
       <div className="container mx-auto px-6 relative">
@@ -88,9 +89,9 @@ const PricingSection = () => {
           >
             Preços Simples
           </motion.span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Escolha o plano{" "}
-            <span className="text-gradient-orange">ideal para você</span>
+            <span className="text-gradient-green">ideal para você</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Comece grátis, sem cartão de crédito. Upgrade quando precisar.
@@ -119,7 +120,7 @@ const PricingSection = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 }}
-                  className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg shadow-primary/30 whitespace-nowrap"
+                  className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg glow-green whitespace-nowrap"
                 >
                   ⚡ Mais Popular
                 </motion.div>
@@ -132,14 +133,14 @@ const PricingSection = () => {
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     plan.popular 
-                      ? "bg-gradient-orange shadow-lg shadow-primary/30" 
+                      ? "bg-primary shadow-lg glow-green" 
                       : "bg-secondary"
                   }`}>
                     <plan.icon className={`w-6 h-6 ${
                       plan.popular ? "text-primary-foreground" : "text-primary"
                     }`} />
                   </div>
-                  <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
+                  <h3 className="font-display text-2xl font-bold text-foreground">{plan.name}</h3>
                 </div>
 
                 {/* Price */}
@@ -148,11 +149,11 @@ const PricingSection = () => {
                     {plan.price !== "Sob consulta" && (
                       <span className="text-muted-foreground text-lg">R$</span>
                     )}
-                    <span className="font-display text-5xl font-bold">
+                    <span className="font-display text-5xl font-bold text-foreground">
                       {plan.price === "Sob consulta" ? "" : plan.price}
                     </span>
                     {plan.price === "Sob consulta" && (
-                      <span className="font-display text-2xl font-bold">{plan.price}</span>
+                      <span className="font-display text-2xl font-bold text-foreground">{plan.price}</span>
                     )}
                   </div>
                   {plan.period && (
@@ -184,7 +185,7 @@ const PricingSection = () => {
                 <Button 
                   variant={plan.variant}
                   className={`w-full h-12 text-base font-semibold ${
-                    plan.popular ? "shadow-lg shadow-primary/30" : ""
+                    plan.popular ? "shadow-lg glow-green" : ""
                   }`}
                 >
                   {plan.cta}
