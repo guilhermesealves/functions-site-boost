@@ -342,7 +342,7 @@ const ToolPage = () => {
                   <button
                     onClick={handleSendMessage}
                     disabled={!message.trim()}
-                    className="p-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-orange"
+                    className="p-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-green"
                   >
                     <ArrowUp className="w-4 h-4" />
                   </button>
