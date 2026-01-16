@@ -160,7 +160,7 @@ const MainSidebar = ({
       <motion.aside
         initial={{ width: 72 }}
         animate={{ width: 72 }}
-        className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
+        className="h-screen sticky top-0 bg-[#0f0f0f] border-r border-border/50 flex flex-col"
       >
         <div className="p-4 flex justify-center">
           <button
@@ -192,7 +192,7 @@ const MainSidebar = ({
     <motion.aside
       initial={{ width: 280 }}
       animate={{ width: 280 }}
-      className="h-screen sticky top-0 bg-black border-r border-border/50 flex flex-col"
+      className="h-screen sticky top-0 bg-[#0f0f0f] border-r border-border/50 flex flex-col"
     >
       {/* Header with Logo */}
       <div className="p-4 flex items-center justify-between">
@@ -320,13 +320,13 @@ const MainSidebar = ({
           <div className="mb-2">
             <button
               onClick={() => toggleSection("overview")}
-              className="w-full flex items-center justify-between px-2 py-1.5 text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wide hover:text-muted-foreground transition-colors"
+              className="w-full flex items-center justify-between px-2 py-2 text-xs font-medium text-muted-foreground/70 uppercase tracking-wide hover:text-muted-foreground transition-colors"
             >
               <div className="flex items-center gap-1.5">
-                <Home className="w-3 h-3" />
+                <Home className="w-3.5 h-3.5" />
                 <span>Visão Geral</span>
               </div>
-              <ChevronRight className={`w-3 h-3 transition-transform ${
+              <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
                 expandedSections.includes("overview") ? 'rotate-90' : ''
               }`} />
             </button>
@@ -345,13 +345,13 @@ const MainSidebar = ({
                       <button
                         key={item.id}
                         onClick={() => handleItemClick(item.id)}
-                        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all ${
+                        className={`w-full flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-sm transition-all ${
                           currentSection === item.id
                             ? "bg-primary/10 text-primary font-medium"
                             : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                         }`}
                       >
-                        <item.icon className="w-3.5 h-3.5" />
+                        <item.icon className="w-4 h-4" />
                         <span className="truncate">{item.label}</span>
                       </button>
                     ))}
@@ -364,7 +364,7 @@ const MainSidebar = ({
 
         {/* Resources Section */}
         <div className="mt-4 pt-3 border-t border-border/50">
-          <p className="px-2 py-1.5 text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wide">
+          <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground/70 uppercase tracking-wide">
             Recursos
           </p>
           <div className="space-y-0.5 pl-1">
@@ -372,12 +372,12 @@ const MainSidebar = ({
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.id, item.id === "templates" ? onOpenTemplates : undefined)}
-                className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+                className="w-full flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
               >
-                <item.icon className="w-3.5 h-3.5" />
+                <item.icon className="w-4 h-4" />
                 <span className="flex-1 text-left">{item.label}</span>
                 {item.id === "referral" && (
-                  <span className="text-[9px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
                     +10
                   </span>
                 )}
