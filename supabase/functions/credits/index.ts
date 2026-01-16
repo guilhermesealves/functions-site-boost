@@ -71,18 +71,45 @@ const handler = async (req: Request): Promise<Response> => {
 
     const userId = user.id;
 
-    // Get user profile
-    const { data: profile, error: profileError } = await supabase
+    // Get user profile or create if not exists
+    let { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
       .single();
 
+    // If profile doesn't exist, create it automatically
     if (profileError || !profile) {
-      return new Response(
-        JSON.stringify({ error: "Perfil não encontrado" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      const { data: newProfile, error: createError } = await supabase
+        .from("profiles")
+        .insert({
+          user_id: userId,
+          email: user.email || "",
+          name: user.user_metadata?.name || user.email?.split("@")[0] || "Usuário",
+          subscription_tier: "free",
+          total_credits: 5,
+          daily_credits_used: 0,
+          email_verified: user.email_confirmed_at ? true : false,
+          account_status: "active",
+          level: 1,
+          experience_points: 0,
+          current_streak: 0,
+          longest_streak: 0,
+          total_generations: 0,
+          total_saved_money: 0
+        })
+        .select()
+        .single();
+
+      if (createError || !newProfile) {
+        console.error("Error creating profile:", createError);
+        return new Response(
+          JSON.stringify({ error: "Erro ao criar perfil" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      profile = newProfile;
     }
 
     // For balance check, allow unverified users to see their credits
