@@ -1,24 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Briefcase,
-  Palette,
-  PenTool,
-  Globe,
-  FileText,
-  Code,
   ArrowUp,
   Paperclip,
   LayoutTemplate,
   Mic,
-  Lock,
   Star,
   MoreHorizontal,
-  Plus,
-  Package,
-  BarChart3,
-  TrendingUp,
-  Users
+  Plus
 } from "lucide-react";
 import TypingEffect from "./TypingEffect";
 import TemplatesModal from "./templates/TemplatesModal";
@@ -37,31 +26,6 @@ interface DashboardProps {
   projects?: any[];
   userName?: string;
 }
-
-interface Tool {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ElementType;
-  locked?: boolean;
-  tier?: "Pro" | "Business";
-}
-
-const mainTools: Tool[] = [
-  { id: "business", name: "Plano de Negócio", description: "Canvas estratégico para validar sua ideia", icon: Briefcase },
-  { id: "branding", name: "Branding", description: "Identidade visual profissional", icon: Palette },
-  { id: "logo", name: "Logo & Visual", description: "Logotipos em alta resolução", icon: PenTool },
-  { id: "website", name: "Website", description: "Sites modernos e responsivos", icon: Globe },
-  { id: "copywriter", name: "Copywriter", description: "Textos que convertem vendas", icon: FileText },
-  { id: "development", name: "Desenvolvimento", description: "Código e automações", icon: Code, locked: true, tier: "Pro" },
-];
-
-const quickStats = [
-  { label: "Produtos", value: "0", icon: Package, color: "text-blue-400" },
-  { label: "Vendas", value: "R$ 0", icon: TrendingUp, color: "text-green-400" },
-  { label: "Visitas", value: "0", icon: BarChart3, color: "text-purple-400" },
-  { label: "Clientes", value: "0", icon: Users, color: "text-orange-400" },
-];
 
 const typingTexts = [
   "seu império digital do zero...",
@@ -230,29 +194,6 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             ))}
           </motion.div>
 
-          {/* Quick Stats - Only show if has store */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
-          >
-            {quickStats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + index * 0.05 }}
-                className="p-4 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                  <span className="text-sm text-muted-foreground">{stat.label}</span>
-                </div>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              </motion.div>
-            ))}
-          </motion.div>
 
           {/* Create Button */}
           <motion.div
