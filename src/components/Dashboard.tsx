@@ -69,23 +69,35 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
   ];
 
   return (
-    <div className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-screen bg-background bg-grain">
-      {/* Animated background orbs */}
+    <div className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-screen">
+      {/* Grid pattern background */}
+      <div 
+        className="fixed inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, hsl(24, 100%, 50%) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(24, 100%, 50%) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px'
+        }}
+      />
+
+      {/* Animated glow orbs */}
       <motion.div
         animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.03, 0.06, 0.03],
+          scale: [1, 1.3, 1],
+          opacity: [0.08, 0.15, 0.08],
         }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="fixed top-0 right-0 w-[800px] h-[800px] rounded-full bg-primary/30 blur-[200px] pointer-events-none"
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="fixed top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-primary/30 blur-[150px] pointer-events-none"
       />
       <motion.div
         animate={{
-          scale: [1.1, 1, 1.1],
-          opacity: [0.02, 0.04, 0.02],
+          scale: [1.2, 1, 1.2],
+          opacity: [0.05, 0.12, 0.05],
         }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        className="fixed bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[180px] pointer-events-none"
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="fixed bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-orange-500/20 blur-[120px] pointer-events-none"
       />
 
       {/* Content */}
