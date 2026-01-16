@@ -127,20 +127,20 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             className="w-full max-w-3xl mb-6"
           >
             <form onSubmit={handleSubmit}>
-              <div className="relative bg-card border border-border rounded-2xl p-5 focus-within:border-primary/40 focus-within:glow-orange transition-all duration-300">
+              <div className="relative bg-[#1a1a1a]/80 border border-[#2a2a2a] rounded-2xl p-5 focus-within:border-primary/50 focus-within:glow-orange transition-all duration-300 backdrop-blur-sm shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Descreva sua empresa/loja... Ex: E-commerce de moda com IA gerenciando tudo"
-                  className="w-full bg-transparent text-foreground text-lg placeholder:text-muted-foreground/50 outline-none mb-4 font-medium"
+                  className="w-full bg-transparent text-foreground text-lg placeholder:text-muted-foreground/60 outline-none mb-5 font-medium tracking-wide"
                 />
                 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-all"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-[#252525] text-muted-foreground hover:text-foreground text-sm transition-all"
                     >
                       <Paperclip className="w-4 h-4" />
                       <span className="hidden sm:inline">Anexar</span>
@@ -148,14 +148,14 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                     <button
                       type="button"
                       onClick={() => setShowTemplates(true)}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-all"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-[#252525] text-muted-foreground hover:text-foreground text-sm transition-all"
                     >
                       <LayoutTemplate className="w-4 h-4" />
                       <span className="hidden sm:inline">Templates</span>
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground text-sm transition-all"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-[#252525] text-muted-foreground hover:text-foreground text-sm transition-all"
                     >
                       <Mic className="w-4 h-4" />
                     </button>
@@ -163,7 +163,7 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
                   
                   <button
                     type="submit"
-                    className="w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center text-primary-foreground font-bold transition-all hover:glow-orange hover:scale-105"
+                    className="w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center text-primary-foreground font-bold transition-all glow-orange hover:scale-105 shadow-[0_0_20px_rgba(255,107,0,0.4)]"
                   >
                     <ArrowUp className="w-5 h-5" />
                   </button>
@@ -194,24 +194,6 @@ const Dashboard = ({ onStartWebsite, onOpenStudio, projects = [], userName = "vo
             ))}
           </motion.div>
 
-
-          {/* Create Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="w-full max-w-3xl mb-16"
-          >
-            <motion.button
-              onClick={() => onOpenStudio("business")}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg transition-all glow-orange flex items-center justify-center gap-3"
-            >
-              <Plus className="w-5 h-5" />
-              Criar Nova Empresa
-            </motion.button>
-          </motion.div>
         </div>
 
         {/* Projects Section */}
